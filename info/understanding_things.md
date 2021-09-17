@@ -16,7 +16,7 @@ context объект передается всем хендлерам первы
 
 По своей сути эти фильтры апдейтов. Когда вы пишете `bot.command("start", function(ctx) end)`, то добавляете фильтр к вашему боту, который выполнится только если в update найдена команда _/start_. `bot.update(callback, uid)` это тоже фильтр, но который выпоняется всегда.
 
-Доступные фильтры можно посмотреть в `extensions/default_handlers.lua`, а также написать свои (например, для перехвата гифок или упоминаний и тд)
+Доступные фильтры можно посмотреть в [extensions/default_handlers.lua](/lua/ggram/extensions/default_handlers.lua), а также написать свои (например, для перехвата гифок или упоминаний и тд)
 
 ## middlewares
 <img align="left" width="450" src="https://img.qweqwe.ovh/1631829516145.jpg">
@@ -43,6 +43,7 @@ Middlewares это когда обработчик событий не прос�
 Middlewares позволяют управлять потоком запросов, модифицируя их на лету. К примеру, можно сделать middleware авторизации, rate-limit запросов, дополнительные методы для context и тд
 
 ```lua
+-- Это middleware
 local function attach_player(ctx)
 	if ctx.message and ctx.message.from then
 		ctx.steamid = sql.QueryValue("SELECT steamid FROM users WHERE telegram_id = " .. ctx.message.from.id) -- таблица выдумана
@@ -50,6 +51,7 @@ local function attach_player(ctx)
 	end
 end
 
+-- Это тоже middleware
 local function restrict_access_for_non_admins(ctx)
 	if not (ctx.player and ctx.player:IsSuperAdmin()) then
 		ctx.reply.text("Бот только для администраторов")
@@ -57,6 +59,7 @@ local function restrict_access_for_non_admins(ctx)
 	end
 end
 
+-- handlers
 bot.update(attach_player, "attach_player")
 bot.update(restrict_access_for_non_admins, "check_access")
 
@@ -65,7 +68,7 @@ bot.command("ban", function(ctx)
 end)
 ```
 
-Примеры некоторых подключаемых middlewares можно найти в папке `includes`.
+Примеры некоторых подключаемых middlewares можно найти в папке [/includes](/lua/ggram/includes).
 
 ## reply
 <img align="left" width="450" src="https://img.qweqwe.ovh/1631829390410.jpg">
@@ -76,7 +79,7 @@ end)
 
 > Если нужно выполнить запрос, например отправить сообщение не из контекста, используйте `bot.reply(chat_id).text("Hello")`
 
-Доступные методы можно увидеть в файле reply.lua.
+Доступные методы можно увидеть в файле [reply.lua](/lua/ggram/reply.lua).
 
 
 ---

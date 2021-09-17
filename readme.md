@@ -1,4 +1,12 @@
+<img align="left" width="80" src="https://i.imgur.com/AbYOj2T.png">
+
 # ggram – Telegram Bot Framework
+
+<p align="center">
+  <img src="https://img.shields.io/github/downloads/TRIGONIM/ggram/total">
+  <img src="https://img.shields.io/github/languages/code-size/TRIGONIM/ggram">
+  <img src="https://img.shields.io/github/license/TRIGONIM/ggram">
+</p>
 
 Создавайте Telegram ботов любой сложности и **запускайте их на Garry's Mod сервере**
 
@@ -12,13 +20,13 @@ bot.command("start", function(ctx)
 end)
 ```
 
-Дополнительные примеры можно найти в папке `/bots`
+Дополнительные примеры можно найти в папке [/bots](/lua/ggram/bots)
 
 ## Начало использования
 0. У вас уже должен быть создан бот через [@BotFather](https://t.me/BotFather)
 1. Скачайте ggram с этого репозитория и установите в `/addons/ggram`
 2. Создайте файл `/addons/ggram_bots/lua/ggram/bots/anyname/_init.lua`
-3. Заполните его содержимым демонстративного бота из папки `bots/example`, заменив токен
+3. Заполните его содержимым демонстративного бота из папки [/bots/example](/lua/ggram/bots/example), заменив токен
 
 ## Идеи для ботов
 [Здесь (клик)](https://forum.gm-donate.ru/t/idei-telegram-botov-dlya-vashego-servera/197) опубликованы ссылки на работающие боты, а также множество идей, которые можно реализовать при помощи этого фреймворка для своего Garry's Mod сервера и не только. Возможности практически безграничны.
