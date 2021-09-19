@@ -4,16 +4,17 @@
 	gluegram https://github.com/TRIGONIM/gluegram
 
 	DEPENDENCIES
-	- lua deferred
-	- Gmod's :Split, table.Add, http.Post
-	- Falco's gmod functional lib #todo удалить
-	- lolib (log_fe) #todo удалить
+	- lua deferred https://github.com/zserge/lua-promises
+	- Gmod's :Split, table.Add, http.Post, file structure
 
 	2020.04.12 нашел в себе силы продолжить работу. До этого была написана только база
 	2021.02.13 поддержка предшественника (gluegram) на моем сервере закончена
 	2021.09.12 внедрение подобия middleware для улучшения контроля процессов. Теперь порядок имеет значение
 	2021.09.14 раскидал содержимое по файлам. Теперь это не сингл файл
 ---------------------------------------------------------------------------]]
+
+deferred = deferred or ggram.include("deferred")
+
 
 ggram = ggram or setmetatable({}, {__call = function(self, token) return self.bot(token) end})
 

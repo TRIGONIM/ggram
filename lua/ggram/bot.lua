@@ -77,21 +77,14 @@ function BOT_MT:handle_update(UPD)
 	end
 
 	ctx.chain = {} -- промежуточные результаты выполнений
-	log_fi("suitable_handlers({}/{})", #suitable_handlers, #self.handlers)
 
 	return deferred.map(suitable_handlers, function(handler)
-		log_fi("Беремся за {} хендлер", #ctx.chain + 1)
 		return promisify_handler(handler)(ctx):next(function(res)
 			table.insert(ctx.chain, res or "empty")
 			return res
 		end)
 	end):next(function(res)
-		log_fd("Успешно выполнили все {} хендлеров", #suitable_handlers)
 		return res
-	end, function(err) -- авторизация и тд.
-		-- #todo error handlers. .on ctx.error
-		log_fe("Один из {} хендлеров обосрался: {}", #suitable_handlers, tostring(err)) -- err mb false
-		error(err)
 	end)
 end
 
@@ -103,7 +96,11 @@ function BOT_MT:init()
 		self.last_name  = res.last_name
 
 		return res
-	end, fp{print, "TLG getMe ERROR"})
+	end, function(err)
+		print("ggram bot init error")
+		PrintTable({err})
+		error(err, 2)
+	end)
 end
 
 return BOT_MT

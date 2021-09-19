@@ -30,7 +30,7 @@ local function attach_command(ctx, ent)
 	local name = psc[1]:lower() -- /CMD@botname > cmd
 
 	local argss = text:sub(endd + 2)
-	ctx.args = fp{extract_args, argss}
+	ctx.args = function() return extract_args(argss) end
 	ctx.username = psc[2]
 	ctx.command = name
 
