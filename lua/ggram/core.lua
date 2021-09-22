@@ -13,11 +13,8 @@
 	2021.09.14 раскидал содержимое по файлам. Теперь это не сингл файл
 ---------------------------------------------------------------------------]]
 
-deferred = deferred or ggram.include("deferred")
-
 
 ggram = ggram or setmetatable({}, {__call = function(self, token) return self.bot(token) end})
-
 
 function ggram.include(path)
 	return include("ggram/includes/" .. path .. ".lua")
@@ -36,3 +33,5 @@ function ggram.bot(token)
 
 	return bot
 end
+
+deferred = deferred or ggram.include("deferred")
