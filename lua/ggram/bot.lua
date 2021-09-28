@@ -44,8 +44,8 @@ function BOT_MT:reply(chat_id)
 end
 
 local request = include("ggram/request.lua")
-function BOT_MT:call_method(method, parameters)
-	return request(self.token, method, parameters)
+function BOT_MT:call_method(method, parameters, options_)
+	return request(self.token, method, parameters, options_)
 end
 
 

@@ -36,13 +36,17 @@ local formatParameters = function(parameters)
 	return params
 end
 
-return function(token, method, parameters)
+return function(token, method, parameters, options_)
 	local d = deferred.new()
 
 	local params = formatParameters(parameters)
 
-	http.Post("https://api.telegram.org/bot" .. token .. "/" .. method, params,
-		function(json, _, _, http_code)
+	local HTTPRequest = {
+		url     = "https://api.telegram.org/bot" .. token .. "/" .. method,
+		failed  = function(err_desc)
+			d:reject({error_code = 500, description = "http_error", extra = {http_error = err_desc}})
+		end,
+		success = function(http_code, json)
 			local dat = util.JSONToTable(json)
 			if not dat then -- firewall?
 				d:reject({error_code = 500, description = "no_json", extra = {body = json, http_code = http_code}})
@@ -54,10 +58,16 @@ return function(token, method, parameters)
 			else
 				d:reject(dat) -- error_code, description, opt parameters.retry_after
 			end
-		end, function(err_desc)
-			d:reject({error_code = 500, description = "http_error", extra = {http_error = err_desc}})
-		end
-	)
+		end,
+		method = "POST",
+		parameters = params,
+	}
+
+	for key,val in pairs(options_ or {}) do
+		HTTPRequest[key] = val
+	end
+
+	HTTP(HTTPRequest)
 
 	return d:next(nil, function(dat)
 		logRequestError(token, method, parameters, dat)
