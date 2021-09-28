@@ -1,4 +1,4 @@
-local logError = function(sErr)
+local do_log = function(sErr)
 	local msg = ""
 	msg = msg .. "==== " .. os.date("%Y-%m-%d %H:%M:%S") .. " ===="
 	msg = msg .. "\n" .. sErr
@@ -9,7 +9,7 @@ local logError = function(sErr)
 	-- debug.Trace()
 end
 
-local logRequestError = function(token, method, parameters, response)
+local log_error = function(token, method, parameters, response)
 	local bot_id = token:match("^(%d+):") -- str num
 
 	local sErr = string.format("BOT ID: %s\n%s %i\n%s\n\n%s",
@@ -20,10 +20,10 @@ local logRequestError = function(token, method, parameters, response)
 		sErr = sErr .. "\n\nExtra: " .. util.TableToJSON(response.extra)
 	end
 
-	logError(sErr)
+	do_log(sErr)
 end
 
-local formatParameters = function(parameters)
+local format_parameters = function(parameters)
 	local params = {}
 	for k,v in pairs(parameters) do
 		if isnumber(v) or isbool(v) then -- chat_id
@@ -36,10 +36,10 @@ local formatParameters = function(parameters)
 	return params
 end
 
-return function(token, method, parameters, options_)
+local request = function(token, method, parameters, options_)
 	local d = deferred.new()
 
-	local params = formatParameters(parameters)
+	local params = format_parameters(parameters)
 
 	local HTTPRequest = {
 		url     = "https://api.telegram.org/bot" .. token .. "/" .. method,
@@ -70,7 +70,14 @@ return function(token, method, parameters, options_)
 	HTTP(HTTPRequest)
 
 	return d:next(nil, function(dat)
-		logRequestError(token, method, parameters, dat)
+		log_error(token, method, parameters, dat)
 		error(dat)
 	end)
 end
+
+local exports = {}
+
+exports.request = request
+exports.format_parameters = format_parameters
+
+return exports

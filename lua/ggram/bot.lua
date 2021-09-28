@@ -43,7 +43,7 @@ function BOT_MT:reply(chat_id)
 	return reply.get_instance(self, chat_id)
 end
 
-local request = include("ggram/request.lua")
+local request = include("ggram/request.lua").request
 function BOT_MT:call_method(method, parameters, options_)
 	return request(self.token, method, parameters, options_)
 end
