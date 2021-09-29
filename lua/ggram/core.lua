@@ -20,8 +20,7 @@ function ggram.include(path)
 	return include("ggram/includes/" .. path .. ".lua")
 end
 
-local BOT_MT = include("ggram/bot.lua")
-
+local BOT_MT = ggram.include("bot")
 function ggram.bot(token)
 	local bot = setmetatable({
 		token = token,
