@@ -59,8 +59,8 @@ function BOT_MT:on(fFilter, handler, uid)
 end
 
 
-local extend_callback = ggram.include("extend_callback")
-local extend_message  = ggram.include("extend_message")
+local extend_callback = ggram.include("middlewares/extend_callback")
+local extend_message  = ggram.include("middlewares/extend_message")
 function BOT_MT:handle_update(UPD)
 	local ctx = wrapUpdate(UPD)
 	ctx.bot = self

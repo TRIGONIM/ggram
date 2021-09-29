@@ -2,7 +2,7 @@
 	Middleware than logs any received updates to specific file
 
 	Example:
-	bot.update(ggram.include("logger"), "logger_middleware")
+	bot.update(ggram.include("middlewares/logger"), "logger_middleware")
 ---------------------------------------------------------------------------]]
 
 file.CreateDir("ggram/logs")

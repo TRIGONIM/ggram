@@ -3,7 +3,7 @@ local bot = EXAMPLE_BOT
 
 bot.enable_polling() -- start getUpdates loop
 
-bot.update(ggram.include("session"), "session_middleware") -- middleware demo
+bot.update(ggram.include("middlewares/session"), "session_middleware") -- middleware demo
 
 local function deferred_sleep(time)
 	local d = deferred.new()
