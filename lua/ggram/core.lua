@@ -5,7 +5,7 @@
 
 	DEPENDENCIES
 	- lua deferred https://github.com/zserge/lua-promises
-	- Gmod's :Split, table.Add, http.Post, file structure
+	- Gmod's :Split, table.Add, HTTP, table.Merge, file structure
 
 	2020.04.12 нашел в себе силы продолжить работу. До этого была написана только база
 	2021.02.13 поддержка предшественника (gluegram) на моем сервере закончена
@@ -20,7 +20,7 @@ function ggram.include(path)
 	return include("ggram/includes/" .. path .. ".lua")
 end
 
-local BOT_MT = ggram.include("bot")
+local BOT_MT = ggram.include("core/bot")
 function ggram.bot(token)
 	local bot = setmetatable({
 		token = token,
@@ -33,4 +33,4 @@ function ggram.bot(token)
 	return bot
 end
 
-deferred = deferred or ggram.include("deferred")
+deferred = deferred or ggram.include("core/deferred")
