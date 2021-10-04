@@ -5,9 +5,9 @@ local function resolveMessage(msg)
 	return tonumber(msg) or msg.message_id
 end
 
-local function resolveChat(chat)
-	return tonumber(chat) or chat.id
-end
+-- local function resolveChat(chat)
+-- 	return tonumber(chat) or chat.id
+-- end
 
 local function resolveFile(file)
 	local expr = (istable(file) and file.id) or (isstring(file) and file)
@@ -65,13 +65,13 @@ function R:mediaGroup(media)
 end
 
 function R:location(latitude, longitude)
-  return self.sendGeneric("sendLocation", {latitude = latitude, longitude = longitude})
+	return self.sendGeneric("sendLocation", {latitude = latitude, longitude = longitude})
 end
 
 -- venue
 
 function R:contact(phone, firstname, lastname)
-  return self.sendGeneric("sendContact", {phone_number = phone, first_name = firstname, last_name = lastname})
+	return self.sendGeneric("sendContact", {phone_number = phone, first_name = firstname, last_name = lastname})
 end
 
 -- game
