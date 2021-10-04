@@ -1,0 +1,4 @@
+{
+	"lint_ignoreFiles":                 ["includes/core/deferred.lua"],
+	"log_format":                       "github"
+}
