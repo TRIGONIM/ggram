@@ -1,0 +1,19 @@
+# git action source:
+# https://github.com/Cherry/3D2D-Textscreens/blob/main/.github/workflows/lint.yml
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download GLuaLint
+      run: curl -o glualint.zip -L https://github.com/FPtje/GLuaFixer/releases/download/$GLUALINT_VERSION/glualint-$GLUALINT_VERSION-linux.zip
+      env:
+        GLUALINT_VERSION: 1.18.3
+    - name: Unzip GLuaLint
+      run: unzip glualint.zip
+    - name: Lint lua files
+      run: ./glualint lua
