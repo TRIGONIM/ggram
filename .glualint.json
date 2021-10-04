@@ -1,5 +1,4 @@
 {
-	"lint_maxScopeDepth":               1,
-	"lint_ignoreFiles":                 ["ggram/includes/core/deferred.lua"],
+	"lint_ignoreFiles":                 ["lua/ggram/includes/core/deferred.lua"],
 	"log_format":                       "github"
 }
