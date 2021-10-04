@@ -2,7 +2,7 @@
 
 # ggram – Telegram Bot Framework
 
-> NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend https://www.deepl.com/translator to translate [this page](/readme.md)
+> 🇬🇧 🇺🇸 NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend [deepl](https://www.deepl.com/translator) to translate [this page](https://raw.githubusercontent.com/TRIGONIM/ggram/main/readme.md)
 
 <p align="left">
 	<img src="https://img.shields.io/github/languages/code-size/TRIGONIM/ggram">
