@@ -1,4 +1,4 @@
-name: Release by commit
+name: Release
 
 on: push
 
