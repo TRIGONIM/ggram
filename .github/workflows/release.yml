@@ -1,0 +1,28 @@
+name: Release by commit
+
+on: push
+
+jobs:
+  superfile:
+    runs-on: ubuntu-20.04
+    if: "startsWith(github.event.head_commit.message, 'RELEASE')"
+    steps:
+    - id: changelog
+      uses: zhaojh329/auto-changelog@master
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - id: checkout
+      uses: actions/checkout@v2
+    - id: parse_version
+      run: |
+        VERSION="${{ github.event.head_commit.message }}"
+        echo ::set-output name=parsed_version::${VERSION:8}
+    - id: release
+      uses: softprops/action-gh-release@v1
+      with:
+        body: ${{steps.changelog.outputs.changelog}}
+        tag_name: ${{ steps.parse_version.outputs.parsed_version }}
+        #draft: true
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
