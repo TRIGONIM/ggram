@@ -2,8 +2,9 @@
 
 # ggram – Telegram Bot Framework
 
-<p align="center">
-	<img src="https://img.shields.io/github/downloads/TRIGONIM/ggram/total">
+> NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend https://www.deepl.com/translator to translate [this page](/readme.md)
+
+<p align="left">
 	<img src="https://img.shields.io/github/languages/code-size/TRIGONIM/ggram">
 	<img src="https://img.shields.io/github/license/TRIGONIM/ggram">
 </p>
@@ -35,8 +36,9 @@ end)
 
 ## ✨ Особенности
 - Работает прямо с Garry's Mod сервера
+- НЕ требует никаких сторонних .dll или WEB прослоек
 - Очень минималистичный и легко расширяемый
-- [Возможность](/lua/includes/surprise) отправки анимаций, документов, изображений
+- [Возможность](/lua/ggram/includes/surprise) отправки анимаций, документов, изображений
 - Создан с учетом многолетного опыта создания ботов
 - Дружит с парадигмой функционального программирования
 
