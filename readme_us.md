@@ -1,6 +1,4 @@
-# readme
-
-![https://i.imgur.com/AbYOj2T.png](https://i.imgur.com/AbYOj2T.png)
+<img align="left" width="80" src="https://i.imgur.com/AbYOj2T.png">
 
 # ggram – Telegram Bot Framework
 
@@ -11,7 +9,7 @@
 
 [https://img.shields.io/github/license/TRIGONIM/ggram](https://img.shields.io/github/license/TRIGONIM/ggram)
 
-Create Telegram bots any difficulty and start it on your own **Garry’s Mod server**
+Create Telegram bots of any difficulty and start them on your own **Garry’s Mod server**
 
 ![https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png](https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png)
 
@@ -19,32 +17,32 @@ Create Telegram bots any difficulty and start it on your own **Garry’s Mod ser
 local bot = ggram("token")bot.enable_polling() -- enables getUpdates loopbot.command("start", function(ctx)    ctx.reply.text("Hello @" .. ctx.from.username)end)
 ```
 
-Extra examples can be found in directory [/bots](/lua/ggram/bots)
+Extra examples can be found in the [/bots](/lua/ggram/bots) directory
 
 ## 🔥 Start of using
 
 1. You should have already created a bot using [@BotFather](https://t.me/BotFather).
 2. Download ggram from this repository and install it in `/addons/ggram'.
-3. Create a file `/addons/ggram_bots/lua/ggram/bots/anyname/_init.lua`.
-4. Fill it with bot example from [/bots/example](notion://www.notion.so/lua/ggram/bots/example), replacing token
+3. Create the file `/addons/ggram_bots/lua/ggram/bots/anyname/_init.lua`.
+4. Copy the code of the example bot from [/bots/example](notion://www.notion.so/lua/ggram/bots/example) into the file you just created. Do not forget to replace the token.
 
-## 💡 Made on GGRAM + screenshots
+## 💡 Made with GGRAM + screenshots
 
-Here [(*click*)](https://forum.gm-donate.ru/t/idei-telegram-botov-dlya-vashego-servera/197) (not for English) was uploaded links on working bots, also many ideas, which you can implement with this framework for your Garry's Mod server and not only. The possibilities are almost endless.
+Ready-made bots, ideas that you could implement using this framework for your Garry's Mod server, and many more interesting things are posted [here (click)]((https://forum.gm-donate.ru/t/idei-telegram-botov-dlya-vashego-servera/197)). The possibilities are almost endless.
 
 ## ✨ Features
 
-- Works directly with Garry’s Mod servers
-- DOESN'T require any 3rd-party .dll or WEB interfaces
+- Works directly on your Garry’s Mod servers
+- DOESN'T require any 3rd-party .dll or WEB proxies
 - Very minimalistic and easily expandable
-- [Opportunity](/lua/ggram/includes/surprise) send animations, documents and images
-- Created with years of experience in creating bots
-- Friendly with the functional programming paradigm
+- [The possibility](/lua/ggram/includes/surprise) send animations, documents and images
+- Developed based on years of experience in creating bots
+- Functional programming friendly
 
 ## 📚 Documentation
 
-- 🤔 What is and how to use [update, context, middleware, reply](/info/understanding_things.md) (basic entities)
-- 🗂 [Where to create bot, what to put in extensions and for what need includes](/info/project_structure.md)
+- 🤔 What [update, context, middleware, reply](/info/understanding_things.md) are and how to use them (the fundamentals).
+- 🗂 [Where to create a bot, what to put in the extensions folder, and why the includes folder exists](/info/project_structure.md)
 
 ---
 
