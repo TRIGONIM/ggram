@@ -13,8 +13,14 @@ Create Telegram bots of any difficulty and start them on your own **Garry’s Mo
 
 <img align="right" width="300" src="https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png">
 
-```
-local bot = ggram("token")bot.enable_polling() -- enables getUpdates loopbot.command("start", function(ctx)    ctx.reply.text("Hello @" .. ctx.from.username)end)
+```lua
+local bot = ggram("token")
+
+bot.enable_polling() -- enables getUpdates loop
+
+bot.command("start", function(ctx)
+	ctx.reply.text("Hello @" .. ctx.from.username)
+end)
 ```
 
 Extra examples can be found in the [/bots](/lua/ggram/bots) directory
@@ -46,5 +52,4 @@ Ready-made bots, ideas that you could implement using this framework for your Ga
 
 ---
 
-> If you still have questions, you can ask them in Telegram @amd_nick or create an Issue
->
+> _If you still have questions, you can ask them in Telegram @amd_nick or create an Issue
