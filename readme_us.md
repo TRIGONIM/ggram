@@ -5,9 +5,10 @@
 > 🇬🇧 🇺🇸 NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend deepl to translate this page
 > 
 
-[https://img.shields.io/github/languages/code-size/TRIGONIM/ggram](https://img.shields.io/github/languages/code-size/TRIGONIM/ggram)
-
-[https://img.shields.io/github/license/TRIGONIM/ggram](https://img.shields.io/github/license/TRIGONIM/ggram)
+<p align="left">
+	<img src="https://img.shields.io/github/languages/code-size/TRIGONIM/ggram">
+	<img src="https://img.shields.io/github/license/TRIGONIM/ggram">
+</p>
 
 Create Telegram bots of any difficulty and start them on your own **Garry’s Mod server**
 
