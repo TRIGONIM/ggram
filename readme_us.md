@@ -3,7 +3,6 @@
 # ggram – Telegram Bot Framework
 
 > 🇬🇧 🇺🇸 NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend deepl to translate this page
-> 
 
 <p align="left">
 	<img src="https://img.shields.io/github/languages/code-size/TRIGONIM/ggram">
@@ -12,7 +11,7 @@
 
 Create Telegram bots of any difficulty and start them on your own **Garry’s Mod server**
 
-![https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png](https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png)
+<img align="right" width="300" src="https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png">
 
 ```
 local bot = ggram("token")bot.enable_polling() -- enables getUpdates loopbot.command("start", function(ctx)    ctx.reply.text("Hello @" .. ctx.from.username)end)
