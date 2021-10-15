@@ -117,3 +117,8 @@ function RESP:animationFromFile(file_content, name)
 	local form_data = multipart.FormData():AddFile("animation", file_content, name)
 	return self.sendMultipart("sendAnimation", form_data)
 end
+
+function RESP:photoFromFile(file_content, name)
+	local form_data = multipart.FormData():AddFile("photo", file_content, name)
+	return self.sendMultipart("sendPhoto", form_data)
+end
