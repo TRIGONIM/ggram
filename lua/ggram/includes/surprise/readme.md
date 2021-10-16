@@ -45,7 +45,6 @@ local gif = file.Read("gif.txt", "DATA")
 #### Отправка анимации
 
 ```lua
-local gif = file.Read("gif.txt", "DATA")
 bot.reply(chat_id).inlineKeyboard({{
 	{text = "Кнопка!", callback_data = "any"}
 }}).animationFromFile(gif, "anim.gif")

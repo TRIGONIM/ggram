@@ -1,5 +1,5 @@
--- Чертов файл должен быть шаредным, так как шаред грузится до SERVER
--- А если грузиться поздно, то скрипты, зависимые от ggram, эррорят
+-- This file should be shared for loading prior to SERVER
+-- If it is loaded late, ggram-dependent scripts give errors
 
 if CLIENT then return end
 
@@ -9,7 +9,7 @@ local function loadBots(path, iDeep)
 	local files,dirs = file.Find(path .. "/*","LUA")
 	for _,f in ipairs(files) do
 		if f == "_init.lua" then
-			print("GG загрузка бота " .. path)
+			print("GG Loading Bot " .. path)
 			include(path .. "/" .. f)
 			break
 		end
@@ -24,7 +24,7 @@ local function loadExtensions(path)
 	local files = file.Find(path .. "/*","LUA")
 	for _,f in ipairs(files) do
 		local fpath = path .. "/" .. f
-		print("GG загрузка " .. fpath)
+		print("GG Loading " .. fpath)
 		include(fpath)
 	end
 end
