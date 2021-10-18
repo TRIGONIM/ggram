@@ -36,13 +36,14 @@ local format_parameters = function(parameters)
 	return params
 end
 
-local request = function(token, method, parameters, options_)
+local request = function(token, method, parameters, options_, base_url_)
 	local d = deferred.new()
 
 	local params = format_parameters(parameters)
 
+	local base_url = base_url_ or "https://api.telegram.org"
 	local HTTPRequest = {
-		url     = "https://api.telegram.org/bot" .. token .. "/" .. method,
+		url     = base_url .. "/bot" .. token .. "/" .. method,
 		failed  = function(err_desc)
 			d:reject({error_code = 500, description = "http_error", extra = {http_error = err_desc}})
 		end,

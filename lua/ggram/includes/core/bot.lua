@@ -45,7 +45,7 @@ end
 
 local request = ggram.include("core/request").request
 function BOT_MT:call_method(method, parameters, options_)
-	return request(self.token, method, parameters, options_)
+	return request(self.token, method, parameters, options_, self.options.base_url)
 end
 
 

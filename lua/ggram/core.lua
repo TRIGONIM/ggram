@@ -14,20 +14,24 @@
 ---------------------------------------------------------------------------]]
 
 
-ggram = ggram or setmetatable({}, {__call = function(self, token) return self.bot(token) end})
+ggram = ggram or setmetatable({}, {__call = function(self, ...) return self.bot(...) end})
 
 function ggram.include(path)
 	return include("ggram/includes/" .. path .. ".lua")
 end
 
 local BOT_MT = ggram.include("core/bot")
-function ggram.bot(token)
+function ggram.bot(token, options_)
 	local bot = setmetatable({
 		token = token,
 		id    = tonumber(token:match("^(%d+)")),
 
 		handlers      = {}, -- index > bucket
 		handler_index = {}, -- uid > index
+
+		options = options_ or {
+			base_url = "https://api.telegram.org"
+		},
 	}, BOT_MT)
 
 	return bot
