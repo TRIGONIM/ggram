@@ -57,6 +57,10 @@ end
 function R:video(file, caption, captionMode, duration, width, height, streaming)
 	return self.sendGeneric("sendVideo", {video = file, duration = duration, caption = caption, parse_mode = captionMode, width = width, height = height, supports_streaming = streaming})
 end
+
+function R:animation(file, caption, captionMode)
+	return self.sendGeneric("sendAnimation", {animation = resolveFile(file), caption = caption, parse_mode = captionMode})
+end
 -- videoNote
 -- voice
 
