@@ -1,28 +1,3 @@
-local do_log = function(sErr)
-	local msg = ""
-	msg = msg .. "==== " .. os.date("%Y-%m-%d %H:%M:%S") .. " ===="
-	msg = msg .. "\n" .. sErr
-	msg = msg .. "\n========= [TLG ERR] =========\n\n"
-
-	log_fe(msg)
-	file.Append("ggram/logs/errors.txt", msg)
-	-- debug.Trace()
-end
-
-local log_error = function(token, method, parameters, response)
-	local bot_id = token:match("^(%d+):") -- str num
-
-	local sErr = string.format("BOT ID: %s\n%s %i\n%s\n\n%s",
-		bot_id or token, method, response.error_code, response.description,
-		util.TableToJSON(parameters))
-
-	if response.extra then
-		sErr = sErr .. "\n\nExtra: " .. util.TableToJSON(response.extra)
-	end
-
-	do_log(sErr)
-end
-
 local format_parameters = function(parameters)
 	local params = {}
 	for k,v in pairs(parameters) do
@@ -70,10 +45,7 @@ local request = function(token, method, parameters, options_, base_url_)
 
 	HTTP(HTTPRequest)
 
-	return d:next(nil, function(dat)
-		log_error(token, method, parameters, dat)
-		error(dat)
-	end)
+	return d
 end
 
 local exports = {}

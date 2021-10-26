@@ -45,7 +45,24 @@ end
 
 local request = ggram.include("core/request").request
 function BOT_MT:call_method(method, parameters, options_)
-	return request(self.token, method, parameters, options_, self.options.base_url)
+	local doRequest = function()
+		return request(self.token, method, parameters, options_, self.options.base_url)
+	end
+
+	return doRequest():next(nil, function(err)
+		return self.handle_error(err, {
+			retry = doRequest,
+			method = method,
+			parameters = parameters,
+			options = options_,
+		})
+	end)
+end
+
+-- override me. p.s. ctx is not the same as in middlewares. Look inside bot:call_method
+local log_error = ggram.include("core/log_error")
+function BOT_MT:handle_error(err, ctx)
+	log_error(self.token, ctx.method, ctx.parameters, err)
 end
 
 
