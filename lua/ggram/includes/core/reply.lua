@@ -2,6 +2,7 @@
 	MODEL
 ---------------------------------------------------------------------------]]
 local function resolveMessage(msg)
+	assert(msg, "ggram: msg expected, got nil")
 	return tonumber(msg) or msg.message_id
 end
 

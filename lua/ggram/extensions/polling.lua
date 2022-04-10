@@ -11,9 +11,11 @@ local function deferred_sleep(time)
 end
 
 local function log(msg, ...)
+	if not GG_POLL_LOG then return end
+
 	if log_fi then
 		log_fi(msg, ...)
-	elseif GG_POLL_LOG then
+	else
 		PrintTable({msg = msg, args = {...}})
 	end
 end

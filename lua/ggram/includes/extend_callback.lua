@@ -6,7 +6,7 @@ return function(ctx)
 	if not ctx.update.callback_query then return end
 
 	local cbq = ctx.callback_query
-	ctx.reply = ctx.bot.reply(cbq.message.chat.id)
+	ctx.reply = cbq.message and ctx.bot.reply(cbq.message.chat.id)
 
 	ctx.json = function()
 		return util.JSONToTable(cbq.data)
