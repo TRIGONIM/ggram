@@ -49,7 +49,13 @@ function BOT_MT:call_method(method, parameters, options_)
 		return request(self.token, method, parameters, options_, self.options.base_url)
 	end
 
-	return doRequest():next(nil, function(err)
+	print("BOT_MT:call_method('" .. method .. "', parameters, options_)")
+
+	return doRequest():next(function(res)
+		print("inside doRequest(), res:", res)
+		return res
+	end, function(err)
+		print("inside doRequest(), err:", err)
 		return self.handle_error(err, {
 			retry = doRequest,
 			method = method,
@@ -63,6 +69,7 @@ end
 local log_error = ggram.include("core/log_error")
 function BOT_MT:handle_error(err, ctx)
 	log_error(self.token, ctx.method, ctx.parameters, err)
+	error(err)
 end
 
 

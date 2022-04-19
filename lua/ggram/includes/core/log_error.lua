@@ -1,7 +1,7 @@
 -- local log_error = ggram.include("core/log_error")
 -- log_error(token, method, parameters, err)
 
-file.CreateDir("ggram/logs")
+
 
 local do_log = function(sErr)
 	local msg = ""
@@ -9,8 +9,7 @@ local do_log = function(sErr)
 	msg = msg .. "\n" .. sErr
 	msg = msg .. "\n========= [TLG ERR] =========\n\n"
 
-	log_fe(msg)
-	file.Append("ggram/logs/errors.txt", msg)
+	print(msg)
 	-- debug.Trace()
 end
 
