@@ -2,7 +2,6 @@
 -- log_error(token, method, parameters, err)
 
 
-
 local do_log = function(sErr)
 	local msg = ""
 	msg = msg .. "==== " .. os.date("%Y-%m-%d %H:%M:%S") .. " ===="
