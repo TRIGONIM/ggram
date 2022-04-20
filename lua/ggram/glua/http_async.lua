@@ -14,13 +14,13 @@ ht.USERAGENT = "ggram v0.1"
 http = {}
 
 function string:URLEncode()
-	return string.gsub(string.gsub(self, '\n', '\r\n'), '([^%w.])', function(c)
-		return string.format('%%%02X', string.byte(c))
+	return string.gsub(string.gsub(self, "\n", "\r\n"), "([^%w.])", function(c)
+		return string.format("%%%02X", string.byte(c))
 	end)
 end
 
 -- function string:URLDecode()
--- 	return self:gsub('%%(%x%x)', function(hex)
+-- 	return self:gsub("%%(%x%x)", function(hex)
 -- 		return string.char(tonumber(hex, 16))
 -- 	end)
 -- end

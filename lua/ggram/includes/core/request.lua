@@ -20,11 +20,9 @@ local request = function(token, method, parameters, options_, base_url_)
 	local HTTPRequest = {
 		url     = base_url .. "/bot" .. token .. "/" .. method,
 		failed  = function(err_desc)
-			print("inside HTTPRequest.failed, err_desc = " .. err_desc)
 			d:reject({error_code = 500, description = "http_error", extra = {http_error = err_desc}})
 		end,
 		success = function(http_code, json)
-			print("inside HTTPRequest.success, http_code = " .. http_code)
 			local dat = util.JSONToTable(json)
 			if not dat then -- firewall?
 				d:reject({error_code = 500, description = "no_json", extra = {body = json, http_code = http_code}})
@@ -44,8 +42,6 @@ local request = function(token, method, parameters, options_, base_url_)
 	for key,val in pairs(options_ or {}) do
 		HTTPRequest[key] = val
 	end
-
-	print("inside request(token, '" .. method .. "', parameters, options_, base_url_)")
 
 	HTTP(HTTPRequest)
 
