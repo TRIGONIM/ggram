@@ -48,4 +48,3 @@ if not GARRYSMOD then
 	include("ggram/extensions/default_handlers.lua")
 	include("ggram/extensions/polling.lua")
 end
-
