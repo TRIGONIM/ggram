@@ -6,8 +6,6 @@ end
 
 debug.getregistry().GG_BOT = BOT_MT
 
-
-
 local function promisify_handler(handler)
 	return function(ctx)
 		local d = deferred.new()
@@ -49,13 +47,7 @@ function BOT_MT:call_method(method, parameters, options_)
 		return request(self.token, method, parameters, options_, self.options.base_url)
 	end
 
-	print("BOT_MT:call_method('" .. method .. "', parameters, options_)")
-
-	return doRequest():next(function(res)
-		print("inside doRequest(), res:", res)
-		return res
-	end, function(err)
-		print("inside doRequest(), err:", err)
+	return doRequest():next(nil, function(err)
 		return self.handle_error(err, {
 			retry = doRequest,
 			method = method,
@@ -125,6 +117,13 @@ function BOT_MT:init()
 		PrintTable({err})
 		error(err, 2)
 	end)
+end
+
+function BOT_MT:idle()
+	if not GARRYSMOD then
+		local copas = require("copas")
+		while 1 do copas.step() end
+	end
 end
 
 return BOT_MT
