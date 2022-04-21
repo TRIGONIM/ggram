@@ -8,7 +8,7 @@ source = {
 description = {
 	summary = "ggram – Telegram Bot Framework",
 	detailed = "Create Telegram bots of any complexity in pure Lua. Inspired by botgram.js",
-	homepage = "https://github.com/TRIGONIM/ggram" .. (version == "cvs" and "/tree/pure-lua" or ""),
+	homepage = "https://github.com/TRIGONIM/ggram",
 	license = "MIT",
 	maintainer = "_AMD_ <amd@default.im>"
 }
