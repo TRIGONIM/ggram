@@ -1,7 +1,10 @@
-package = "ggram"
-version = "1.0-1"
+local ver = "1.0"
+local rev = "1"
 
-local cvs = version:sub(1,3) == "cvs"
+package = "ggram"
+version = ver .. "-" .. rev
+
+local cvs = ver == "cvs"
 
 source = {
 	url = "git+https://github.com/TRIGONIM/ggram.git",
