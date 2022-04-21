@@ -3,7 +3,7 @@ version = "cvs"
 source = {
 	url = "git+https://github.com/TRIGONIM/ggram.git",
 	branch = (version == "cvs") and "master" or nil,
-	tag = (package_version ~= "cvs") and version or nil,
+	tag = (version ~= "cvs") and version or nil,
 }
 description = {
 	summary = "ggram – Telegram Bot Framework",
