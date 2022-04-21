@@ -25,23 +25,23 @@ do -- PrintTable
 
 	local function FixTabs(x, width)
 		local curw = GetTextSize(x)
-		local ret = ''
+		local ret = ""
 		while (curw < width) do -- not using string.rep since linux
-			x    = x .. ' '
-			ret  = ret .. ' '
+			x    = x .. " "
+			ret  = ret .. " "
 			curw = GetTextSize(x)
 		end
 		return ret
 	end
 
 	local replacements = {
-		['\n'] = '\\n', ['\r'] = '\\r',
-		['\v'] = '\\v', ['\f'] = '\\f',
-		['\x00'] = '\\x00', ['\\'] = '\\\\', ['\''] = '\\\'',
+		["\n"] = "\\n", ["\r"] = "\\r",
+		["\v"] = "\\v", ["\f"] = "\\f",
+		["\x00"] = "\\x00", ["\\"] = "\\\\", ["\""] = "\\\"",
 	}
 
 	local typesmap = {
-		boolean = true, ['function'] = true,
+		boolean = true, ["function"] = true,
 		number = true, string = true,
 		table = true, func = true,
 	}
@@ -49,54 +49,56 @@ do -- PrintTable
 	local function DebugFixToString(obj)
 		local typ = type(obj)
 		if typ == "string" then
-			return '\'' .. obj:gsub('.', replacements) .. '\''
+			return "\"" .. obj:gsub(".", replacements) .. "\""
 		end
 
 		if typesmap[typ] then
 			return tostring(obj)
 		end
 
-		return '(' .. typ .. ') ' .. tostring(obj)
+		return "(" .. typ .. ") " .. tostring(obj)
 	end
 
 	function PrintTable(tbl, spaces, done)
+		spaces = spaces or 0
+		done = done or {}
+
 		local buffer = {}
 		local rbuf = {}
 		local maxwidth = 0
-		local spaces = spaces or 0
-		local done = done or {}
+
 		done[tbl] = true
 		for key,val in pairs(tbl) do
 			rbuf[#rbuf + 1]  = key
-			buffer[#buffer + 1] = '[' .. DebugFixToString(key) .. '] '
+			buffer[#buffer + 1] = "[" .. DebugFixToString(key) .. "] "
 			maxwidth = math.max(GetTextSize(buffer[#buffer]), maxwidth)
 		end
-		local str = string.rep(' ', spaces)
-		if(spaces == 0) then MsgN('\n') end
-		MsgC('{\n')
-		local tabbed = str .. string.rep(' ', 4)
-		
+		local str = string.rep(" ", spaces)
+		if (spaces == 0) then MsgN("\n") end
+		MsgC("{\n")
+		local tabbed = str .. string.rep(" ", 4)
+
 		for i = 1, #buffer do
 			local key = rbuf[i]
 			local value = tbl[key]
-			MsgC(tabbed .. '[')
+			MsgC(tabbed .. "[")
 			MsgC( DebugFixToString(key) )
-			MsgC('] ' .. FixTabs(buffer[i], maxwidth), '= ')
-			if(type(value) == 'table' and not done[value]) then
+			MsgC("] " .. FixTabs(buffer[i], maxwidth), "= ")
+			if (type(value) == "table" and not done[value]) then
 				PrintTable(tbl[key], spaces + 4, done)
 			else
 				MsgC( DebugFixToString(value) )
 			end
-			MsgC(',')
-			MsgN('')
+			MsgC(",")
+			MsgN("")
 		end
-		MsgC(str .. '}')
-		if(spaces == 0) then
-			MsgN('')
+		MsgC(str .. "}")
+		if (spaces == 0) then
+			MsgN("")
 		end
 	end
 
-	-- PrintTable(_G)
+	PrintTable(_G)
 end
 
 do -- timer
