@@ -1,5 +1,5 @@
 package = "ggram"
-version = "1.0"
+version = "1.0-1"
 source = {
 	url = "git+https://github.com/TRIGONIM/ggram.git",
 	branch = (version == "cvs") and "master" or nil,
