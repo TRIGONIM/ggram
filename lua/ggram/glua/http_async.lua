@@ -39,20 +39,12 @@ function HTTP(parameters)
 
 		local paramss = parameters.parameters and http.BuildQuery(parameters.parameters)
 		local url = parameters.url .. (paramss and "?" .. paramss or "")
-		print("inside HTTP(parameters) BEFORE COPAS REQUEST")
 		local res, code, headers = request(url)
 		-- assert(res, code)
-		print("inside HTTP(parameters), res, code, headers", res, code, headers)
-		print("res", res)
-		print("code", code)
-		print("headers", headers)
-
-		print("parameters.failed", parameters.failed)
 
 		if res and parameters.success then
 			parameters.success(code, res, headers)
 		elseif not res and parameters.failed then
-			print("asdasdasd")
 			parameters.failed(code)
 		end
 	end)
