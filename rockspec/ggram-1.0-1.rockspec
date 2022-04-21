@@ -9,7 +9,7 @@ local cvs = ver == "cvs"
 source = {
 	url = "git+https://github.com/TRIGONIM/ggram.git",
 	branch = cvs and "master" or nil,
-	tag = not cvs and version or nil,
+	tag = not cvs and ver or nil,
 }
 description = {
 	summary = "ggram – Telegram Bot Framework",
