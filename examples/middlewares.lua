@@ -1,18 +1,22 @@
-EXAMPLE_BOT = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM") -- replace with your token (t.me/BotFather)
-local bot = EXAMPLE_BOT
+-- for advanced users
+-- understanding middlewares
 
-bot.enable_polling() -- start getUpdates loop
+require("ggram.core")
 
-bot.update(ggram.include("session"), "session_middleware") -- middleware demo
+local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
+
+bot.enable_polling()
+
+bot.update(ggram.include("session"), "session_middleware") -- extends ctx object with .sesion property
 
 local function deferred_sleep(time)
-	local d = deferred.new()
+	local d = deferred.new() -- https://github.com/zserge/lua-promises/blob/master/deferred.lua
 	timer.Simple(time, function() d:resolve() end)
 	return d
 end
 
 bot.update(function(ctx)
-	ctx.reply.text("Sleeping 4 seconds")
+	ctx.reply.markdown("Sleeping *4 seconds*")
 	ctx.reply.action("typing")
 	return deferred_sleep(4)
 end, "sleep")
@@ -34,3 +38,5 @@ end, "stop_middl")
 bot.update(function(ctx)
 	ctx.reply.text("Done. It's the last middleware")
 end, "done")
+
+bot.idle()

@@ -16,7 +16,7 @@ local function log(msg, ...)
 	if log_fi then
 		log_fi(msg, ...)
 	else
-		PrintTable({msg = msg, args = {...}})
+		print(msg, table.concat({...}, ", "))
 	end
 end
 
@@ -37,7 +37,10 @@ local function poll(bot)
 		end
 
 		for _,upd in ipairs(updates) do
-			bot.handle_update(upd)
+			local ok, res = pcall(bot.handle_update, upd)
+			if not ok then
+				log("Error handling update: {}", res)
+			end
 		end
 	end)
 end
@@ -50,6 +53,7 @@ function BOT_MT:enable_polling()
 	deferred_sleep(0):next(function()
 		return poll(self)
 	end):next(nil, function(err)
+		log("err after poll(self): {}", err)
 		if err.error_code == 409 then
 			if err.description:match("terminated by other getUpdates") then log("terminated") error("terminated") end
 

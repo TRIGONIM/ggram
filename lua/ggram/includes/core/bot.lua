@@ -6,8 +6,6 @@ end
 
 debug.getregistry().GG_BOT = BOT_MT
 
-
-
 local function promisify_handler(handler)
 	return function(ctx)
 		local d = deferred.new()
@@ -63,6 +61,7 @@ end
 local log_error = ggram.include("core/log_error")
 function BOT_MT:handle_error(err, ctx)
 	log_error(self.token, ctx.method, ctx.parameters, err)
+	error(err)
 end
 
 
@@ -118,6 +117,14 @@ function BOT_MT:init()
 		PrintTable({err})
 		error(err, 2)
 	end)
+end
+
+function BOT_MT:idle()
+	if not GARRYSMOD then
+		local copas = require("copas")
+		print("idling")
+		while 1 do copas.step() end
+	end
 end
 
 return BOT_MT

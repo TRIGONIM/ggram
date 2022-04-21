@@ -1,6 +1,8 @@
+-- EXCLUSIVELY FOR GARRY'S MOD COMPATIBILITY
+-- Ignore it if you plan to use it in pure lua. This file will not be used
+
 -- This file should be shared for loading prior to SERVER
 -- If it is loaded late, ggram-dependent scripts give errors
-
 if CLIENT then return end
 
 local function loadBots(path, iDeep)
