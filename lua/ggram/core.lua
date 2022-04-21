@@ -45,6 +45,6 @@ deferred = deferred or ggram.include("core/deferred")
 
 -- In garrysmod, this loads automatically
 if not GARRYSMOD then
-	include("ggram/extensions/default_handlers.lua")
-	include("ggram/extensions/polling.lua")
+	require("ggram.extensions.default_handlers")
+	require("ggram.extensions.polling")
 end

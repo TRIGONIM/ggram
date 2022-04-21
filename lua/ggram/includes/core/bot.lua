@@ -122,6 +122,7 @@ end
 function BOT_MT:idle()
 	if not GARRYSMOD then
 		local copas = require("copas")
+		print("idling")
 		while 1 do copas.step() end
 	end
 end
