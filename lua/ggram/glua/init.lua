@@ -98,7 +98,7 @@ do -- PrintTable
 		end
 	end
 
-	PrintTable(_G)
+	-- PrintTable(_G)
 end
 
 do -- timer
