@@ -19,7 +19,7 @@ description = {
 	maintainer = "_AMD_ <amd@default.im>"
 }
 supported_platforms = { "linux", "macosx", "unix", "bsd" }
-dependencies = { "lua >= 5.1, < 5.4", "copas", "luasec" }
+dependencies = { "lua >= 5.1, < 5.4", "copas", "luasec", "dkjson" }
 build = {
 	type = "builtin",
 	modules = {

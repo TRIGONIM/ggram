@@ -114,8 +114,8 @@ do -- timer
 end
 
 do -- cookie
-	local tmppath = arg[1]
-	assert(tmppath, "Need to specify a path to temp directory")
+	local tmppath = arg[1] or "tmp"
+	os.execute("mkdir -p " .. tmppath)
 
 	cookie = {}
 	function cookie.GetString(name, default)
@@ -143,9 +143,10 @@ end
 
 do -- json
 	util = {}
-	local json = require("ggram.glua.json")
+	-- local json = require("ggram.glua.json")
+	local json = require("dkjson")
 	util.JSONToTable = json.decode
-	util.TableToJSON = json.encode
+	util.TableToJSON = function(t, bPretty) return json.encode(t, bPretty and {indent = true}) end
 end
 
 do -- is* functions
@@ -219,5 +220,6 @@ do -- string.Split for extend_message.lua
 end
 
 do -- http
-	require("ggram.glua.http_async")
+	http = require("ggram.glua.http_async")
+	HTTP = http.request
 end

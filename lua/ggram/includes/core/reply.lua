@@ -198,6 +198,7 @@ end
 local REPLY_MT = {} -- чтобы методы можно было вызывать через точку, а не двоеточие
 REPLY_MT.__index = function(self, sMethod)
 	local fMethod = R[sMethod]
+	assert(fMethod, "reply." .. sMethod .. " is not a valid method")
 	return function(...) return fMethod(self, ...) end -- fp
 end
 
