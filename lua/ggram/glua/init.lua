@@ -121,7 +121,7 @@ do -- timer (for deferred.sleep)
 end
 
 do -- cookie (for polling offsets and session middleware)
-	local tmppath = arg[1] or "tmp"
+	local tmppath = "ggram"
 	os.execute("mkdir -p " .. tmppath)
 
 	cookie = {}
