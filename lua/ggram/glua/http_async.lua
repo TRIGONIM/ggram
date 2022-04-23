@@ -19,6 +19,10 @@ local function request(url, body, extra_headers_, method_)
 		reqt.method = method_ -- POST, GET, HEAD, PUT, DELETE, etc.
 	end
 
+	-- reqt.protocol = "any"
+	-- reqt.options = {"all", "no_sslv2", "no_sslv3", "no_tlsv1"}
+	-- reqt.verify = "none"
+
 	local ok, code, headers, status = request_orig(reqt)
 	if ok then
 		return table.concat(reqt.target), code, headers, status

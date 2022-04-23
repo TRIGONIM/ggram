@@ -20,7 +20,11 @@ end
 ggram = ggram or setmetatable({}, {__call = function(self, ...) return self.bot(...) end})
 
 function ggram.include(path)
-	return include("ggram/includes/" .. path .. ".lua")
+	if GARRYSMOD then
+		return include("ggram/includes/" .. path .. ".lua")
+	else
+		return require("ggram.includes." .. path)
+	end
 end
 
 local BOT_MT = ggram.include("core/bot")
@@ -40,7 +44,21 @@ function ggram.bot(token, options_)
 	return bot
 end
 
+function ggram.idle()
+	if not GARRYSMOD then
+		local copas = require("copas")
+		print("idling")
+		while 1 do copas.step() end
+	end
+end
+
 deferred = deferred or ggram.include("core/deferred")
+
+function deferred.sleep(time) -- polling cooldown
+	local d = deferred.new()
+	timer.Simple(time, function() d:resolve() end)
+	return d
+end
 
 
 -- In garrysmod, this loads automatically

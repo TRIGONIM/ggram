@@ -9,16 +9,10 @@ bot.enable_polling()
 
 bot.update(ggram.include("session"), "session_middleware") -- extends ctx object with .sesion property
 
-local function deferred_sleep(time)
-	local d = deferred.new() -- https://github.com/zserge/lua-promises/blob/master/deferred.lua
-	timer.Simple(time, function() d:resolve() end)
-	return d
-end
-
 bot.update(function(ctx)
 	ctx.reply.markdown("Sleeping *4 seconds*")
 	ctx.reply.action("typing")
-	return deferred_sleep(4)
+	return deferred.sleep(4)
 end, "sleep")
 
 bot.command("test", function(ctx)
@@ -39,4 +33,4 @@ bot.update(function(ctx)
 	ctx.reply.text("Done. It's the last middleware")
 end, "done")
 
-bot.idle()
+ggram.idle()

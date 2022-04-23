@@ -1,4 +1,4 @@
-local BOT_MT = FindMetaTable("GG_BOT") or {}
+local BOT_MT = debug.getregistry().GG_BOT or {}
 BOT_MT.__index = function(self, sMethod)
 	local fMethod = BOT_MT[sMethod]
 	return fMethod and function(...) return fMethod(self, ...) end or nil
@@ -117,14 +117,6 @@ function BOT_MT:init()
 		PrintTable({err})
 		error(err, 2)
 	end)
-end
-
-function BOT_MT:idle()
-	if not GARRYSMOD then
-		local copas = require("copas")
-		print("idling")
-		while 1 do copas.step() end
-	end
 end
 
 return BOT_MT

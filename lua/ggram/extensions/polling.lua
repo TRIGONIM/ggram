@@ -1,13 +1,7 @@
-local BOT_MT = FindMetaTable("GG_BOT")
+local BOT_MT = debug.getregistry().GG_BOT
 
 local function getUpdates(bot, parameters)
 	return bot.call_method("getUpdates", parameters)
-end
-
-local function deferred_sleep(time)
-	local d = deferred.new()
-	timer.Simple(time, function() d:resolve() end)
-	return d
 end
 
 local function log(msg, ...)
@@ -50,7 +44,7 @@ function BOT_MT:enable_polling()
 	log("enable_polling")
 
 	-- http.Fetch after restart issue
-	deferred_sleep(0):next(function()
+	deferred.sleep(0):next(function()
 		return poll(self)
 	end):next(nil, function(err)
 		log("err after poll(self): {}", err)
@@ -62,7 +56,7 @@ function BOT_MT:enable_polling()
 		else
 			local wait = err.parameters and err.parameters.retry_after or 5
 			log("err. Waiting {} sec", wait)
-			return deferred_sleep(wait)
+			return deferred.sleep(wait)
 		end
 	end):next(function()
 		log("restart polling")

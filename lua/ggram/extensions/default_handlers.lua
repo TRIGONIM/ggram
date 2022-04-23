@@ -1,4 +1,4 @@
-local BOT_MT = FindMetaTable("GG_BOT")
+local BOT_MT = debug.getregistry().GG_BOT
 
 function BOT_MT:update(handler, uid)
 	return self.on(function()

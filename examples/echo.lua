@@ -18,4 +18,4 @@ end, "echo")
 
 
 -- launch http requests, timers etc
-bot.idle()
+ggram.idle()
