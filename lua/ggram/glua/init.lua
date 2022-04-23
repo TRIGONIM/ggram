@@ -1,14 +1,5 @@
-do -- single functions
-	function include(file)
-		local req = file:match("(.*)%.lua")
-		-- print("include", req)
-		return require(req)
-	end
-
-	function FindMetaTable(name)
-		return debug.getregistry()[name]
-	end
-end
+-- This file is used if you run ggram outside of Garry's Mod.
+-- It contains some features that are in Garry's Mod and that the framework uses
 
 do -- PrintTable
 	local function MsgC(...)
@@ -99,9 +90,25 @@ do -- PrintTable
 	end
 
 	-- PrintTable(_G)
+
+
+	function prt(t)
+		PrintTable(t)
+	end
+
+	function PRINT(...)
+		local count = select("#", ...)
+		local args = {...}
+
+		if count > 1 then
+			PrintTable(args)
+		else
+			_G[istable(args[1]) and "prt" or "print"](...)
+		end
+	end
 end
 
-do -- timer
+do -- timer (for deferred.sleep)
 	local copas = require("copas")
 
 	timer = {}
@@ -113,7 +120,7 @@ do -- timer
 	end
 end
 
-do -- cookie
+do -- cookie (for polling offsets and session middleware)
 	local tmppath = arg[1] or "tmp"
 	os.execute("mkdir -p " .. tmppath)
 
