@@ -1,5 +1,5 @@
 local ver = "cvs"
-local rev = "1"
+local rev = "2"
 
 package = "ggram"
 version = ver .. "-" .. rev
@@ -28,7 +28,6 @@ build = {
 		["ggram.extensions.polling"] = "lua/ggram/extensions/polling.lua",
 		["ggram.glua"] = "lua/ggram/glua/init.lua",
 		["ggram.glua.http_async"] = "lua/ggram/glua/http_async.lua",
-		["ggram.glua.json"] = "lua/ggram/glua/json.lua",
 		["ggram.includes.core.bot"] = "lua/ggram/includes/core/bot.lua",
 		["ggram.includes.core.deferred"] = "lua/ggram/includes/core/deferred.lua",
 		["ggram.includes.core.log_error"] = "lua/ggram/includes/core/log_error.lua",
