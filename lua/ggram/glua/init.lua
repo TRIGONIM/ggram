@@ -144,6 +144,11 @@ do -- cookie (for polling offsets and session middleware)
 		f:close()
 	end
 
+	function cookie.Delete(name)
+		local ok, err = os.remove(tmppath .. "/" .. name .. ".txt")
+		return ok, err
+	end
+
 	-- print("coo", cookie.GetString("asd", "Ку"))
 	-- if 1 then return end
 end
@@ -152,7 +157,7 @@ do -- json
 	util = {}
 	-- local json = require("ggram.glua.json")
 	local json = require("dkjson")
-	util.JSONToTable = json.decode
+	util.JSONToTable = function(js) local t = json.decode(js) return t end
 	util.TableToJSON = function(t, bPretty) return json.encode(t, bPretty and {indent = true}) end
 end
 
