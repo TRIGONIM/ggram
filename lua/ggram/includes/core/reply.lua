@@ -30,6 +30,11 @@ function R:sendGeneric(method, additionalParameters)
 	return self.bot.call_method(method, parameters)
 end
 
+function R:setParameter(key, value)
+	self.parameters[key] = value
+	return self
+end
+
 -- *methods functions*
 -- Не доделана https://github.com/botgram/botgram/blob/master/lib/reply.js#L128-L135
 -- function R:forward(msg_id, chat_id)
