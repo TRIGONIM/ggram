@@ -6,7 +6,7 @@ bot.enable_polling()
 bot.command("start", function(ctx)
 	ctx.reply.inlineKeyboard({
 		{
-			{text = "Line 1, row 1", callback_data = "any"}
+			{text = "Line 1, row 1", callback_data = "any"},
 			{text = "Line 1, row 2", url = "https://example.com"}
 		},
 		{
