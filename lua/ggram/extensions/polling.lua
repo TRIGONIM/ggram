@@ -65,7 +65,7 @@ function BOT_MT:enable_polling()
 end
 
 
--- INFUS_BOT.call_method("deleteWebhook", {}):next(PRINT, PRINT)
+-- INFUS_BOT.call_method("deleteWebhook", {}):next(PrintTable, print)
 -- poll(INFUS_BOT)
 -- INFUS_BOT.enable_polling()
 -- INFUS_BOT.polling = false

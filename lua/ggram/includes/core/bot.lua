@@ -112,10 +112,6 @@ function BOT_MT:init()
 		self.last_name  = res.last_name
 
 		return res
-	end, function(err)
-		print("ggram bot init error")
-		PrintTable({err})
-		error(err, 2)
 	end)
 end
 
