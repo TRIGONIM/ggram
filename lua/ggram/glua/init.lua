@@ -2,14 +2,45 @@
 -- It contains some features that are in Garry's Mod and that the framework uses
 
 do -- timer (for deferred.sleep)
-	local copas = require("copas")
-
 	timer = {}
-	function timer.Simple(delay, func)
-		copas.addthread(function()
-			copas.sleep(delay)
-			func()
-		end)
+
+	local copas    = require("copas")
+	local co_timer = require("copas.timer")
+	co_timer.map = co_timer.map or {}
+
+	function timer.Create(name, delay, reps, callback)
+		reps = math.floor(reps) -- float will cause an infinite loop
+
+		local t = co_timer.new({
+			name      = name,
+			delay     = delay,
+			recurring = reps ~= 1, -- <=0 for inf loop (until got Removed)
+			callback  = function(self)
+				reps = reps - 1
+				if reps == 0 then
+					self:cancel()
+				end
+				callback()
+			end,
+		})
+
+		if name then -- skip timer.Simple
+			co_timer.map[t.name] = t
+		end
+
+		return t
+	end
+
+	function timer.Simple(delay, callback)
+		return timer.Create(nil, delay, 1, callback)
+	end
+
+	function timer.Remove(name)
+		local t = co_timer.map[name]
+		if t then
+			t:cancel()
+			co_timer.map[name] = nil
+		end
 	end
 end
 
