@@ -4,7 +4,6 @@
 do -- timer (for deferred.sleep)
 	timer = {}
 
-	local copas    = require("copas")
 	local co_timer = require("copas.timer")
 	co_timer.map = co_timer.map or {}
 
