@@ -22,10 +22,12 @@ bot.callback(function(ctx)
 		ctx.answer({text = "It's inline answer"})
 
 	else
-		ctx.reply.text("You just pressed button in second row. Payload:"):next(function()
-			return ctx.reply.markdown("```\n" .. util.TableToJSON(ctx, true) .. "\n```")
+		ctx.reply.text("You just pressed button in second row. ctx.update:"):next(function()
+			return ctx.reply.markdown("```\n" .. util.TableToJSON(ctx.update, true) .. "\n```")
 		end):next(function()
-			ctx.reply.text("Bye")
+			return ctx.reply.text("Json payload above 👆")
+		end):next(function()
+			return ctx.reply.text("The third message")
 		end)
 	end
 end, "callback_example")

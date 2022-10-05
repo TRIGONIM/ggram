@@ -23,8 +23,8 @@ bot.command("test", function(ctx)
 end)
 
 bot.update(function(ctx)
-	ctx.reply.text("Stopped. The 'done' text will not send. " ..
-		"Just comment the return string or whole block to pass to the next function")
+	ctx.reply.markdown("Stopped. The 'done' text will not send. " ..
+		"Just comment the `return false` or whole block to pass to the next function")
 
 	return false
 end, "stop_middl")
