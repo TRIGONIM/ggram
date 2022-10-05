@@ -9,7 +9,7 @@ local do_log = function(sErr)
 	msg = msg .. "\n========= [TLG ERR] =========\n\n"
 
 	print(msg)
-	-- debug.Trace()
+	-- debug.Trace() -- require("gmenv.debug") -- init
 end
 
 return function(token, method, parameters, err)
