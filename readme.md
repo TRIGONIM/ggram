@@ -30,8 +30,6 @@ Additional examples can be found in [/examples](/examples)
 ## 💡 Demo
 [Here (click)](https://forum.gm-donate.net/t/idei-telegram-botov-dlya-vashego-servera/197) you can find links to running bots, as well as many ideas that can be implemented with this framework for your Garry's Mod server and much more. The possibilities are almost endless.
 
----
-
 ## ✨ Features
 - Can work both on pure Lua, and on the Garry's Mod server
 - Does NOT require any third-party .dll or WEB scripts
@@ -39,8 +37,6 @@ Additional examples can be found in [/examples](/examples)
 - If Telegram adds methods that are not already in the bot, they are very easy to add with a 3-line module
 - [Possibility](/lua/ggram/includes/surprise) sending animations, documents, images
 - Friends with the functional programming paradigm
-
----
 
 ## 🚀 Installation
 
@@ -52,7 +48,8 @@ Download this repository and go to the downloaded folder. You can take a look at
 # create image
 docker build -t ggramenv:latest .
 
-# run echo.lua example bot (dont forget to change bot token in the file)
+# run example bot (echo.lua)
+# dont forget to change bot token in the file
 docker run -it \
 	-e "LUA_PATH=/app/lua/?.lua;/app/lua/?/init.lua;;" \
 	-v $PWD:/app ggramenv \
@@ -92,13 +89,9 @@ Make and run bot:
 2. Создайте файл `/addons/ggram_bots/lua/ggram/bots/anyname/_init.lua`
 3. Заполните его содержимым демонстративного бота из папки [/examples](/examples), указав токен с [@BotFather](https://t.me/BotFather)
 
----
-
 ## 📚 Docs
 - 🤔 [What is and how to use update, context, middleware, reply objects](/info/understanding_things.md) (основные сущности)
 - 🗂 [Where to create a bot, what to throw in it and why it is needed](/info/project_structure.md)
-
----
 
 ## 😮 Development tips and tricks
 
