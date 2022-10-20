@@ -203,7 +203,10 @@ end
 local REPLY_MT = {} -- чтобы методы можно было вызывать через точку, а не двоеточие
 REPLY_MT.__index = function(self, sMethod)
 	local fMethod = R[sMethod]
-	assert(fMethod, "reply." .. sMethod .. " is not a valid method")
+	if not fMethod then
+		print("TRACE: " .. debug.traceback())
+		error("reply." .. sMethod .. " is not a valid method")
+	end
 	return function(...) return fMethod(self, ...) end -- fp
 end
 
@@ -211,6 +214,15 @@ end
 local exports = {}
 
 exports.get_instance = function(bot, chat_id)
+	if not chat_id then
+		local inf, path = debug.getinfo(2, "lS"), "unknown place"
+		if inf.what ~= "C" then
+			path = inf.short_src .. ":" .. inf.currentline
+		end
+
+		error("no chat_id provided to .reply method in " .. path)
+	end
+
 	return setmetatable({
 		bot = bot,
 		id  = chat_id,
