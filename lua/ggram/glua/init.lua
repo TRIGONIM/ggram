@@ -10,6 +10,10 @@ do -- timer (for deferred.sleep)
 	function timer.Create(name, delay, reps, callback)
 		reps = math.floor(reps) -- float will cause an infinite loop
 
+		if name and co_timer.map[name] then
+			timer.Remove(name)
+		end
+
 		local t = co_timer.new({
 			name      = name,
 			delay     = delay,
