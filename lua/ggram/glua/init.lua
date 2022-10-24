@@ -83,9 +83,9 @@ end
 do -- json
 	util = {}
 	-- local json = require("ggram.glua.json")
-	local json = require("dkjson")
+	local json = require("cjson")
 	util.JSONToTable = function(js) local t = json.decode(js) return t end
-	util.TableToJSON = function(t, bPretty) return json.encode(t, bPretty and {indent = true}) end
+	util.TableToJSON = function(t) return json.encode(t) end
 end
 
 do -- is* functions
