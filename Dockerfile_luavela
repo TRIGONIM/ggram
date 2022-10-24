@@ -1,0 +1,43 @@
+#TODO split this Dockerfile to luavela, luavela-luarocks and ggramenv
+
+FROM debian:buster-slim
+
+LABEL MAINTAINER="amd_nick (_AMD_)"
+
+# ca-certificates для git с --no-install-recommends
+# git is for `git clone`
+# cmake, dpkg-dev, libc-dev и gcc для `cmake ../luavela`
+# g++ для `make install`
+# wget для скачивания luarocks
+# unzip для `./configure` luarocks
+# tzdata для TZ env
+RUN set -eux ; apt-get update && apt-get install -y --no-install-recommends \
+	git ca-certificates cmake dpkg-dev libc-dev gcc wget g++ unzip tzdata
+
+# luavela
+RUN set -eux \
+	&& LVP=/usr ; cd /tmp \
+	&& git clone https://github.com/luavela/luavela.git \
+	&& mkdir luavela-build && cd luavela-build \
+	&& cmake ../luavela -DCMAKE_INSTALL_PREFIX=$LVP \
+	&& make install \
+	&& cd /tmp && rm -rf luavela luavela-build
+
+# luarocks
+RUN set -eux \
+	&& LVP=/usr ; cd /tmp \
+	&& wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz \
+	&& tar zxpf luarocks-3.8.0.tar.gz && rm luarocks-3.8.0.tar.gz \
+	&& cd luarocks-3.8.0 \
+	&& ln -s /usr/bin/luavela /usr/bin/lua \
+	&& ./configure --with-lua=$LVP --with-lua-include=$LVP/include/ujit --with-lua-interpreter=luavela \
+	&& make && make install \
+	&& cd /tmp && rm -rf luarocks-3.8.0
+
+# ggramenv
+RUN set -eux && apt-get install -y --no-install-recommends libssl-dev \
+	&& luarocks install copas && luarocks install lua-cjson && luarocks install luasec
+
+
+RUN rm -rf /var/lib/apt/lists/*
+
