@@ -8,7 +8,7 @@ local request_orig = ht.request
 
 -- override for ability to set headers
 -- https://github.com/lunarmodules/copas/blob/master/src/copas/http.lua#L397
-local function request(url, body, extra_headers_, method_)
+local function request(url, body, extra_headers_, method_, timeout_)
 	local reqt = parseRequest(url, body)
 	reqt.headers = reqt.headers or {}
 	for k,v in pairs(extra_headers_ or {}) do
@@ -18,6 +18,12 @@ local function request(url, body, extra_headers_, method_)
 	if method_ then -- override
 		reqt.method = method_ -- POST, GET, HEAD, PUT, DELETE, etc.
 	end
+
+	if timeout_ then
+		reqt.timeout = timeout_
+	end
+
+	-- reqt.timeout = 3
 
 	-- reqt.protocol = "any"
 	-- reqt.options = {"all", "no_sslv2", "no_sslv3", "no_tlsv1"}
@@ -55,29 +61,60 @@ function http.BuildQuery(tParams)
 	return table.concat(kvs, "&")
 end
 
+local handle_request_error = function(parameters, msg)
+	parameters.try_ = parameters.try_ or 0
+	parameters.try_ = parameters.try_ + 1
+
+	if parameters.try_ < 3 then
+		timer.Simple(3, function()
+			http.request(parameters)
+		end)
+	elseif parameters.failed then
+		parameters.failed("http_request_error: " .. msg)
+	end
+end
+
 -- https://wiki.facepunch.com/gmod/Global.HTTP
 -- f failed, f success, s method, s url, t parameters
--- t headers, s body (for POST), s type, i timeout 
+-- t headers, s body (for POST), s type, i timeout
 function http.request(parameters)
-	copas.addthread(function()
-		ht.TIMEOUT = parameters.timeout or 60
+	copas.addnamedthread("http_request", function(r, b, h)
+		copas.setErrorHandler(function(msg, co, skt)
+			handle_request_error(parameters, msg)
+		end)
 
 		-- гмод лимитит хедеры и создал такой параметр.
 		-- За пределами гмода не нужно, но для совместимости надо
 		if parameters.type then
 			parameters.headers = parameters.headers or {}
-			parameters.headers["Content-Type"] = parameters.type
+			parameters.headers["content-type"] = parameters.type
 		end
 
 		local paramss = parameters.parameters and http.BuildQuery(parameters.parameters)
 		local url = parameters.url .. (paramss and "?" .. paramss or "")
-		local res, code, headers = request(url, parameters.body, parameters.headers, parameters.method)
+		parameters.fullurl = url
+		local res, code, headers = request(url, parameters.body, parameters.headers, parameters.method, parameters.timeout)
 		-- assert(res, code)
 
+		if not res and code == "timeout" then
+			handle_request_error(parameters, code)
+			return
+		end
+
 		if res and parameters.success then
-			parameters.success(code, res, headers)
+			-- pcall, чтобы copas.setErrorHandler не ловил ошибки, допущенные в обработчике
+			-- function(json) print(3 + "abc") end
+			local ok, err = pcall(parameters.success, code, res, headers)
+			if not ok then
+				print(debug.traceback("HTTP Error In The Success Callback\n\t" .. err))
+			end
+			-- parameters.success(code, res, headers)
 		elseif not res and parameters.failed then
-			parameters.failed(code)
+			local ok, err = pcall(parameters.failed, code)
+			if not ok then
+				print(debug.traceback("HTTP Error In The Failed Callback\n\t" .. err))
+			end
+			-- parameters.failed(code)
 		end
 	end)
 end
