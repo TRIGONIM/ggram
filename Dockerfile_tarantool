@@ -1,0 +1,40 @@
+# Эта версия LuaJit используется в прогрессивной БД Tarantool, который заточен на производительность
+# Здесь есть встроенный профайлер памяти: https://www.tarantool.io/en/doc/latest/reference/tooling/luajit_memprof/
+# и функции для получения метрик компилятора: https://www.tarantool.io/ru/doc/latest/reference/tooling/luajit_getmetrics/
+
+# BUILDING:
+# docker build -t ggramdevenv -f Dockerfile_tarantool .
+
+# misc.memprof.start() doesn't work on the Alpine
+FROM buildpack-deps:bullseye
+
+RUN set -eux ; apt-get update && apt-get install -y \
+	cmake
+
+# luajit
+RUN set -eux \
+	&& LVP=/usr ; cd /tmp \
+	&& git clone https://github.com/tarantool/luajit.git \
+	&& mkdir luajit-build && cd luajit-build \
+	&& cmake ../luajit -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$LVP \
+	&& cmake --build . --parallel \
+	&& make install \
+	&& cd /tmp && rm -rf luajit luajit-build
+
+# luarocks
+RUN set -eux \
+	&& LVP=/usr ; cd /tmp \
+	&& wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz \
+	&& tar zxpf luarocks-3.8.0.tar.gz && rm luarocks-3.8.0.tar.gz \
+	&& cd luarocks-3.8.0 \
+	&& ln -s /usr/bin/luajit /usr/bin/lua \
+	&& ./configure --with-lua=$LVP --with-lua-include=$LVP/include/luajit-2.1 --with-lua-interpreter=luajit \
+	&& make && make install \
+	&& cd /tmp && rm -rf luarocks-3.8.0
+
+RUN rm -rf /var/lib/apt/lists/*
+
+# ggramenv
+RUN set -eux \
+	&& luarocks install luasec && luarocks install copas && luarocks install lua-cjson
+
