@@ -19,11 +19,11 @@ do -- timer (for deferred.sleep)
 			delay     = delay,
 			recurring = reps ~= 1, -- <=0 for inf loop (until got Removed)
 			callback  = function(self)
+				callback()
 				reps = reps - 1
 				if reps == 0 then
 					self:cancel()
 				end
-				callback()
 			end,
 		})
 
@@ -103,7 +103,7 @@ do -- table extension
 		local copy = {}
 		setmetatable( copy, debug.getmetatable( t ) )
 		for i, v in pairs( t ) do
-			if ( not istable( v ) ) then
+			if ( type(v) ~= "table" ) then
 				copy[ i ] = v
 			else
 				lookup_table = lookup_table or {}

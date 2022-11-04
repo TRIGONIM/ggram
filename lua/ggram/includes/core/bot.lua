@@ -97,8 +97,6 @@ function BOT_MT:handle_update(UPD)
 			table.insert(ctx.chain, res or "empty")
 			return res
 		end)
-	end):next(function(res)
-		return res
 	end)
 end
 
