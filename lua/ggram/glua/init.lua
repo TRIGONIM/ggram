@@ -84,7 +84,14 @@ do -- json
 	util = {}
 	-- local json = require("ggram.glua.json")
 	local json = require("cjson")
-	util.JSONToTable = function(js) local t = json.decode(js) return t end
+	util.JSONToTable = function(js)
+		local ok, res = pcall(json.decode, js) -- nil при невозможности декода
+		if not ok then
+			print( debug.traceback("can't decode json\n\t" .. res) )
+			return nil
+		end
+		return res
+	end
 	util.TableToJSON = function(t) return json.encode(t) end
 end
 
