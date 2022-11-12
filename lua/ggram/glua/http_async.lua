@@ -78,16 +78,25 @@ end
 -- f failed, f success, s method, s url, t parameters
 -- t headers, s body (for POST), s type, i timeout
 function http.request(parameters)
-	copas.addnamedthread("http_request", function(r, b, h)
+	return copas.addnamedthread("http_request", function(r, b, h)
 		copas.setErrorHandler(function(msg, co, skt)
 			handle_request_error(parameters, msg)
 		end)
 
 		-- гмод лимитит хедеры и создал такой параметр.
 		-- За пределами гмода не нужно, но для совместимости надо
+		parameters.headers = parameters.headers or {}
 		if parameters.type then
-			parameters.headers = parameters.headers or {}
 			parameters.headers["content-type"] = parameters.type
+		else
+			parameters.headers["content-type"] = "text/plain; charset=utf-8" -- non-gmod env. friendly to json payload
+		end
+
+		-- особенность POST. Для совпадения с гмодом
+		if parameters.method == "POST" and parameters.parameters then
+			parameters.headers["content-type"] = "application/x-www-form-urlencoded"
+			parameters.body = http.BuildQuery(parameters.parameters)
+			parameters.parameters = nil
 		end
 
 		local paramss = parameters.parameters and http.BuildQuery(parameters.parameters)
@@ -131,11 +140,11 @@ end
 function http.Post(url, params, onSuccess, onFailure, headers)
 	http.request({
 		url = url,
-		-- parameters = params,
+		method = "POST", -- post with parameters sends body as form-urlencoded
+		parameters = params,
 		success = onSuccess and function(c, r, h) onSuccess(r, #r, h, c) end,
 		failed = onFailure,
 		headers = headers,
-		body = params and http.BuildQuery(params) or {}, -- forces method = POST
 	})
 end
 
