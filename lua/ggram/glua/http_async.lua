@@ -37,7 +37,7 @@ local function request(url, body, extra_headers_, method_, timeout_)
 	end
 end
 
-ht.USERAGENT = "ggram v0.1"
+ht.USERAGENT = "ggram"
 
 local http = {}
 
@@ -86,10 +86,8 @@ function http.request(parameters)
 		-- гмод лимитит хедеры и создал такой параметр.
 		-- За пределами гмода не нужно, но для совместимости надо
 		parameters.headers = parameters.headers or {}
-		if parameters.type then
-			parameters.headers["content-type"] = parameters.type
-		else
-			parameters.headers["content-type"] = "text/plain; charset=utf-8" -- non-gmod env. friendly to json payload
+		if not parameters.headers["content-type"] then
+			parameters.headers["content-type"] = parameters.type or "text/plain; charset=utf-8" -- 2nd non-gmod env. friendly to json payload
 		end
 
 		-- особенность POST. Для совпадения с гмодом

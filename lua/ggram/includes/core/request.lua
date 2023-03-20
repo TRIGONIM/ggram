@@ -11,10 +11,10 @@ local format_parameters = function(parameters)
 	return params
 end
 
-local request = function(token, method, parameters, options_, base_url_)
+local request = function(token, method, parameters_, http_struct_overrides_, base_url_)
 	local d = deferred.new()
 
-	local params = format_parameters(parameters)
+	local params = parameters_ and format_parameters(parameters_)
 
 	local base_url = base_url_ or "https://api.telegram.org"
 	local HTTPRequest = {
@@ -39,7 +39,7 @@ local request = function(token, method, parameters, options_, base_url_)
 		parameters = params,
 	}
 
-	for key,val in pairs(options_ or {}) do
+	for key,val in pairs(http_struct_overrides_ or {}) do
 		HTTPRequest[key] = val
 	end
 

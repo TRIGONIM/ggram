@@ -2,7 +2,8 @@
 	reply. methods
 ---------------------------------------------------------------------------]]
 
-local multipart = ggram.include("surprise/multipart")
+local Multipart = ggram.include("surprise/multipart")
+
 local RESP = ggram.methods
 
 local format_parameters = ggram.include("core/request").format_parameters
@@ -11,31 +12,33 @@ function RESP:sendMultipart(method, form_data)
 
 	local params = format_parameters(self.parameters)
 	for name,value in pairs(params) do
-		form_data:AddField(name, value)
+		form_data:set_simple(name, value)
 	end
 
-	return self.bot.call_method(method, {}, {
-		body = form_data:BuildBody(),
-		type = "multipart/form-data;charset=utf-8;boundary=" .. form_data.boundary
+	return self.bot.call_method(method, nil, {
+		body = form_data:tostring(),
+		type = "multipart/form-data;charset=utf-8;boundary=" .. Multipart.RANDOM_BOUNDARY
 	})
 end
 
-function RESP:animationFromFile(file_content, name)
-	local form_data = multipart.FormData():AddFile("animation", file_content, name)
-	return self.sendMultipart("sendAnimation", form_data)
+function RESP:documentFromFile(file_content, name)
+	local form_data = Multipart()
+	form_data:set_simple("document", file_content, name)
+	return self.sendMultipart("sendDocument", form_data)
 end
 
 function RESP:photoFromFile(file_content, name)
-	local form_data = multipart.FormData():AddFile("photo", file_content, name)
+	local form_data = Multipart()
+	form_data:set_simple("photo", file_content, name)
 	return self.sendMultipart("sendPhoto", form_data)
 end
 
 function RESP:mediaGroupFromFiles(files) -- {{type = "photo", media = RAW_DATA, caption...}, ...}
-	local form_data = multipart.FormData()
+	local form_data = Multipart()
 
 	local tbl = {}
 	for i,f in ipairs(files) do
-		form_data:AddFile("unique" .. i, f.media, "anydata?")
+		form_data:set_simple("unique" .. i, f.media, "anydata?")
 		tbl[i] = {
 			type  = f.type,
 			media = "attach://unique" .. i,
@@ -45,6 +48,15 @@ function RESP:mediaGroupFromFiles(files) -- {{type = "photo", media = RAW_DATA, 
 		end
 	end
 
-	form_data:AddTable("media", tbl)
+	form_data:set_simple("media", util.TableToJSON(tbl))
 	return self.sendMultipart("sendMediaGroup", form_data)
 end
+
+-- local fileContent = io.open("testfile.png", "rb"):read("*a")
+-- local bot = TLG_STEAM
+-- -- bot.reply(TLG_AMD).photoFromFile(fileContent, "testfile.png")
+-- -- bot.reply(TLG_AMD).documentFromFile(fileContent, "testfile.png")
+-- bot.reply(TLG_AMD).mediaGroupFromFiles({
+-- 	{type = "photo", media = fileContent, caption = "Hello world"},
+-- 	{type = "photo", media = fileContent},
+-- })

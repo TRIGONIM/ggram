@@ -40,20 +40,20 @@ function BOT_MT:reply(chat_id)
 end
 
 local request = ggram.include("core/request").request
-function BOT_MT:call_method(method, parameters, options_, try_)
+function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 	try_ = try_ or 1
 
 	local ctx = {
 		retry = function()
-			return self.call_method(method, parameters, options_, try_ + 1)
+			return self.call_method(method, parameters_, http_struct_overrides_, try_ + 1)
 		end,
 		method = method,
-		parameters = parameters,
+		parameters = parameters_,
 		options = options_,
 		try = try_,
 	}
 
-	return request(self.token, method, parameters, options_, self.options.base_url)
+	return request(self.token, method, parameters_, http_struct_overrides_, self.options.base_url)
 		:next(nil, function(err)
 			ctx.error = err
 			return self.handle_error(ctx)
