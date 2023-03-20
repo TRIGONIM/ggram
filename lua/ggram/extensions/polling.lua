@@ -6,66 +6,72 @@ end
 
 local function log(msg, ...)
 	if not GG_POLL_LOG then return end
+	print(msg:format(...))
+end
 
-	if log_fi then
-		log_fi(msg, ...)
-	else
-		print(msg, table.concat({...}, ", "))
+local function processUpdates(bot, updates)
+	if #updates > 0 then
+		local lastUpdate = updates[#updates]
+		log("#updates: %d, Last ID: %s", #updates, lastUpdate.update_id)
+		cookie.Set("gg:polling_offset:" .. bot.id, lastUpdate.update_id + 1)
+
+		for _, update in ipairs(updates) do
+			local success, result = pcall(bot.handle_update, update)
+			if not success then
+				log("Error handling update: %s", result)
+			end
+		end
 	end
 end
 
 local function poll(bot)
 	local key = "gg:polling_offset:" .. bot.id
 	local offset = cookie.GetNumber(key)
-	log("poll offset {}", offset or "none")
-	return getUpdates(bot, {
-		timeout = 30,
-		offset = offset,
-	}):next(function(updates)
-		if bot.polling == false then return end -- external interference
-		log("Received {} updates", #updates)
+	log("poll offset %s", offset or "none")
 
-		if updates[1] then
-			log("Last ID: {}", #updates, updates[#updates].update_id)
-			cookie.Set(key, updates[#updates].update_id + 1)
-		end
+	return getUpdates(bot, {timeout = 30, offset = offset})
+		:next(function(updates)
+			log("Received %d updates", #updates)
+			processUpdates(bot, updates)
+		end)
+end
 
-		for _,upd in ipairs(updates) do
-			local ok, res = pcall(bot.handle_update, upd)
-			if not ok then
-				log("Error handling update: {}", res)
-			end
+local function handlePollError(self, err)
+	log("err after poll(self): %s", err)
+
+	if err.error_code == 409 then
+		if err.description:match("terminated by other getUpdates") then
+			log("terminated")
+			error("terminated")
+		else
+			log("Deleting webhook")
+			return self.call_method("deleteWebhook", {})
 		end
-	end)
+	else
+		local wait = err.parameters and err.parameters.retry_after or 5
+		log("err. Waiting %d sec", wait)
+		return deferred.sleep(wait)
+	end
 end
 
 function BOT_MT:enable_polling()
 	self.polling = true
 	log("enable_polling")
 
-	-- http.Fetch after restart issue
-	deferred.sleep(0):next(function()
-		return poll(self)
-	end):next(nil, function(err)
-		log("err after poll(self): {}", err)
-		if err.error_code == 409 then
-			if err.description:match("terminated by other getUpdates") then log("terminated") error("terminated") end
-
-			log("Deleting webhook")
-			return self.call_method("deleteWebhook", {}) -- #todo What if there is rejection here?
-		else
-			local wait = err.parameters and err.parameters.retry_after or 5
-			log("err. Waiting {} sec", wait)
-			return deferred.sleep(wait)
-		end
-	end):next(function()
+	local function restart_polling()
+		if not self.polling then log("polling disabled") return end
 		log("restart polling")
 		self:enable_polling()
-	end, error)
+	end
+
+	deferred.sleep(0)
+		:next(function() return poll(self) end)
+		:next(nil, function(err) return handlePollError(self, err) end)
+		:next(restart_polling, error)
 end
 
-
--- INFUS_BOT.call_method("deleteWebhook", {}):next(PrintTable, print)
--- poll(INFUS_BOT)
--- INFUS_BOT.enable_polling()
--- INFUS_BOT.polling = false
+-- local bot = ggram("token")
+-- -- bot.call_method("deleteWebhook", {}):next(PRINT, PRINT)
+-- -- poll(bot)
+-- bot.enable_polling()
+-- bot.polling = false
