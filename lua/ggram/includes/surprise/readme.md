@@ -1,77 +1,83 @@
-# Отправка .gif, .doc и других файлов с Gary's Mod сервера
+# Отправка .gif, .doc и других файлов
 
-> Эта возможность существует благодаря [Vogel](https://github.com/IVogel). Он создал конструктор Multipart запросов
-
-Для отправки большинства запросов к Telegram API используется классический тип `application/x-www-form-urlencoded`. Для отправки файлов используется `multipart/form-data`. Второй тип запроса требует особой упаковки данных перед отправкой, но при этом он позволяет отправлять бинарные (non-alphanumeric) данные, в том числе различные файлы.
+Для отправки файлов используется content-type `multipart/form-data`, а сами данные передаются в особом формате в теле POST запроса. В Lua и gLua нет встроенной поддержки отправки таких запросов, поэтому используется сторонняя библиотека [lua-multipart](https://github.com/Kong/lua-multipart/tree/master)
 
 ![](https://img.qweqwe.ovh/1633308905956.png)
 
-Гмод разрешает записывать в файловую систему (file.Write) файлы только с расширениями .txt, .dat и еще [некоторыми другими](https://wiki.facepunch.com/gmod/file.Write), но при этом мы все равно можем скачать условно .gif, записать его как .txt, затем отправить этот .txt в телеграм как .gif и он успешно отобразится.
+> **Заметка для пользователей с Garry's Mod:** Гмод разрешает записывать в файловую систему (file.Write) файлы только с расширениями .txt, .dat и еще [некоторыми другими](https://wiki.facepunch.com/gmod/file.Write), но при этом мы все равно можем скачать через http.Fetch условно .gif, записать его как .txt, затем отправить этот .txt в телеграм как .gif и он успешно отобразится.
 
-## Практическое применение
-
-#### Скриншотер
-Мы можем сделать скриншот от лица игрока на CLIENT, отправить его на SERVER, а с сервера отправить в Telegram чат. Таким образом можно сделать примитивный античит или [Stories канал проекта](https://t.me/trigon_stories) без сторонних WEB прослоек или .dll файлов.
-
-#### Графики
-При особом умении можно строить различные графики (кол-во энтити, экономика) и регулярно так же присылать их в какой-то чат или канал.
-
-#### Стикеры
-Я сделал чат-бота и могу отправлять Telegram стикеры в виде картинок во VKontakte
-
-#### Бэкапы
-Думаю, даже регулярные бекапы файлов сервера можно реализовать реализовать с этой возможностью. Собирать содержимое всех файлов, упаковывать их в какой-то примитивный архив и отправлять в специальный backup чат
-
-
-## Примеры кода
+## Примеры
 
 Для начала где угодно создайте файл `test.lua`, сверху файла вставьте заготовку:
 
 ```lua
-ggram.include("surprise/multipart")
+ggram.include("surprise/multipart_methods") -- инжект multipart методов в .reply
 
--- вместо создания нового бота можете создавать ботов в global scope и переимспользовать их
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 local chat_id = 1234567 -- ID чата. Можно найти через t.me/jsonson_bot
 
+-- Если у вас Garry's Mod сервер: в garrysmod/data должен быть указанный файл
+-- Если у вас чистый Lua, то используйте io.open("file.gif", "rb"):read("*a")
 local gif = file.Read("gif.txt", "DATA")
 
 -- ...
 ```
 
-В `garrysmod/data` должен быть файл gif.txt. Можете взять гифку где угодно и закинуть в data.
+#### Отправка файла
 
-
-#### Отправка анимации
+В примере также показано, что поддерживаются модификаторы запросов. Например, тут к анимации добавляется клавиатура
 
 ```lua
 bot.reply(chat_id).inlineKeyboard({{
 	{text = "Кнопка!", callback_data = "any"}
-}}).animationFromFile(gif, "anim.gif")
+}}).documentFromFile(gif, "anim.gif")
 ```
-
-В примере также показано, что поддерживаются модификаторы запросов. Например, тут к анимации добавляется клавиатура
-
 
 #### Отправка альбома
 
 Обратите внимание, что один файл отправляется одновременно как "видео" (видео без звука в Telegram это анимация) и как изображение. Telegram сам разберется
 
 ```lua
-local form_data = ggram.multipart.FormData()
-	:AddFile("unique1", gif, "file.png")
-	:AddFile("unique2", gif, "file.mp4")
-	:AddTable("media", {
-		{
-			type = "photo",
-			media = "attach://unique1",
-			caption = "Hmm?"
-		},
-		{
-			type = "video",
-			media = "attach://unique2",
-		},
-	})
-
-bot.reply(chat_id).silent().sendMultipart("sendMediaGroup", form_data)
+bot.reply(chat_id).mediaGroupFromFiles({
+	{type = "photo", media = gif, caption = "Hello world"},
+	{type = "video", media = gif},
+})
 ```
+
+#### Использование неподдерживаемого метода
+
+В стандартном наборе добавлены только самые базовые методы в качестве примера, чтобы не перегружать кодовую базу, но вы можете использовать любой Telegram метод, требующий отправки файлов. В этом примере это `sendSticker`
+
+```lua
+local Multipart = ggram.include("surprise/multipart")
+
+local form_data = Multipart()
+form_data:set_simple("sticker", gif, "testfile.webp")
+form_data:set_simple("protect_content", "true") -- дополнительные параметры тоже отправляются как form-data
+
+bot.reply(chat_id).sendMultipart("sendSticker", form_data)
+```
+
+
+## Доступные методы
+
+- `sendMultipart` - основной метод, который отправляет запрос с content-type `multipart` вместо обычного `form-urlencoded`.
+- `documentFromFile` - под капотом [sendDocument](https://core.telegram.org/bots/api#senddocument)
+- `photoFromFile` - [sendPhoto](https://core.telegram.org/bots/api#sendphoto)
+- `mediaGroupFromFiles` - [sendMediaGroup](https://core.telegram.org/bots/api#sendmediagroup). Пример использования выше
+
+## Добавление своих методов
+
+ggram хранит доступные методы в таблице `ggram.methods`. Нужно просто добавить свой метод в нее по примеру из файла `multipart_methods.lua`. Например, так на примере [sendVoice](https://core.telegram.org/bots/api#sendvoice):
+
+```lua
+local Multipart = ggram.include("surprise/multipart")
+
+function ggram.methods:sendVoiceFromFile(voice_raw_data, voice_name)
+	local form_data = Multipart()
+	form_data:set_simple("voice", voice_raw_data, voice_name)
+	return self.sendMultipart("sendVoice", form_data)
+end
+```
+
+Затем используйте этот метод, как любой другой из-под любого вашего бота
