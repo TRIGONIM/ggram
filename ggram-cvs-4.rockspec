@@ -19,7 +19,7 @@ description = {
 	maintainer = "_AMD_ <amd@default.im>"
 }
 supported_platforms = { "linux", "macosx", "unix", "bsd" }
-dependencies = { "lua >= 5.1, <= 5.4", "copas >= 4.3.0", "luasec", "lua-cjson" }
+dependencies = { "lua >= 5.1, <= 5.4", "copas >= 4.3.0", "luasec", "lua-cjson", "lua-requests-async" }
 build = {
 	type = "builtin",
 	modules = {
@@ -27,7 +27,6 @@ build = {
 		["ggram.extensions.default_handlers"] = "lua/ggram/extensions/default_handlers.lua",
 		["ggram.extensions.polling"] = "lua/ggram/extensions/polling.lua",
 		["ggram.glua"] = "lua/ggram/glua/init.lua",
-		["ggram.glua.http_async"] = "lua/ggram/glua/http_async.lua",
 		["ggram.includes.core.bot"] = "lua/ggram/includes/core/bot.lua",
 		["ggram.includes.core.deferred"] = "lua/ggram/includes/core/deferred.lua",
 		["ggram.includes.core.log_error"] = "lua/ggram/includes/core/log_error.lua",

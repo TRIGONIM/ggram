@@ -166,7 +166,7 @@ do -- string.Split for extend_message.lua
 end
 
 do -- http
-	local h = require("ggram.glua.http_async")
+	local h = require("http_async") -- https://github.com/TRIGONIM/lua-requests-async
 	http = http or {}
 	http.Fetch = h.get
 	http.Post  = h.post
