@@ -26,18 +26,20 @@ RUN set -eux \
 # luarocks
 RUN set -eux \
 	&& LVP=/usr ; cd /tmp \
-	&& wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz \
-	&& tar zxpf luarocks-3.8.0.tar.gz && rm luarocks-3.8.0.tar.gz \
-	&& cd luarocks-3.8.0 \
+	&& wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz \
+	&& tar zxpf luarocks-3.9.2.tar.gz && rm luarocks-3.9.2.tar.gz \
+	&& cd luarocks-3.9.2 \
 	&& ln -s /usr/bin/luavela /usr/bin/lua \
 	&& ./configure --with-lua=$LVP --with-lua-include=$LVP/include/ujit --with-lua-interpreter=luavela \
 	&& make && make install \
-	&& cd /tmp && rm -rf luarocks-3.8.0
+	&& cd /tmp && rm -rf luarocks-3.9.2
 
 # ggramenv
-RUN set -eux && apt-get install -y --no-install-recommends libssl-dev \
-	&& luarocks install copas && luarocks install lua-cjson && luarocks install luasec
-
+RUN set -eux && apt-get install -y --no-install-recommends libssl-dev && \
+	luarocks install copas && \
+	luarocks install luasec && \
+	luarocks install lua-cjson && \
+	luarocks install lua-requests-async
 
 RUN rm -rf /var/lib/apt/lists/*
 

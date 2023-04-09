@@ -3,7 +3,10 @@
 FROM akorn/luarocks:luajit2.1-alpine
 
 RUN apk add --no-cache --virtual .build-deps gcc libc-dev libressl-dev \
-	&& luarocks install copas && luarocks install lua-cjson && luarocks install luasec \
+	&& luarocks install copas \
+	&& luarocks install lua-cjson \
+	&& luarocks install luasec \
+	&& luarocks install lua-requests-async \
 	&& apk del .build-deps
 
 ENV TZ=GMT

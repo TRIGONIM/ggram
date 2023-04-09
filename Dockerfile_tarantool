@@ -24,17 +24,19 @@ RUN set -eux \
 # luarocks
 RUN set -eux \
 	&& LVP=/usr ; cd /tmp \
-	&& wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz \
-	&& tar zxpf luarocks-3.8.0.tar.gz && rm luarocks-3.8.0.tar.gz \
-	&& cd luarocks-3.8.0 \
+	&& wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz \
+	&& tar zxpf luarocks-3.9.2.tar.gz && rm luarocks-3.9.2.tar.gz \
+	&& cd luarocks-3.9.2 \
 	&& ln -s /usr/bin/luajit /usr/bin/lua \
 	&& ./configure --with-lua=$LVP --with-lua-include=$LVP/include/luajit-2.1 --with-lua-interpreter=luajit \
 	&& make && make install \
-	&& cd /tmp && rm -rf luarocks-3.8.0
-
-RUN rm -rf /var/lib/apt/lists/*
+	&& cd /tmp && rm -rf luarocks-3.9.2
 
 # ggramenv
-RUN set -eux \
-	&& luarocks install luasec && luarocks install copas && luarocks install lua-cjson
+RUN set -eux && \
+	luarocks install copas && \
+	luarocks install luasec && \
+	luarocks install lua-cjson && \
+	luarocks install lua-requests-async
 
+RUN rm -rf /var/lib/apt/lists/*
