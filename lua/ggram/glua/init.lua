@@ -166,6 +166,10 @@ do -- string.Split for extend_message.lua
 end
 
 do -- http
-	http = require("ggram.glua.http_async")
-	HTTP = http.request
+	local h = require("ggram.glua.http_async")
+	http = http or {}
+	http.Fetch = h.get
+	http.Post  = h.post
+	http.BuildQuery = h.build_query
+	HTTP = h.request
 end

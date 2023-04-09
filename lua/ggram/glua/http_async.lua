@@ -1,30 +1,21 @@
 local copas = require("copas")
 local ht    = require("copas.http")
 
--- local ltn12 = require("ltn12")
-
 local parseRequest = ht.parseRequest
 local request_orig = ht.request
 
 -- override for ability to set headers
 -- https://github.com/lunarmodules/copas/blob/master/src/copas/http.lua#L397
-local function request(url, body, extra_headers_, method_, timeout_)
+local function do_request(url, body, extra_headers_, method_, timeout_)
 	local reqt = parseRequest(url, body)
 	reqt.headers = reqt.headers or {}
 	for k,v in pairs(extra_headers_ or {}) do
 		reqt.headers[k] = v
 	end
 
-	if method_ then -- override
-		reqt.method = method_ -- POST, GET, HEAD, PUT, DELETE, etc.
-	end
+	reqt.method = method_ or reqt.method -- POST, GET, HEAD, PUT, DELETE, etc.
 
-	if timeout_ then
-		reqt.timeout = timeout_
-	end
-
-	-- reqt.timeout = 3
-
+	reqt.timeout = timeout_ or reqt.timeout
 	-- reqt.protocol = "any"
 	-- reqt.options = {"all", "no_sslv2", "no_sslv3", "no_tlsv1"}
 	-- reqt.verify = "none"
@@ -37,41 +28,48 @@ local function request(url, body, extra_headers_, method_, timeout_)
 	end
 end
 
-ht.USERAGENT = "ggram"
+ht.USERAGENT = "lua-requests-async"
 
 local http = {}
 
-function string:URLEncode()
-	return string.gsub(string.gsub(self, "\n", "\r\n"), "([^%w.])", function(c)
+local function string_URLEncode(str)
+	return string.gsub(string.gsub(str, "\n", "\r\n"), "([^%w.])", function(c)
 		return string.format("%%%02X", string.byte(c))
 	end)
 end
 
--- function string:URLDecode()
--- 	return self:gsub("%%(%x%x)", function(hex)
--- 		return string.char(tonumber(hex, 16))
--- 	end)
--- end
-
-function http.BuildQuery(tParams)
+function http.build_query(tParams)
 	local kvs = {}
-	for k,v in pairs(tParams) do
-		table.insert(kvs, k .. "=" .. tostring(v):URLEncode())
+	for k, v in pairs(tParams) do
+		table.insert(kvs, k .. "=" .. string_URLEncode( tostring(v) ))
 	end
 	return table.concat(kvs, "&")
 end
 
-local handle_request_error = function(parameters, msg)
-	parameters.try_ = parameters.try_ or 0
-	parameters.try_ = parameters.try_ + 1
+-- docs below
+function http.sync_request(parameters)
+	assert(parameters.url, "url required")
 
-	if parameters.try_ < 3 then
-		timer.Simple(3, function()
-			http.request(parameters)
-		end)
-	elseif parameters.failed then
-		parameters.failed("http_request_error: " .. msg)
+	-- гмод лимитит хедеры и создал такой параметр.
+	-- За пределами гмода не нужно, но для совместимости надо
+	parameters.headers = parameters.headers or {}
+	parameters.headers["content-type"] = parameters.headers["content-type"] or parameters.type or "text/plain; charset=utf-8"
+
+	-- особенность POST. Для совпадения с гмодом
+	if parameters.method == "POST" and parameters.parameters then
+		parameters.headers["content-type"] = "application/x-www-form-urlencoded"
+		parameters.body = http.build_query(parameters.parameters)
+		parameters.parameters = nil
 	end
+
+	local paramss = parameters.parameters and http.build_query(parameters.parameters)
+	local url = parameters.url .. (paramss and "?" .. paramss or "")
+	parameters.fullurl = url
+
+	local res, code, headers = do_request(url, parameters.body, parameters.headers, parameters.method, parameters.timeout)
+
+	-- in case of errors: "timeout" or err str instead of code
+	return res, code, headers
 end
 
 -- https://wiki.facepunch.com/gmod/Global.HTTP
@@ -80,73 +78,48 @@ end
 function http.request(parameters)
 	return copas.addnamedthread("http_request", function(r, b, h)
 		copas.setErrorHandler(function(msg, co, skt)
-			handle_request_error(parameters, msg)
+			if parameters.failed then
+				local suberror = tostring(msg):match("TLS/SSL handshake failed: (.*)$") or tostring(msg) -- closed/System error/{}
+				parameters.failed("copas_error:" .. suberror) -- can be parsed if needed
+			end
 		end)
 
-		-- гмод лимитит хедеры и создал такой параметр.
-		-- За пределами гмода не нужно, но для совместимости надо
-		parameters.headers = parameters.headers or {}
-		if not parameters.headers["content-type"] then
-			parameters.headers["content-type"] = parameters.type or "text/plain; charset=utf-8" -- 2nd non-gmod env. friendly to json payload
-		end
-
-		-- особенность POST. Для совпадения с гмодом
-		if parameters.method == "POST" and parameters.parameters then
-			parameters.headers["content-type"] = "application/x-www-form-urlencoded"
-			parameters.body = http.BuildQuery(parameters.parameters)
-			parameters.parameters = nil
-		end
-
-		local paramss = parameters.parameters and http.BuildQuery(parameters.parameters)
-		local url = parameters.url .. (paramss and "?" .. paramss or "")
-		parameters.fullurl = url
-		local res, code, headers = request(url, parameters.body, parameters.headers, parameters.method, parameters.timeout)
-		-- assert(res, code)
-
-		if not res and code == "timeout" then
-			handle_request_error(parameters, code)
-			return
-		end
-
+		local res, code, headers = http.sync_request(parameters)
 		if res and parameters.success then
-			-- pcall, чтобы copas.setErrorHandler не ловил ошибки, допущенные в обработчике
-			-- function(json) print(3 + "abc") end
 			local ok, err = pcall(parameters.success, code, res, headers)
 			if not ok then
 				print(debug.traceback("HTTP Error In The Success Callback\n\t" .. err))
 			end
-			-- parameters.success(code, res, headers)
 		elseif not res and parameters.failed then
-			local ok, err = pcall(parameters.failed, code)
+			local ok, err = pcall(parameters.failed, code) -- err str instead of code
 			if not ok then
 				print(debug.traceback("HTTP Error In The Failed Callback\n\t" .. err))
 			end
-			-- parameters.failed(code)
 		end
 	end)
 end
 
-function http.Fetch(url, onSuccess, onFailure, headers)
+function http.get(url, onSuccess, onFailure, headers) -- analog gmod's http.Fetch
 	http.request({
-		url = url,
+		url     = url,
 		success = onSuccess and function(c, r, h) onSuccess(r, #r, h, c) end,
-		failed = onFailure,
+		failed  = onFailure,
 		headers = headers,
 	})
 end
 
-function http.Post(url, params, onSuccess, onFailure, headers)
+function http.post(url, params, onSuccess, onFailure, headers) -- analog http.Post
 	http.request({
-		url = url,
-		method = "POST", -- post with parameters sends body as form-urlencoded
+		url        = url,
+		method     = "POST", -- post with parameters sends body as form-urlencoded
 		parameters = params,
-		success = onSuccess and function(c, r, h) onSuccess(r, #r, h, c) end,
-		failed = onFailure,
-		headers = headers,
+		success    = onSuccess and function(c, r, h) onSuccess(r, #r, h, c) end,
+		failed     = onFailure,
+		headers    = headers,
 	})
 end
 
--- http.Post("http://httpbin.org/post", {
+-- http.post("http://httpbin.org/post", {
 -- 	param1 = "value1",
 -- 	param2 = "value2",
 -- }, function(body, len, headers, code)
@@ -158,7 +131,7 @@ end
 -- 	-- })
 -- end, function(err) print("post err", err) end, {headername = "value"})
 
--- http.Fetch("http://httpbin.org/get", function(body, len, headers, code)
+-- http.get("http://httpbin.org/get", function(body, len, headers, code)
 -- 	print("body", body)
 -- 	print("len", len)
 -- 	print("code", code)
@@ -169,7 +142,7 @@ end
 -- 	end
 -- end, function(err)
 -- 	print("err", err)
--- end, {["User-Agenture"] = "huipezka"})
+-- end, {["User-Agenture"] = "agent"})
 
 
 
