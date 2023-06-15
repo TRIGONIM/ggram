@@ -167,9 +167,5 @@ end
 
 do -- http
 	local h = require("http_async") -- https://github.com/TRIGONIM/lua-requests-async
-	http = http or {}
-	http.Fetch = h.get
-	http.Post  = h.post
-	http.BuildQuery = h.build_query
 	HTTP = h.request
 end
