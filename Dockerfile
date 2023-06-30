@@ -7,6 +7,7 @@ RUN apk add --no-cache --virtual .build-deps gcc libc-dev libressl-dev \
 	&& luarocks install lua-cjson \
 	&& luarocks install luasec \
 	&& luarocks install lua-requests-async \
+	&& luarocks install lua-gmod-lib \
 	&& apk del .build-deps
 
 ENV TZ=GMT

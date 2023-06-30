@@ -39,7 +39,8 @@ RUN set -eux && apt-get install -y --no-install-recommends libssl-dev && \
 	luarocks install copas && \
 	luarocks install luasec && \
 	luarocks install lua-cjson && \
-	luarocks install lua-requests-async
+	luarocks install lua-requests-async && \
+	luarocks install lua-gmod-lib
 
 RUN rm -rf /var/lib/apt/lists/*
 
