@@ -10,7 +10,7 @@
 	botgram  https://github.com/botgram/botgram
 ---------------------------------------------------------------------------]]
 
-GARRYSMOD = RunStringEx ~= nil
+local GARRYSMOD = RunStringEx ~= nil
 
 if not GARRYSMOD then
 	require("ggram.glua")

@@ -139,3 +139,6 @@ VSCode имеет очень крутой встроенный дебаггер.
 
 If you still have problems, you can ask me in Telegram @amd_nick or [create an Issue](https://github.com/TRIGONIM/ggram/issues/new), in which you need to specify the system version, the version of `lua -v`, and step by step the actions you have taken to reproduce
 
+## ☑︎ TODO
+
+- Попробовать отвязать глупую затею с `ctx.reply.text`, `bot.handle_error` (доступ к методу по точке) и т.д. и сделать нормальные `ctx.reply:text()`. Обратную совместимость докрутить модулем. Не забыть поправить доки и примеры
