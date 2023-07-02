@@ -8,16 +8,18 @@ debug.getregistry().GG_BOT = BOT_MT
 
 local function promisify_handler(handler)
 	return function(ctx)
-		return deferred.new(function(d)
-			local result = handler(ctx, ctx.reply)
-			if result == false then
-				d:reject(false)
-			elseif istable(result) and result.next then
-				return result -- already deferred
-			else -- any value
-				d:resolve(result)
-			end
-		end)
+		local d = deferred.new()
+
+		local result = handler(ctx, ctx.reply)
+		if result == false then
+			d:reject(false)
+		elseif istable(result) and result.next then
+			return result -- already deferred
+		else -- any value
+			d:resolve(result)
+		end
+
+		return d
 	end
 end
 
