@@ -1,5 +1,5 @@
 local ver = "cvs"
-local rev = "4"
+local rev = "5"
 
 package = "ggram"
 version = ver .. "-" .. rev
@@ -19,7 +19,7 @@ description = {
 	maintainer = "_AMD_ <amd@default.im>"
 }
 supported_platforms = { "linux", "macosx", "unix", "bsd" }
-dependencies = { "lua >= 5.1, <= 5.4", "copas >= 4.3.0", "luasec", "lua-cjson", "lua-requests-async" }
+dependencies = { "lua >= 5.1, <= 5.4", "copas >= 4.3.0", "luasec", "lua-cjson", "lua-requests-async", "lua-gmod-lib" }
 build = {
 	type = "builtin",
 	modules = {
