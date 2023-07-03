@@ -70,8 +70,11 @@ function BOT_MT:enable_polling()
 		:next(restart_polling, error)
 end
 
--- local bot = ggram("token")
--- -- bot.call_method("deleteWebhook", {}):next(PRINT, PRINT)
+-- GG_POLL_LOG = true
+-- local bot = ggram( require("env").test_bot )
+-- bot.call_method("deleteWebhook", {}):next(PRINT, PRINT)
 -- -- poll(bot)
 -- bot.enable_polling()
--- bot.polling = false
+
+-- bot.text(function(ctx) ctx.reply.text(ctx.text) end, "asd")
+-- bot.command("stop", function() bot.polling = false print("stopped") end)
