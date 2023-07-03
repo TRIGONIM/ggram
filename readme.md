@@ -2,7 +2,7 @@
 
 # ggram – Telegram Bot Framework
 
-> 🇬🇧 🇺🇸 NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend [deepl](https://www.deepl.com/translator) to translate [this page](https://raw.githubusercontent.com/TRIGONIM/ggram/main/readme.md)
+> 🇬🇧 🇺🇸 NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend [deepl](https://www.deepl.com/translator) or ChatGPT to translate [this page](https://raw.githubusercontent.com/TRIGONIM/ggram/main/readme.md)
 
 <p align="left">
 	<img src="https://img.shields.io/github/languages/code-size/TRIGONIM/ggram">
@@ -34,9 +34,8 @@ Additional examples can be found in [/examples](/examples)
 - Can work both on pure Lua, and on the Garry's Mod server
 - Does NOT require any third-party .dll or WEB scripts
 - Very minimalistic and easily expandable
-- If Telegram adds methods that are not already in the bot, they are very easy to add with a 3-line module
+- If Telegram adds methods that are not already in the bot, they are very easy to add with a 3-line [module](/info/making_extensions.md)
 - [Possibility](/lua/ggram/includes/surprise) sending animations, documents, images
-- Friends with the functional programming paradigm
 
 ## 🚀 Installation
 
@@ -90,8 +89,9 @@ Make and run bot:
 3. Заполните его содержимым демонстративного бота из папки [/examples](/examples), указав токен с [@BotFather](https://t.me/BotFather)
 
 ## 📚 Docs
-- 🤔 [What is and how to use update, context, middleware, reply objects](/info/understanding_things.md) (основные сущности)
-- 🗂 [Where to create a bot, what to throw in it and why it is needed](/info/project_structure.md)
+- 🤔 [Objects description](/info/understanding_things.md) - What is and how to use update, context, middleware and reply objects
+- 🗂 [Folders structure](/info/project_structure.md) - Only for garrysmod users
+- 🆙 [Creating extensions/modules](/info/making_extensions.md) - Adding new methods, handlers, utils
 
 ## 😮 Development tips and tricks
 
@@ -128,10 +128,6 @@ ggram.idle()
 Я [сделал микросервис](https://blog.amd-nick.me/poll-gmod-app-docs/), который принимает вебхуки от разных сервисов, а сам выступает в качестве polling сервера, подобно как работает getUpdates в Telegram. Все боты отправляют ему обновления, затем я HTTP GET запросом получаю их в одном месте.
 
 Для работы с этим сервисом я написал небольшой фреймворк и если для вас это интересно, то я могу опубликовать гайд, как его применить.
-
-### Debugging
-
-VSCode имеет очень крутой встроенный дебаггер. Если установить для него [Lua Debug плагин](https://marketplace.visualstudio.com/items?itemName=actboy168.lua-debug), то с его помощью удобнее заниматься разработкой
 
 ## 👩‍🔧 Troubleshooting
 

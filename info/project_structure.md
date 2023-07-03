@@ -1,6 +1,6 @@
 # Файловая структура
 
-### Порядок загрузки файлов после запуска сервера
+### Порядок загрузки файлов после запуска сервера (garrysmod)
 1. /addons/ggram/lua/ggram`/core.lua`
 2. /addons/ggram/lua/ggram`/extensions/*.lua`
 3. /addons/ggram/lua/ggram`/bots/*/_init.lua`
@@ -20,4 +20,4 @@
 
 ---
 > _Если остались вопросы, вы можете задать их в Telegram @amd_nick или создать Issue_
-> 
+>
