@@ -6,22 +6,6 @@ end
 
 debug.getregistry().GG_BOT = BOT_MT
 
-local function promisify_handler(handler)
-	return function(ctx)
-		local d = deferred.new()
-
-		local result = handler(ctx, ctx.reply)
-		if result == false then
-			d:reject(false)
-		elseif istable(result) and result.next then
-			return result -- already deferred
-		else -- any value
-			d:resolve(result)
-		end
-
-		return d
-	end
-end
 
 local function wrapUpdate(upd) -- > ctx
 	local wrapped_t = {update = upd}
@@ -79,6 +63,22 @@ function BOT_MT:on(fFilter, handler, uid)
 	return self
 end
 
+-- Yield с функцией "продолжить" внутри f:
+-- coroutine.yield(function(cont) some_async(function(res) cont(res) end) end)
+local coroutinize = function(f, ...)
+	local co = coroutine.create(f)
+	local function exec(...)
+		local ok, data = coroutine.resume(co, ...)
+		if not ok then
+			error( debug.traceback(co, data) )
+		end
+		if coroutine.status(co) ~= "dead" then
+			data(exec)
+		end
+	end
+	exec(...)
+end
+
 
 local extend_callback = ggram.include("extend_callback")
 local extend_message  = ggram.include("extend_message")
@@ -99,11 +99,12 @@ function BOT_MT:handle_update(UPD)
 
 	ctx.chain = {} -- промежуточные результаты выполнений
 
-	return deferred.map(suitable_handlers, function(handler)
-		return promisify_handler(handler)(ctx):next(function(res)
+	coroutinize(function()
+		for _, handler in ipairs(suitable_handlers) do
+			local res = handler(ctx)
 			table.insert(ctx.chain, res or "empty")
-			return res
-		end)
+			if res == false then break end -- остальные хендлеры не обрабатываем
+		end
 	end)
 end
 
