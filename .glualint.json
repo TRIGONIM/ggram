@@ -1,4 +1,7 @@
 {
-	"lint_ignoreFiles":                 ["lua/ggram/includes/core/deferred.lua", "lua/ggram/glua/json.lua"],
-	"log_format":                       "github"
+	"lint_ignoreFiles": [
+		"lua/ggram/includes/core/deferred.lua",
+		"lua/ggram/includes/surprise/multipart.lua"
+	],
+	"log_format": "github"
 }
