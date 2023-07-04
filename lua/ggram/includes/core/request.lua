@@ -1,13 +1,16 @@
 
-local deferred = deferred or ggram.include("core/deferred")
+local deferred         = deferred or ggram.include("core/deferred")
+local HTTP             = HTTP or require("gmod.globals").HTTP -- https://github.com/TRIGONIM/lua-requests-async
+local util_TableToJSON = util and util.TableToJSON or require("gmod.util").TableToJSON
+local util_JSONToTable = util and util.JSONToTable or require("gmod.util").JSONToTable
 
 local format_parameters = function(parameters)
 	local params = {}
 	for k,v in pairs(parameters) do
-		if isnumber(v) or isbool(v) then -- chat_id
+		if type(v) == "number" or type(v) == "boolean" then -- chat_id
 			v = tostring(v)
-		elseif istable(v) then -- reply_markup
-			v = util.TableToJSON(v)
+		elseif type(v) == "table" then -- reply_markup
+			v = util_TableToJSON(v)
 		end
 		params[k] = v
 	end
@@ -26,7 +29,7 @@ local request = function(token, method, parameters_, http_struct_overrides_, bas
 			d:reject({error_code = 500, description = "http_error", extra = {http_error = err_desc}})
 		end,
 		success = function(http_code, json)
-			local dat = util.JSONToTable(json)
+			local dat = util_JSONToTable(json)
 			if not dat then -- firewall?
 				d:reject({error_code = 500, description = "no_json", extra = {body = json, http_code = http_code}})
 				return

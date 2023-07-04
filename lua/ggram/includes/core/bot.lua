@@ -63,23 +63,6 @@ function BOT_MT:on(fFilter, handler, uid)
 	return self
 end
 
--- Yield с функцией "продолжить" внутри f:
--- coroutine.yield(function(cont) some_async(function(res) cont(res) end) end)
-local coroutinize = function(f, ...)
-	local co = coroutine.create(f)
-	local function exec(...)
-		local ok, data = coroutine.resume(co, ...)
-		if not ok then
-			error( debug.traceback(co, data) )
-		end
-		if coroutine.status(co) ~= "dead" then
-			data(exec)
-		end
-	end
-	exec(...)
-end
-
-
 local extend_callback = ggram.include("extend_callback")
 local extend_message  = ggram.include("extend_message")
 local coroutinize     = ggram.include("utils.coro").coroutinize

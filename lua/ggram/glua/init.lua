@@ -48,8 +48,3 @@ do -- string.Split for extend_message.lua
 
 	string.Split = st.Split
 end
-
-do -- http
-	local gl = require("gmod.globals") -- https://github.com/TRIGONIM/lua-requests-async
-	HTTP = gl.HTTP
-end

@@ -15,7 +15,7 @@ bot.update(function(ctx)
 	ctx.reply.markdown("Sleeping *4 seconds*")
 	ctx.reply.action("typing")
 
-	coroutine.yield(function(cb) timer.Simple(4, cb) end)
+	coroutine.yield(function(cb) (timer or require("gmod.timer")).Simple(4, cb) end)
 end, "sleep")
 
 -- The command /test will be processed in 4 seconds (if it was entered).

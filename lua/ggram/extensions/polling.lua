@@ -2,10 +2,7 @@ local BOT_MT = debug.getregistry().GG_BOT
 
 local coroutinize  = ggram.include("utils.coro").coroutinize
 local def_to_yield = ggram.include("utils.coro").deferred_to_yield
-
-local function co_sleep(seconds)
-	coroutine.yield(function(cont) timer.Simple(seconds, cont) end)
-end
+local co_sleep     = ggram.include("utils.coro").wait
 
 local function co_call_method(bot, method, parameters)
 	return def_to_yield( bot.call_method )(method, parameters)
