@@ -36,6 +36,9 @@ build = {
 		["ggram.includes.extend_message"] = "lua/ggram/includes/extend_message.lua",
 		["ggram.includes.logger"] = "lua/ggram/includes/logger.lua",
 		["ggram.includes.session"] = "lua/ggram/includes/session.lua",
+		["ggram.includes.co_reply"] = "lua/ggram/includes/co_reply.lua",
 		["ggram.includes.utils.coro"] = "lua/ggram/includes/utils/coro.lua",
+		["ggram.includes.surprise.multipart"] = "lua/ggram/includes/surprise/multipart.lua",
+		["ggram.includes.surprise.multipart_methods"] = "lua/ggram/includes/surprise/multipart_methods.lua",
 	}
 }
