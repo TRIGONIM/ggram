@@ -1,3 +1,6 @@
+
+local deferred = deferred or ggram.include("core/deferred")
+
 local format_parameters = function(parameters)
 	local params = {}
 	for k,v in pairs(parameters) do

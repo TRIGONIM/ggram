@@ -52,15 +52,6 @@ function ggram.idle()
 	end
 end
 
-deferred = deferred or ggram.include("core/deferred")
-
-function deferred.sleep(time) -- polling cooldown
-	local d = deferred.new()
-	timer.Simple(time, function() d:resolve() end)
-	return d
-end
-
-
 -- In garrysmod, this loads automatically
 if not GARRYSMOD then
 	require("ggram.extensions.default_handlers")
