@@ -8,7 +8,7 @@ local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 
 bot.enable_polling()
 
-bot.update(ggram.include("co_reply").middleware, "co_reply_middleware")
+bot.update(ggram.include("co_reply"), "co_reply_middleware")
 
 -- The requests will be executed "simultaneously".
 -- The messages may arrive in an interleaved manner: 3, 1, 2, 5, 4.

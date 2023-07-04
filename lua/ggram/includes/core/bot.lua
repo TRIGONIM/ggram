@@ -82,6 +82,7 @@ end
 
 local extend_callback = ggram.include("extend_callback")
 local extend_message  = ggram.include("extend_message")
+local coroutinize     = ggram.include("utils.coro").coroutinize
 function BOT_MT:handle_update(UPD)
 	local ctx = wrapUpdate(UPD)
 	ctx.bot = self

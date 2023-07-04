@@ -35,6 +35,7 @@ build = {
 		["ggram.includes.extend_callback"] = "lua/ggram/includes/extend_callback.lua",
 		["ggram.includes.extend_message"] = "lua/ggram/includes/extend_message.lua",
 		["ggram.includes.logger"] = "lua/ggram/includes/logger.lua",
-		["ggram.includes.session"] = "lua/ggram/includes/session.lua"
+		["ggram.includes.session"] = "lua/ggram/includes/session.lua",
+		["ggram.includes.utils.coro"] = "lua/ggram/includes/utils/coro.lua",
 	}
 }
