@@ -53,6 +53,10 @@ function BOT_MT:handle_error(ctx)
 	error(ctx.error)
 end
 
+-- Ошибка в обработке команды/callback_query и тд.
+function BOT_MT:handle_middleware_error(err)
+	print("[ggram] middleware error: " .. debug.traceback(err))
+end
 
 function BOT_MT:on(fFilter, handler, uid)
 	local priority = self.handler_index[uid]
@@ -85,7 +89,8 @@ function BOT_MT:handle_update(UPD)
 
 	coroutinize(function()
 		for _, handler in ipairs(suitable_handlers) do
-			local res = handler(ctx)
+			local ok, res = pcall(handler, ctx)
+			if not ok then self.handle_middleware_error(res) end
 			table.insert(ctx.chain, res or "empty")
 			if res == false then break end -- остальные хендлеры не обрабатываем
 		end
