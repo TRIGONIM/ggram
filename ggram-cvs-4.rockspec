@@ -1,5 +1,5 @@
-local ver = "1.2"
-local rev = "1"
+local ver = "cvs"
+local rev = "4"
 
 package = "ggram"
 version = ver .. "-" .. rev
