@@ -1,5 +1,5 @@
 --[[-------------------------------------------------------------------------
-	Middleware than logs any received updates to specific file
+	Middleware that logs any received updates to specific file
 
 	#TODO: fix file. lib for pure-lua
 

@@ -2,6 +2,8 @@
 	Adds the ctx.reply, ctx.json and ctx.answer helpers to ctx object
 ---------------------------------------------------------------------------]]
 
+local util_JSONToTable = util and util.JSONToTable or require("gmod.util").JSONToTable
+
 return function(ctx)
 	if not ctx.update.callback_query then return end
 
@@ -9,7 +11,7 @@ return function(ctx)
 	ctx.reply = cbq.message and ctx.bot.reply(cbq.message.chat.id)
 
 	ctx.json = function()
-		return util.JSONToTable(cbq.data)
+		return util_JSONToTable(cbq.data)
 	end
 
 	ctx.answer = function(options)

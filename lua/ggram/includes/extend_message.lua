@@ -7,11 +7,15 @@
 
 	ctx.mine determines if this command exactly for this bot or either
 	ctx.exclusive 100% for me or another candidates are possible?
+
+	-- #todo rename to extend_command.lua. Move out ctx.reply = ctx.bot.reply(msg.chat.id)
 ---------------------------------------------------------------------------]]
+
+local string_Split = string.Split or require("gmod.string").Split
 
 local function extract_args(argss)
 	local tArgs = {}
-	for _,arg in ipairs( argss:Split(" ") ) do
+	for _,arg in ipairs( string_Split(argss, " ") ) do
 		if arg ~= "" then -- #todo нужно ли?
 			tArgs[#tArgs + 1] = arg
 		end
@@ -26,7 +30,7 @@ local function attach_command(ctx, ent)
 
 	local start = ent.offset + 2
 	local endd = start + ent.length - 2
-	local psc = text:sub(start, endd):Split("@")
+	local psc = string_Split(text:sub(start, endd), "@")
 	local name = psc[1]:lower() -- /CMD@botname > cmd
 
 	local argss = text:sub(endd + 2)

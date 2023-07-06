@@ -1,6 +1,8 @@
 -- local log_error = ggram.include("core.log_error")
 -- log_error(token, method, parameters, err)
 
+-- #todo ggram.json_encode, ggram.json_decode (used within too many files)
+local util_TableToJSON = util and util.TableToJSON or require("gmod.util").TableToJSON
 
 local do_log = function(sErr)
 	local msg = ""
@@ -17,10 +19,10 @@ return function(token, method, parameters, err)
 
 	local sErr = string.format("BOT ID: %s\n%s %i\n%s\n\n%s",
 		bot_id or token, method, err.error_code, err.description,
-		util.TableToJSON(parameters))
+		util_TableToJSON(parameters))
 
 	if err.extra then
-		sErr = sErr .. "\n\nExtra: " .. util.TableToJSON(err.extra)
+		sErr = sErr .. "\n\nExtra: " .. util_TableToJSON(err.extra)
 	end
 
 	do_log(sErr)
