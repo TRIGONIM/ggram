@@ -1,9 +1,7 @@
 -- #TODO return function enable_polling(bot) end`. Должен вернуть функцию, которая принимает аргументом бота для запуска поллинга
--- #TODO все debug.getregistry убрать. Не лезть туда
-
-local BOT_MT = debug.getregistry().GG_BOT
 
 local ggram = require("ggram")
+local BOT_MT       = ggram.include("bot")
 local coroutinize  = ggram.include("helpers.coro").coroutinize
 local def_to_yield = ggram.include("helpers.coro").deferred_to_yield
 local co_sleep     = ggram.include("helpers.coro").wait

@@ -33,7 +33,6 @@ function ggram.include(path)
 	end
 end
 
-local BOT_MT = ggram.include("bot")
 function ggram.bot(token, options_)
 	local bot = setmetatable({
 		token = token,
@@ -45,7 +44,11 @@ function ggram.bot(token, options_)
 		options = options_ or {
 			base_url = "https://api.telegram.org"
 		},
-	}, BOT_MT)
+	}, ggram.include("bot"))
+
+	-- #todo Должно быть после include("bot"), так как внутри хочет видеть BOT_MT. Но это неправильно держать этот код в этом месте (был снизу файла)
+	ggram.include("extensions.basic_handlers")
+	ggram.include("polling") -- #todo make it optional
 
 	return bot
 end
@@ -57,8 +60,5 @@ function ggram.idle()
 		while 1 do copas.step() end
 	end
 end
-
-ggram.include("extensions.basic_handlers")
-ggram.include("polling") -- #todo optional
 
 return ggram

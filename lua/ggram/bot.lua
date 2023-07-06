@@ -1,13 +1,10 @@
 local ggram = require("ggram")
 
-local BOT_MT = debug.getregistry().GG_BOT or {}
+local BOT_MT = {}
 BOT_MT.__index = function(self, sMethod)
 	local fMethod = BOT_MT[sMethod]
 	return fMethod and function(...) return fMethod(self, ...) end or nil
 end
-
-debug.getregistry().GG_BOT = BOT_MT
-
 
 local function wrapUpdate(upd) -- > ctx
 	local wrapped_t = {update = upd}
