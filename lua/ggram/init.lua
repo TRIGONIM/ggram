@@ -25,11 +25,11 @@ function ggram.include(path)
 		if ggram.require_cache[path] then
 			return ggram.require_cache[path]
 		end
-		local content = include("ggram/includes/" .. path:gsub("%.", "/") .. ".lua")
+		local content = include("ggram/" .. path:gsub("%.", "/") .. ".lua")
 		ggram.require_cache[path] = content
 		return content
 	else
-		return require("ggram.includes." .. path)
+		return require("ggram." .. path)
 	end
 end
 
@@ -58,8 +58,5 @@ function ggram.idle()
 	end
 end
 
--- In garrysmod, this loads automatically
-if not GARRYSMOD then
-	require("ggram.extensions.default_handlers")
-	require("ggram.polling")
-end
+ggram.include("extensions.basic_handlers")
+ggram.include("polling") -- #todo optional

@@ -11,7 +11,7 @@ local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM") -- replace with your t
 bot.enable_polling() -- start getUpdates loop
 
 
--- all handlers (like .text) described in default_handlers.lua
+-- all handlers (like .text) described in basic_handlers.lua
 bot.text(function(ctx)
 	ctx.reply.text(ctx.message.text)
 end, "echo")

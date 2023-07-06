@@ -16,7 +16,7 @@ context объект передается всем хендлерам первы
 
 По своей сути эти фильтры апдейтов. Когда вы пишете `bot.command("start", function(ctx) end)`, то добавляете фильтр к вашему боту, который выполнится только если в update найдена команда _/start_. `bot.update(callback, uid)` это тоже фильтр, но который выпоняется всегда.
 
-Доступные фильтры можно посмотреть в [extensions/default_handlers.lua](/lua/ggram/extensions/default_handlers.lua), а также написать свои (например, для перехвата гифок или упоминаний и тд)
+Доступные фильтры можно посмотреть в [extensions/basic_handlers.lua](/lua/ggram/extensions/basic_handlers.lua), а также написать свои (например, для перехвата гифок или упоминаний и тд)
 
 ## middlewares
 <img align="left" width="450" src="https://img.qweqwe.ovh/1631829516145.jpg">
