@@ -61,5 +61,5 @@ end
 -- In garrysmod, this loads automatically
 if not GARRYSMOD then
 	require("ggram.extensions.default_handlers")
-	require("ggram.extensions.polling")
+	require("ggram.polling")
 end
