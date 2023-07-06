@@ -21,13 +21,19 @@ ggram = ggram or setmetatable({}, {__call = function(self, ...) return self.bot(
 
 function ggram.include(path)
 	if GARRYSMOD then
-		return include("ggram/includes/" .. path:gsub("%.", "/") .. ".lua")
+		ggram.require_cache = ggram.require_cache or {}
+		if ggram.require_cache[path] then
+			return ggram.require_cache[path]
+		end
+		local content = include("ggram/includes/" .. path:gsub("%.", "/") .. ".lua")
+		ggram.require_cache[path] = content
+		return content
 	else
 		return require("ggram.includes." .. path)
 	end
 end
 
-local BOT_MT = ggram.include("core/bot")
+local BOT_MT = ggram.include("core.bot")
 function ggram.bot(token, options_)
 	local bot = setmetatable({
 		token = token,

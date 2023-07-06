@@ -2,11 +2,11 @@
 	reply. methods
 ---------------------------------------------------------------------------]]
 
-local Multipart = ggram.include("surprise/multipart")
+local Multipart = ggram.include("surprise.multipart")
 
 local RESP = ggram.methods
 
-local format_parameters = ggram.include("core/request").format_parameters
+local format_parameters = ggram.include("core.request").format_parameters
 function RESP:sendMultipart(method, form_data)
 	self.parameters.chat_id = self.id
 

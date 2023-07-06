@@ -1,4 +1,4 @@
--- local log_error = ggram.include("core/log_error")
+-- local log_error = ggram.include("core.log_error")
 -- log_error(token, method, parameters, err)
 
 

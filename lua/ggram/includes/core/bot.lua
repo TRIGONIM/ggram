@@ -20,12 +20,12 @@ end
 
 
 
-local reply = ggram.include("core/reply")
+local reply = ggram.include("core.reply")
 function BOT_MT:reply(chat_id)
 	return reply.get_instance(self, chat_id)
 end
 
-local request = ggram.include("core/request").request
+local request = ggram.include("core.request").request
 function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 	try_ = try_ or 1
 
@@ -47,7 +47,7 @@ function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 end
 
 -- override me. p.s. ctx is not the same as in middlewares. Look inside bot:call_method
-local log_error = ggram.include("core/log_error")
+local log_error = ggram.include("core.log_error")
 function BOT_MT:handle_error(ctx)
 	log_error(self.token, ctx.method, ctx.parameters, ctx.error)
 	error(ctx.error)
