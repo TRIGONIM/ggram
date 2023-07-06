@@ -2,7 +2,7 @@
 -- Sequential execution of ctx.reply methods without using deferred.lua.
 -- look at bot.command("test_async")
 
-require("ggram.core")
+local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 

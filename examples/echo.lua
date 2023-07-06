@@ -4,7 +4,7 @@
 -- lua echo.lua tmp
 -- where tmp is a directory to store temporary files like polling offset
 
-require("ggram.core")
+local ggram = require("ggram")
 
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM") -- replace with your token (t.me/BotFather)

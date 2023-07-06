@@ -1,7 +1,7 @@
 -- for advanced users
 -- understanding middlewares
 
-require("ggram.core")
+local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 

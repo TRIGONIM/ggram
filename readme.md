@@ -109,7 +109,7 @@ package.path = string.format("%s;%s;%s",
 package.path)
 
 -- Inluding ggram
-require("ggram.core")
+local ggram = require("ggram")
 
 -- List of bot code files
 local bots = {"bot_file1", "bot_file2"}

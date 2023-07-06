@@ -1,4 +1,4 @@
-require("ggram.core")
+local ggram = require("ggram")
 
 GLOBAL_BOT = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 
