@@ -15,7 +15,7 @@ local function resolveFile(file)
 	return assert(expr, "Invalid file or file ID")
 end
 
-
+local ggram = require("ggram") -- #TODO убрать отсюда. Сделать return methods в конце файла
 ggram.methods = ggram.methods or {}
 local R = ggram.methods
 function R:sendGeneric(method, additionalParameters)

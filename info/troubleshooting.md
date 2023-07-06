@@ -45,7 +45,7 @@ make install
 
 ## $ lua bot.lua
 
-> lua: bot.lua:5: module 'ggram.core' not found
+> lua: bot.lua:5: module 'ggram' not found
 
 This can happen if `luarocks install` was run with the `--local` parameter. In this case, you may need to tell the lua script where to look for modules. To do this, you need to add at the top of the bot file:
 

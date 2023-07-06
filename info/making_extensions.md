@@ -21,6 +21,8 @@ end
 Если ggram пока что не поддерживает какой-то из новых API методов Telegram, его можно добавить самостоятельно
 
 ```lua
+local ggram = require("ggram")
+
 -- https://core.telegram.org/bots/api#sendsticker
 function ggram.methods:sticker(sticker)
 	return self.setParameter("sticker", sticker).sendGeneric("sendSticker")

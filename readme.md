@@ -14,6 +14,7 @@ Create Telegram bots of any complexity in Lua
 <img align="right" width="300" src="https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png">
 
 ```lua
+local ggram = require("ggram")
 local bot = ggram("token")
 
 bot.enable_polling() -- enables getUpdates loop
@@ -35,7 +36,7 @@ Additional examples can be found in [/examples](/examples)
 - Does NOT require any third-party .dll or WEB scripts
 - Very minimalistic and easily expandable
 - If Telegram adds methods that are not already in the bot, they are very easy to add with a 3-line [module](/info/making_extensions.md)
-- [Possibility](/lua/ggram/includes/surprise) sending animations, documents, images
+- [Possibility](/info/sending_multipart.md) sending animations, documents, images
 
 ## 🚀 Installation
 
@@ -70,9 +71,7 @@ brew install luarocks # mac
 Install ggram
 
 ```bash
-luarocks install ggram # latest release
-# or
-luarocks install --server=https://luarocks.org/dev ggram # just latest
+luarocks install ggram
 ```
 
 Make and run bot:
@@ -108,9 +107,6 @@ package.path = string.format("%s;%s;%s",
 	"./path/?/init.lua",
 package.path)
 
--- Inluding ggram
-local ggram = require("ggram")
-
 -- List of bot code files
 local bots = {"bot_file1", "bot_file2"}
 for _,bot_name in ipairs(bots) do
@@ -118,7 +114,7 @@ for _,bot_name in ipairs(bots) do
 	print(bot_name .. " loaded")
 end
 
-ggram.idle()
+require("ggram").idle()
 ```
 
 ### Only one polling server

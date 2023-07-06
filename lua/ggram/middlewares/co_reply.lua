@@ -1,8 +1,8 @@
 -- middleware that adds the co field to ctx.reply object which is a proxy for the main methods
 -- Turns various ctx.reply.text into coroutine functions, for example ctx.reply.co.text
--- usage: bot.update(ggram.include("co_reply"), "co_reply_middleware")
+-- usage: bot.update(ggram.include("middlewares.co_reply"), "co_reply_middleware")
 
-local def_to_yield = ggram.include("utils.coro").deferred_to_yield
+local def_to_yield = require("ggram").include("helpers.coro").deferred_to_yield
 
 return function(ctx)
 	local real_reply = ctx.reply

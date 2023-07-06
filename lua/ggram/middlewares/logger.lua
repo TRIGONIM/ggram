@@ -4,7 +4,7 @@
 	#TODO: fix file. lib for pure-lua
 
 	Example:
-	bot.update(ggram.include("logger"), "logger_middleware")
+	bot.update(ggram.include("middlewares.logger"), "logger_middleware")
 ---------------------------------------------------------------------------]]
 
 file.CreateDir("ggram/logs")

@@ -1,5 +1,5 @@
 
-local deferred         = deferred or ggram.include("core/deferred")
+local deferred         = deferred or require("deferred")
 local HTTP             = HTTP or require("gmod.globals").HTTP -- https://github.com/TRIGONIM/lua-requests-async
 local util_TableToJSON = util and util.TableToJSON or require("gmod.util").TableToJSON
 local util_JSONToTable = util and util.JSONToTable or require("gmod.util").JSONToTable

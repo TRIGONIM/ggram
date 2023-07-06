@@ -68,7 +68,7 @@ bot.command("ban", function(ctx)
 end)
 ```
 
-Примеры некоторых подключаемых middlewares можно найти в папке [/includes](/lua/ggram/includes).
+Примеры некоторых подключаемых middlewares можно найти в папке [/middlewares](/lua/ggram/middlewares).
 
 ## reply
 <img align="left" width="450" src="https://img.qweqwe.ovh/1631829390410.jpg">

@@ -7,7 +7,7 @@ local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 
 bot.enable_polling()
 
-bot.update(ggram.include("session"), "session_middleware") -- extends ctx object with .sesion property
+bot.update(ggram.include("middlewares.session"), "session_middleware") -- extends ctx object with .sesion property
 
 -- Executes before any other handlers that are added after this one.
 -- so even the /test command will be processed with a delay.

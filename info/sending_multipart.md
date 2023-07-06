@@ -11,7 +11,8 @@
 Для начала где угодно создайте файл `test.lua`, сверху файла вставьте заготовку:
 
 ```lua
-ggram.include("surprise/multipart_methods") -- инжект multipart методов в .reply
+local ggram = require("ggram")
+ggram.include("extensions.multipart_methods") -- инжект multipart методов в .reply
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 local chat_id = 1234567 -- ID чата. Можно найти через t.me/jsonson_bot
@@ -49,7 +50,7 @@ bot.reply(chat_id).mediaGroupFromFiles({
 В стандартном наборе добавлены только самые базовые методы в качестве примера, чтобы не перегружать кодовую базу, но вы можете использовать любой Telegram метод, требующий отправки файлов. В этом примере это `sendSticker`
 
 ```lua
-local Multipart = ggram.include("surprise/multipart")
+local Multipart = require("multipart")
 
 local form_data = Multipart()
 form_data:set_simple("sticker", gif, "testfile.webp")
@@ -71,7 +72,7 @@ bot.reply(chat_id).sendMultipart("sendSticker", form_data)
 ggram хранит доступные методы в таблице `ggram.methods`. Нужно просто добавить свой метод в нее по примеру из файла `multipart_methods.lua`. Например, так на примере [sendVoice](https://core.telegram.org/bots/api#sendvoice):
 
 ```lua
-local Multipart = ggram.include("surprise/multipart")
+local Multipart = require("multipart")
 
 function ggram.methods:sendVoiceFromFile(voice_raw_data, voice_name)
 	local form_data = Multipart()

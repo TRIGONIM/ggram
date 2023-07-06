@@ -17,7 +17,7 @@ if not GARRYSMOD then
 end
 
 
-ggram = ggram or setmetatable({}, {__call = function(self, ...) return self.bot(...) end})
+local ggram = setmetatable({}, {__call = function(self, ...) return self.bot(...) end})
 
 function ggram.include(path)
 	if GARRYSMOD then
@@ -33,7 +33,7 @@ function ggram.include(path)
 	end
 end
 
-local BOT_MT = ggram.include("core.bot")
+local BOT_MT = ggram.include("bot")
 function ggram.bot(token, options_)
 	local bot = setmetatable({
 		token = token,
@@ -60,3 +60,5 @@ end
 
 ggram.include("extensions.basic_handlers")
 ggram.include("polling") -- #todo optional
+
+return ggram
