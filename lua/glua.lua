@@ -2,7 +2,7 @@
 -- It contains some features that are in Garry's Mod and that the framework uses
 
 do -- timer (for deferred.sleep)
-	timer = {}
+	timer = timer or {}
 
 	local ti = require("gmod.timer")
 	timer.Create = ti.Create
@@ -11,7 +11,7 @@ do -- timer (for deferred.sleep)
 end
 
 do -- cookie (for polling offsets and session middleware)
-	cookie = {}
+	cookie = cookie or {}
 
 	local co = require("gmod.cookie")
 	cookie.GetString = co.GetString
@@ -21,7 +21,7 @@ do -- cookie (for polling offsets and session middleware)
 end
 
 do -- json
-	util = {}
+	util = util or {}
 
 	local ut = require("gmod.util")
 	util.JSONToTable = ut.JSONToTable
