@@ -21,7 +21,7 @@ ggram = ggram or setmetatable({}, {__call = function(self, ...) return self.bot(
 
 function ggram.include(path)
 	if GARRYSMOD then
-		return include("ggram/includes/" .. path .. ".lua")
+		return include("ggram/includes/" .. path:gsub("%.", "/") .. ".lua")
 	else
 		return require("ggram.includes." .. path)
 	end
