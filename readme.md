@@ -17,7 +17,7 @@ Create Telegram bots of any complexity in Lua
 local ggram = require("ggram")
 local bot = ggram("token")
 
-bot.enable_polling() -- enables getUpdates loop
+ggram.include("polling").start(bot) -- enables getUpdates loop
 
 bot.command("start", function(ctx)
 	ctx.reply.text("Hello @" .. ctx.from.username)

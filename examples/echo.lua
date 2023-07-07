@@ -8,7 +8,7 @@ local ggram = require("ggram")
 
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM") -- replace with your token (t.me/BotFather)
-bot.enable_polling() -- start getUpdates loop
+ggram.include("polling").start(bot) -- start getUpdates loop
 
 
 -- all handlers (like .text) described in basic_handlers.lua

@@ -1,10 +1,9 @@
--- #TODO return function enable_polling(bot) end`. Должен вернуть функцию, которая принимает аргументом бота для запуска поллинга
-
 local ggram = require("ggram")
-local BOT_MT       = ggram.include("bot")
-local coroutinize  = ggram.include("helpers.coro").coroutinize
-local def_to_yield = ggram.include("helpers.coro").deferred_to_yield
-local co_sleep     = ggram.include("helpers.coro").wait
+local coro  = ggram.include("helpers.coro")
+
+local coroutinize  = coro.coroutinize
+local def_to_yield = coro.deferred_to_yield
+local co_sleep     = coro.wait
 
 local function co_call_method(bot, method, parameters)
 	return def_to_yield( bot.call_method )(method, parameters)
@@ -68,21 +67,26 @@ local polling_loop = function(bot)
 	end
 end
 
-function BOT_MT:enable_polling()
-	log("call BOT_MT:enable_polling()")
-	self.polling = true
+local polling = {}
+
+polling.start = function(bot)
+	log("call start(bot)")
+	bot.polling = true
 
 	coroutinize(function()
 		co_sleep(0) -- for garry's mod (http not working at the first tick)
-		polling_loop(self)
+		polling_loop(bot)
 	end)
 end
+
+return polling
 
 -- GG_POLL_LOG = true
 -- local ggram = require("ggram")
 -- local bot = ggram( require("env").tg_test )
 -- -- bot.call_method("deleteWebhook", {}):next(PRINT, PRINT)
--- bot.enable_polling()
+-- polling.start(bot)
+-- ggram.idle()
 
 -- bot.text(function(ctx) ctx.reply.text(ctx.text) end, "asd")
 -- bot.command("stop", function() bot.polling = false print("stopped") end)

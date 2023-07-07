@@ -46,9 +46,8 @@ function ggram.bot(token, options_)
 		},
 	}, ggram.include("bot"))
 
-	-- #todo Должно быть после include("bot"), так как внутри хочет видеть BOT_MT. Но это неправильно держать этот код в этом месте (был снизу файла)
+	-- Должно быть после include("bot"), так как внутри хочет видеть BOT_MT
 	ggram.include("extensions.basic_handlers")
-	ggram.include("polling") -- #todo make it optional
 
 	return bot
 end

@@ -6,7 +6,7 @@ local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 
-bot.enable_polling()
+ggram.include("polling").start(bot)
 
 bot.update(ggram.include("middlewares.co_reply"), "co_reply_middleware")
 

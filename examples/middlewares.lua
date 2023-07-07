@@ -5,7 +5,7 @@ local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 
-bot.enable_polling()
+ggram.include("polling").start(bot)
 
 bot.update(ggram.include("middlewares.session"), "session_middleware") -- extends ctx object with .sesion property
 
