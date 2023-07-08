@@ -3,6 +3,7 @@
 
 local json_encode = (util or require("gmod.util")).TableToJSON
 local json_decode = (util or require("gmod.util")).JSONToTable
+local cookie = cookie or require("gmod.cookie")
 
 local function resolve_message(ctx)
 	return

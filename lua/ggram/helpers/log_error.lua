@@ -2,6 +2,7 @@
 -- log_error(token, method, parameters, err)
 
 local json_encode = (util or require("gmod.util")).TableToJSON
+-- local debug_Trace = require("gmod.debug").Trace
 
 local do_log = function(sErr)
 	local msg = ""
@@ -10,7 +11,7 @@ local do_log = function(sErr)
 	msg = msg .. "\n========= [TLG ERR] =========\n\n"
 
 	print(msg)
-	-- debug.Trace() -- require("gmenv.debug") -- init
+	-- debug_Trace() -- require("gmenv.debug") -- init
 end
 
 return function(token, method, parameters, err)
