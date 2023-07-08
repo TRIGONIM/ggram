@@ -11,13 +11,6 @@
 	botgram  https://github.com/botgram/botgram
 ---------------------------------------------------------------------------]]
 
-local GARRYSMOD = RunStringEx ~= nil
-
-if not GARRYSMOD then
-	require("glua")
-end
-
-
 local ggram = setmetatable({}, {__call = function(self, ...) return self.bot(...) end})
 
 function ggram.bot(token, options_)
@@ -39,8 +32,8 @@ function ggram.bot(token, options_)
 end
 
 function ggram.idle()
-	if not GARRYSMOD then
-		local copas = require("copas")
+	local ok, copas = pcall(require, "copas")
+	if ok then
 		print("idling")
 		while 1 do copas.step() end
 	end
