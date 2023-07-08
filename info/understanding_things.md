@@ -7,9 +7,21 @@
 ## context (ctx)
 <img align="left" width="450" src="https://img.qweqwe.ovh/1631826032690.jpg">
 
-Любое сообщение, которое получит ваш бот называется [update](https://core.telegram.org/bots/api#update). Оно оборачивается в обертку, называемой context. context это по сути и есть update объект с некоторыми дополнительными полями для упрощения взаимодействия с ботом (быстрые ответы и тд)
+Любое сообщение, которое получит ваш бот называется [update](https://core.telegram.org/bots/api#update). Оно оборачивается в обертку, называемой context (ctx). ctx это по сути и есть update объект с некоторыми дополнительными полями для упрощения взаимодействия с ботом (быстрые ответы и тд)
 
-context объект передается всем хендлерам первым аргументом, например в bot.command(), bot.update(), bot.message() и т.д.
+context объект передается всем обработчикам первым аргументом, например в `bot.command()`, `bot.update()`, `bot.message()` и т.д.
+
+Несколько примеров использования ctx:
+
+1. `ctx.chat.id` - получение значения `update.message.chat.id`
+
+2. ```lua
+	-- /example foo bar baz
+	bot.command("example", function(ctx)
+		local args = ctx.args()
+		ctx.reply.text( table.concat(args, ":") ) -- foo:bar:baz
+	end)
+	```
 
 # handlers (Обработчики событий)
 <img align="left" width="450" src="https://img.qweqwe.ovh/1631829101051.jpg">

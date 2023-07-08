@@ -20,12 +20,7 @@ end
 local ggram = setmetatable({}, {__call = function(self, ...) return self.bot(...) end})
 
 function ggram.include(path)
-	path = "ggram." .. path
-	if GARRYSMOD then
-		path = path:gsub("%.", "/")
-		-- include("includes/modules/" .. path .. ".lua")
-	end
-	return require(path)
+	return require("ggram." .. path)
 end
 
 function ggram.bot(token, options_)

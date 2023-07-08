@@ -57,3 +57,7 @@ package.path = package.path
 	.. ";/home/ubuntu/.luarocks/share/lua/5.1/?.lua"
 	.. ";/home/ubuntu/.luarocks/share/lua/5.1/?/init.lua"
 ```
+
+## 😢 If you still have problems
+
+You can ask me in Telegram @amd_nick or [create an Issue](https://github.com/TRIGONIM/ggram/issues/new), in which you need to specify the system version, the version of `lua -v`, and step by step the actions you have taken to reproduce

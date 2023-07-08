@@ -12,7 +12,8 @@
 
 ```lua
 local ggram = require("ggram")
-ggram.include("extensions.multipart_methods") -- инжект multipart методов в .reply
+
+require("ggram.extensions.multipart_methods") -- инжект multipart методов в .reply
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 local chat_id = 1234567 -- ID чата. Можно найти через t.me/jsonson_bot

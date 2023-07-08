@@ -9,7 +9,7 @@
 ```lua
 local BOT_MT = require("ggram").include("bot")
 
-function BOT_MT:regex_command(pattern, handler)
+function BOT_MT:on_regex_command(pattern, handler)
 	return self.on(function(ctx)
 		return ctx.command:match(pattern)
 	end, handler, "regex_command_" .. pattern)
