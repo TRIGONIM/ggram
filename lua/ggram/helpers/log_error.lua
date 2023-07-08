@@ -1,4 +1,4 @@
--- local log_error = require("ggram").include("core.log_error")
+-- local log_error = require("ggram.helpers.log_error")
 -- log_error(token, method, parameters, err)
 
 -- #todo ggram.json_encode, ggram.json_decode (used within too many files)

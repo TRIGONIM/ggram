@@ -7,7 +7,7 @@
 По типу `bot.command("cmd", func)`, `bot.on_something()`
 
 ```lua
-local BOT_MT = require("ggram").include("bot")
+local BOT_MT = require("ggram.bot")
 
 function BOT_MT:on_regex_command(pattern, handler)
 	return self.on(function(ctx)

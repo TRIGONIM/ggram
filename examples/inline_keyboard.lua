@@ -1,7 +1,7 @@
 local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
-ggram.include("polling").start(bot)
+require("ggram.polling").start(bot)
 
 bot.command("start", function(ctx)
 	ctx.reply.inlineKeyboard({

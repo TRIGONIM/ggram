@@ -1,5 +1,5 @@
 -- import example:
--- local coro = require("ggram").include("helpers.coro").coroutinize
+-- local coro = require("ggram.helpers.coro").coroutinize
 
 -- Yield с функцией "продолжить" внутри f:
 -- coroutine.yield(function(cont) some_async(function(res) cont(res) end) end)

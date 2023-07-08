@@ -1,5 +1,4 @@
-local ggram = require("ggram")
-local coro  = ggram.include("helpers.coro")
+local coro  = require("ggram.helpers.coro")
 
 local coroutinize  = coro.coroutinize
 local def_to_yield = coro.deferred_to_yield

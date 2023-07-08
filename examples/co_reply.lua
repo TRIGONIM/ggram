@@ -6,9 +6,9 @@ local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
 
-ggram.include("polling").start(bot)
+require("ggram.polling").start(bot)
 
-bot.update(ggram.include("middlewares.co_reply"), "co_reply_middleware")
+bot.update(require("ggram.middlewares.co_reply"), "co_reply_middleware")
 
 -- The requests will be executed "simultaneously".
 -- The messages may arrive in an interleaved manner: 3, 1, 2, 5, 4.

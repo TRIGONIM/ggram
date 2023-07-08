@@ -1,10 +1,10 @@
 --[[-------------------------------------------------------------------------
 	Middleware that logs any received updates to specific file
 
-	#TODO: fix file. lib for pure-lua
+	#TODO: fix middleware for pure-lua usage
 
 	Example:
-	bot.update(ggram.include("middlewares.logger"), "logger_middleware")
+	bot.update(require("ggram.middlewares.logger"), "logger_middleware")
 ---------------------------------------------------------------------------]]
 
 file.CreateDir("ggram/logs")

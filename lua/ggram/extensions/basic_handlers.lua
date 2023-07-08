@@ -1,4 +1,4 @@
-local BOT_MT = require("ggram").include("bot")
+local BOT_MT = require("ggram.bot")
 
 function BOT_MT:update(handler, uid)
 	return self.on(function()

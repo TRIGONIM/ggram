@@ -19,12 +19,12 @@ end
 
 
 
-local reply = ggram.include("reply")
+local reply = require("ggram.reply")
 function BOT_MT:reply(chat_id)
 	return reply.get_instance(self, chat_id)
 end
 
-local request = ggram.include("request").request
+local request = require("ggram.request").request
 function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 	try_ = try_ or 1
 
@@ -46,7 +46,7 @@ function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 end
 
 -- override me. p.s. ctx is not the same as in middlewares. Look inside bot:call_method
-local log_error = ggram.include("helpers.log_error") -- #todo встроить сюда в код. Отдельный файл удалить
+local log_error = require("ggram.helpers.log_error") -- #todo встроить сюда в код. Отдельный файл удалить
 function BOT_MT:handle_error(ctx)
 	log_error(self.token, ctx.method, ctx.parameters, ctx.error)
 	error(ctx.error)
@@ -66,9 +66,9 @@ function BOT_MT:on(fFilter, handler, uid)
 	return self
 end
 
-local extend_callback = ggram.include("middlewares.extend_callback")
-local extend_message  = ggram.include("middlewares.extend_message")
-local coroutinize     = ggram.include("helpers.coro").coroutinize
+local extend_callback = require("ggram.middlewares.extend_callback")
+local extend_message  = require("ggram.middlewares.extend_message")
+local coroutinize     = require("ggram.helpers.coro").coroutinize
 function BOT_MT:handle_update(UPD)
 	local ctx = wrapUpdate(UPD)
 	ctx.bot = self

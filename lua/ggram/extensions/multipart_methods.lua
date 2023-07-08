@@ -5,10 +5,10 @@
 local ggram = require("ggram")
 local Multipart = require("multipart")
 
--- #TODO local methods = require("ggram").include("reply")
+-- #TODO local methods = require("ggram.reply")
 local RESP = ggram.methods
 
-local format_parameters = ggram.include("request").format_parameters
+local format_parameters = require("ggram.request").format_parameters
 function RESP:sendMultipart(method, form_data)
 	self.parameters.chat_id = self.id
 
