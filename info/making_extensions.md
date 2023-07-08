@@ -21,7 +21,7 @@ end
 Если ggram пока что не поддерживает какой-то из новых API методов Telegram, его можно добавить самостоятельно
 
 ```lua
-local reply_methods = require("ggram.reply").methods
+local reply_methods = require("ggram.reply")
 
 -- https://core.telegram.org/bots/api#sendsticker
 function reply_methods:sticker(sticker)

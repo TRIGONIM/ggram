@@ -1,5 +1,3 @@
-local ggram = require("ggram")
-
 local BOT_MT = {}
 BOT_MT.__index = function(self, sMethod)
 	local fMethod = BOT_MT[sMethod]
@@ -17,11 +15,21 @@ local function wrapUpdate(upd) -- > ctx
 	return wrapped_m
 end
 
-
-
-local reply = require("ggram.reply")
 function BOT_MT:reply(chat_id)
-	return reply.get_instance(self, chat_id)
+	if not chat_id then
+		local inf, path = debug.getinfo(2, "lS"), "unknown place"
+		if inf.what ~= "C" then
+			path = inf.short_src .. ":" .. inf.currentline
+		end
+
+		error("no chat_id provided to .reply method in " .. path)
+	end
+
+	return setmetatable({
+		bot = self,
+		id  = chat_id,
+		parameters = {}
+	}, require("ggram.reply"))
 end
 
 local request = require("ggram.request").request

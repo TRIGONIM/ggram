@@ -1,6 +1,14 @@
---[[-------------------------------------------------------------------------
-	MODEL
----------------------------------------------------------------------------]]
+local REPLY_MT = {} -- чтобы методы можно было вызывать через точку, а не двоеточие
+REPLY_MT.__index = function(self, sMethod)
+	local fMethod = REPLY_MT[sMethod]
+	if not fMethod then
+		print("TRACE: " .. debug.traceback())
+		error("reply." .. sMethod .. " is not a valid method")
+	end
+	return function(...) return fMethod(self, ...) end -- fp
+end
+
+
 local function resolveMessage(msg)
 	assert(msg, "ggram: msg expected, got nil")
 	return tonumber(msg) or msg.message_id
@@ -15,10 +23,7 @@ local function resolveFile(file)
 	return assert(expr, "Invalid file or file ID")
 end
 
-local reply_methods = {}
-local R = reply_methods
-
-function R:sendGeneric(method, additionalParameters)
+function REPLY_MT:sendGeneric(method, additionalParameters)
 	local parameters = table.Copy(self.parameters)
 	self.parameters = {}
 
@@ -30,63 +35,63 @@ function R:sendGeneric(method, additionalParameters)
 	return self.bot.call_method(method, parameters)
 end
 
-function R:setParameter(key, value)
+function REPLY_MT:setParameter(key, value)
 	self.parameters[key] = value
 	return self
 end
 
 -- *methods functions*
 -- Не доделана https://github.com/botgram/botgram/blob/master/lib/reply.js#L128-L135
--- function R:forward(msg_id, chat_id)
+-- function REPLY_MT:forward(msg_id, chat_id)
 -- 	return self.sendGeneric("forwardMessage", {message_id = resolveMessage(msg_id), from_chat_id = resolveChat(chat_id)})
 -- end
 
-function R:text(text, mode)
+function REPLY_MT:text(text, mode)
 	return self.sendGeneric("sendMessage", {text = text, parse_mode = mode})
 end
 
-function R:markdown(text)
+function REPLY_MT:markdown(text)
 	return self.text(text, "Markdown")
 end
 
-function R:html(text)
+function REPLY_MT:html(text)
 	return self.text(text, "HTML")
 end
 
-function R:photo(file, caption, captionMode)
+function REPLY_MT:photo(file, caption, captionMode)
 	return self.sendGeneric("sendPhoto", {photo = resolveFile(file), caption = caption, parse_mode = captionMode})
 end
 
 -- audio
 -- document
 -- sticker
-function R:video(file, caption, captionMode, duration, width, height, streaming)
+function REPLY_MT:video(file, caption, captionMode, duration, width, height, streaming)
 	return self.sendGeneric("sendVideo", {video = file, duration = duration, caption = caption, parse_mode = captionMode, width = width, height = height, supports_streaming = streaming})
 end
 
-function R:animation(file, caption, captionMode)
+function REPLY_MT:animation(file, caption, captionMode)
 	return self.sendGeneric("sendAnimation", {animation = resolveFile(file), caption = caption, parse_mode = captionMode})
 end
 -- videoNote
 -- voice
 
-function R:mediaGroup(media)
+function REPLY_MT:mediaGroup(media)
 	return self.sendGeneric("sendMediaGroup", {media = media})
 end
 
-function R:location(latitude, longitude)
+function REPLY_MT:location(latitude, longitude)
 	return self.sendGeneric("sendLocation", {latitude = latitude, longitude = longitude})
 end
 
 -- venue
 
-function R:contact(phone, firstname, lastname)
+function REPLY_MT:contact(phone, firstname, lastname)
 	return self.sendGeneric("sendContact", {phone_number = phone, first_name = firstname, last_name = lastname})
 end
 
 -- game
 
-function R:dice()
+function REPLY_MT:dice()
 	return self.sendGeneric("sendDice")
 end
 
@@ -94,7 +99,7 @@ end
 -----------------
 -- *Modifiers* --
 -----------------
-function R:reply(msg)
+function REPLY_MT:reply(msg)
 	local msg_id = msg -- id
 	if istable(msg) then msg_id = resolveMessage(msg) end -- msg #todo нужна ли проверка на table, есть в resolve есть?
 
@@ -102,12 +107,12 @@ function R:reply(msg)
 	return self
 end
 
-function R:selective(bForce)
+function REPLY_MT:selective(bForce)
 	self.parameters.selective = fSelective ~= false
 	return self
 end
 
-function R:forceReply(bForce)
+function REPLY_MT:forceReply(bForce)
 	if not self.parameters["reply_markup"] then self.parameters["reply_markup"] = {} end
 	local markup = self.parameters["reply_markup"]
 
@@ -115,7 +120,7 @@ function R:forceReply(bForce)
 	return self
 end
 
-function R:keyboard(tKeys, bResize, bOneTime)
+function REPLY_MT:keyboard(tKeys, bResize, bOneTime)
 	if not self.parameters["reply_markup"] then self.parameters["reply_markup"] = {} end
 	local markup = self.parameters["reply_markup"]
 
@@ -137,7 +142,7 @@ function R:keyboard(tKeys, bResize, bOneTime)
 	return self
 end
 
-function R:inlineKeyboard(tKeys)
+function REPLY_MT:inlineKeyboard(tKeys)
 	if not self.parameters["reply_markup"] then self.parameters["reply_markup"] = {} end
 	local markup = self.parameters["reply_markup"]
 
@@ -145,12 +150,12 @@ function R:inlineKeyboard(tKeys)
 	return self
 end
 
-function R:disablePreview(bDisable)
+function REPLY_MT:disablePreview(bDisable)
 	self.parameters["disable_web_page_preview"] = bDisable ~= false
 	return self
 end
 
-function R:silent(bMute)
+function REPLY_MT:silent(bMute)
 	self.parameters["disable_notification"] = bMute ~= false
 	return self
 end
@@ -159,11 +164,11 @@ end
 ---------------------
 -- *other actions* --
 ---------------------
-function R:action(action)
+function REPLY_MT:action(action)
 	return self.sendGeneric("sendChatAction", {action = action});
 end
 
-function R:editText(msg, text, mode)
+function REPLY_MT:editText(msg, text, mode)
 	local parameters = {text = text, parse_mode = mode}
 	if isstring(msg) then
 		parameters["inline_message_id"] = msg
@@ -173,16 +178,16 @@ function R:editText(msg, text, mode)
 	return self.sendGeneric("editMessageText", parameters)
 end
 
-function R:editMarkdown(msg, text)
+function REPLY_MT:editMarkdown(msg, text)
 	return self.editText(msg, text, "Markdown")
 end
 
-function R:editHTML(msg, text)
+function REPLY_MT:editHTML(msg, text)
 	return self.editText(msg, text, "HTML")
 end
 
 -- editCaption
-function R:editReplyMarkup(msg)
+function REPLY_MT:editReplyMarkup(msg)
 	local parameters = {}
 	if isstring(msg) then
 		parameters.inline_message_id = msg
@@ -192,44 +197,10 @@ function R:editReplyMarkup(msg)
 	return self.sendGeneric("editMessageReplyMarkup", parameters)
 end
 
-function R:deleteMessage(msg)
+function REPLY_MT:deleteMessage(msg)
 	local parameters = { message_id = resolveMessage(msg) }
 	return self.sendGeneric("deleteMessage", parameters);
 end
 
 
-
-
-local REPLY_MT = {} -- чтобы методы можно было вызывать через точку, а не двоеточие
-REPLY_MT.__index = function(self, sMethod)
-	local fMethod = R[sMethod]
-	if not fMethod then
-		print("TRACE: " .. debug.traceback())
-		error("reply." .. sMethod .. " is not a valid method")
-	end
-	return function(...) return fMethod(self, ...) end -- fp
-end
-
-
-local exports = {}
-
-exports.get_instance = function(bot, chat_id)
-	if not chat_id then
-		local inf, path = debug.getinfo(2, "lS"), "unknown place"
-		if inf.what ~= "C" then
-			path = inf.short_src .. ":" .. inf.currentline
-		end
-
-		error("no chat_id provided to .reply method in " .. path)
-	end
-
-	return setmetatable({
-		bot = bot,
-		id  = chat_id,
-		parameters = {}
-	}, REPLY_MT)
-end
-
-exports.methods = reply_methods
-
-return exports
+return REPLY_MT

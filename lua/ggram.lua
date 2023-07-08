@@ -33,8 +33,7 @@ function ggram.bot(token, options_)
 		},
 	}, require("ggram.bot"))
 
-	-- Should be after require("ggram.bot"), так как внутри хочет видеть BOT_MT
-	require("ggram.extensions.basic_handlers")
+	require("ggram.extensions.basic_handlers") -- #todo совместить с bot.lua ?
 
 	return bot
 end

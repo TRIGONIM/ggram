@@ -4,7 +4,7 @@
 
 local Multipart = require("multipart")
 
-local RESP = require("ggram.reply").methods
+local RESP = require("ggram.reply")
 
 local format_parameters = require("ggram.request").format_parameters
 function RESP:sendMultipart(method, form_data)
