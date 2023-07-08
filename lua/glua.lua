@@ -20,14 +20,6 @@ do -- cookie (for polling offsets and session middleware)
 	cookie.Delete    = co.Delete
 end
 
-do -- json
-	util = util or {}
-
-	local ut = require("gmod.util")
-	util.JSONToTable = ut.JSONToTable
-	util.TableToJSON = ut.TableToJSON
-end
-
 do -- is* functions
 	local gl = require("gmod.globals")
 
