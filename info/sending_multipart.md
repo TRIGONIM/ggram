@@ -70,12 +70,14 @@ bot.reply(chat_id).sendMultipart("sendSticker", form_data)
 
 ## Добавление своих методов
 
-ggram хранит доступные методы в таблице `ggram.methods`. Нужно просто добавить свой метод в нее по примеру из файла `multipart_methods.lua`. Например, так на примере [sendVoice](https://core.telegram.org/bots/api#sendvoice):
+ggram хранит доступные методы в таблице `require("ggram.reply").methods`. Нужно просто добавить свой метод в нее по примеру из файла `multipart_methods.lua`. Например, так на примере [sendVoice](https://core.telegram.org/bots/api#sendvoice):
 
 ```lua
 local Multipart = require("multipart")
 
-function ggram.methods:sendVoiceFromFile(voice_raw_data, voice_name)
+local reply_methods = require("ggram.reply").methods
+
+function reply_methods:sendVoiceFromFile(voice_raw_data, voice_name)
 	local form_data = Multipart()
 	form_data:set_simple("voice", voice_raw_data, voice_name)
 	return self.sendMultipart("sendVoice", form_data)

@@ -15,9 +15,9 @@ local function resolveFile(file)
 	return assert(expr, "Invalid file or file ID")
 end
 
-local ggram = require("ggram") -- #TODO убрать отсюда. Сделать return methods в конце файла
-ggram.methods = ggram.methods or {}
-local R = ggram.methods
+local reply_methods = {}
+local R = reply_methods
+
 function R:sendGeneric(method, additionalParameters)
 	local parameters = table.Copy(self.parameters)
 	self.parameters = {}
@@ -229,5 +229,7 @@ exports.get_instance = function(bot, chat_id)
 		parameters = {}
 	}, REPLY_MT)
 end
+
+exports.methods = reply_methods
 
 return exports

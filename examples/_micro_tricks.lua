@@ -20,14 +20,8 @@ end
 
 -- Adding a non-existent method
 do
-	-- https://core.telegram.org/bots/api#sendsticker
-	function ggram.methods:sticker(sticker)
-		return self.setParameter("sticker", sticker).sendGeneric("sendSticker")
-		-- return self.sendGeneric("sendSticker", {sticker = sticker}) -- That's allowed, too.
-	end
-
-	-- The reply method is not called with ":", but with "."
-	bot.reply(chat_id).sticker("https://www.gstatic.com/webp/gallery/4.sm.webp") -- sticker_url or file_id
+	-- moved to info file:
+	-- /info/making_extensions.md
 end
 
 -- Specifying an unsupported parameter in reply
