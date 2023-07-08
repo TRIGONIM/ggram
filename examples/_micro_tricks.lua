@@ -19,10 +19,10 @@ do
 end
 
 -- Adding a non-existent method
-do
-	-- moved to info file:
+-- do
+	-- moved to the info file:
 	-- /info/making_extensions.md
-end
+-- end
 
 -- Specifying an unsupported parameter in reply
 do
