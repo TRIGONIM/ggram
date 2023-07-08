@@ -2,6 +2,7 @@
 	reply. methods
 ---------------------------------------------------------------------------]]
 
+local json_encode = (util or require("gmod.util")).TableToJSON
 local Multipart = require("multipart")
 
 local RESP = require("ggram.reply")
@@ -48,7 +49,7 @@ function RESP:mediaGroupFromFiles(files) -- {{type = "photo", media = RAW_DATA, 
 		end
 	end
 
-	form_data:set_simple("media", util.TableToJSON(tbl))
+	form_data:set_simple("media", json_encode(tbl))
 	return self.sendMultipart("sendMediaGroup", form_data)
 end
 

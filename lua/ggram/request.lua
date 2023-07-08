@@ -1,8 +1,8 @@
 
 local deferred         = deferred or require("deferred")
 local HTTP             = HTTP or require("gmod.globals").HTTP -- https://github.com/TRIGONIM/lua-requests-async
-local util_TableToJSON = util and util.TableToJSON or require("gmod.util").TableToJSON
-local util_JSONToTable = util and util.JSONToTable or require("gmod.util").JSONToTable
+local util_TableToJSON = (util or require("gmod.util")).TableToJSON
+local util_JSONToTable = (util or require("gmod.util")).JSONToTable
 
 local format_parameters = function(parameters)
 	local params = {}

@@ -1,15 +1,17 @@
 --[[-------------------------------------------------------------------------
 	Middleware that logs any received updates to specific file
 
-	#TODO: fix middleware for pure-lua usage
+	#TODO: fix middleware for pure-lua usage. file
 
 	Example:
 	bot.update(require("ggram.middlewares.logger"), "logger_middleware")
 ---------------------------------------------------------------------------]]
 
+local json_encode = (util or require("gmod.util")).TableToJSON
+
 file.CreateDir("ggram/logs")
 local function logJsonToFile(UPD, logfilename)
-	local dtime, json = os.date("%Y-%m-%d %H:%M:%S"), util.TableToJSON(UPD)
+	local dtime, json = os.date("%Y-%m-%d %H:%M:%S"), json_encode(UPD)
 	file.Append("ggram/logs/" .. logfilename .. ".txt", ("[%s] %s\n"):format(dtime,json))
 end
 

@@ -1,8 +1,8 @@
 -- example:
 -- https://img.qweqwe.ovh/1631502020622.jpg
 
-local json_encode = require("gmod.util").TableToJSON
-local json_decode = require("gmod.util").JSONToTable
+local json_encode = (util or require("gmod.util")).TableToJSON
+local json_decode = (util or require("gmod.util")).JSONToTable
 
 local function resolve_message(ctx)
 	return

@@ -2,7 +2,7 @@
 	Adds the ctx.reply, ctx.json and ctx.answer helpers to ctx object
 ---------------------------------------------------------------------------]]
 
-local util_JSONToTable = util and util.JSONToTable or require("gmod.util").JSONToTable
+local util_JSONToTable = (util or require("gmod.util")).JSONToTable
 
 return function(ctx)
 	if not ctx.update.callback_query then return end

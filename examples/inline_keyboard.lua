@@ -1,3 +1,4 @@
+local json_encode = (util or require("gmod.util")).TableToJSON
 local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
@@ -23,7 +24,7 @@ bot.callback(function(ctx)
 
 	else
 		ctx.reply.text("You just pressed button in second row. ctx.update:"):next(function()
-			return ctx.reply.markdown("```\n" .. util.TableToJSON(ctx.update, true) .. "\n```")
+			return ctx.reply.markdown("```\n" .. json_encode(ctx.update, true) .. "\n```")
 		end):next(function()
 			return ctx.reply.text("Json payload above 👆")
 		end):next(function()

@@ -2,6 +2,8 @@
 -- Sequential execution of ctx.reply methods without using deferred.lua.
 -- look at bot.command("test_async")
 
+local json_encode = (util or require("gmod.util")).TableToJSON
+
 local ggram = require("ggram")
 
 local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")
@@ -42,7 +44,7 @@ bot.command("test_co", function(ctx)
 	ctx.reply.co.text("4")
 	local ok, msg = ctx.reply.co.text("5")
 	if ok then
-		ctx.reply.co.text( util.TableToJSON(msg) )
+		ctx.reply.co.text( json_encode(msg) )
 	end
 end)
 
