@@ -55,6 +55,7 @@ end)
 --[[
 -- Suspends the execution of a coroutine (handler) for a specific period of time.
 local function co_sleep(seconds)
+	local timer = timer or require("gmod.timer")
 	coroutine.yield(function(cb) timer.Simple(seconds, cb) end)
 end
 

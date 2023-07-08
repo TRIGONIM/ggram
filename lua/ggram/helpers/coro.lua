@@ -31,7 +31,7 @@ local deferred_to_yield = function(deferred_func)
 	end
 end
 
-local timer_Simple = timer and timer.Simple or require("gmod.timer").Simple
+local timer_Simple = (timer or require("gmod.timer")).Simple
 local wait = function(seconds)
 	coroutine.yield(function(cont)
 		timer_Simple(seconds, cont)

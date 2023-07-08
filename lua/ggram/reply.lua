@@ -1,3 +1,5 @@
+local table_Copy = require("gmod.table").Copy
+
 local REPLY_MT = {} -- чтобы методы можно было вызывать через точку, а не двоеточие
 REPLY_MT.__index = function(self, sMethod)
 	local fMethod = REPLY_MT[sMethod]
@@ -24,7 +26,7 @@ local function resolveFile(file)
 end
 
 function REPLY_MT:sendGeneric(method, additionalParameters)
-	local parameters = table.Copy(self.parameters)
+	local parameters = table_Copy(self.parameters)
 	self.parameters = {}
 
 	parameters.chat_id = self.id
