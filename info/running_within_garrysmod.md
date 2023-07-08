@@ -76,10 +76,13 @@ gg_require_orig = gg_require_orig or require
 -- Override to make "require("deferred")", "require("ggram.middlewares.name")", etc. work.
 function require(path)
 	path = path:gsub("%.", "/")
-	return file.Exists(path .. ".lua", "LUA") and gmod_require_override(path) or gg_require_orig(path)
+	if file.Exists(path .. ".lua", "LUA") then
+		return gmod_require_override(path)
+	end
+	return gg_require_orig(path)
 end
 
-ggram = require("ggram")
+require("ggram")
 loadExtensions("ggram/extensions")
 loadBots("ggram/bots", 1)
 ```
