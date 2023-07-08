@@ -34,9 +34,3 @@ do -- table extension
 
 	table.Copy = ta.Copy
 end
-
-do -- string.Split for extend_message.lua
-	local st = require("gmod.string")
-
-	string.Split = st.Split
-end
