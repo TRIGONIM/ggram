@@ -14,7 +14,7 @@ jobs:
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
-          name: ggram-test # не влияет на require
+          # name: ggram-test # не влияет на require
           license: "MIT"
           summary: "ggram – Lua Telegram Bot Framework"
           detailed_description: |
