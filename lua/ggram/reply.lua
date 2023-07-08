@@ -19,7 +19,7 @@ end
 -- end
 
 local function resolveFile(file)
-	local expr = (istable(file) and file.id) or (isstring(file) and file)
+	local expr = (type(file) == "table" and file.id) or (type(file) == "string" and file)
 	return assert(expr, "Invalid file or file ID")
 end
 
@@ -101,7 +101,7 @@ end
 -----------------
 function REPLY_MT:reply(msg)
 	local msg_id = msg -- id
-	if istable(msg) then msg_id = resolveMessage(msg) end -- msg #todo нужна ли проверка на table, есть в resolve есть?
+	if type(msg) == "table" then msg_id = resolveMessage(msg) end -- msg #todo нужна ли проверка на table, есть в resolve есть?
 
 	self.parameters.reply_to_message_id = msg_id
 	return self
@@ -170,7 +170,7 @@ end
 
 function REPLY_MT:editText(msg, text, mode)
 	local parameters = {text = text, parse_mode = mode}
-	if isstring(msg) then
+	if type(msg) == "string" then
 		parameters["inline_message_id"] = msg
 	else
 		parameters["message_id"] = resolveMessage(msg)
@@ -189,7 +189,7 @@ end
 -- editCaption
 function REPLY_MT:editReplyMarkup(msg)
 	local parameters = {}
-	if isstring(msg) then
+	if type(msg) == "string" then
 		parameters.inline_message_id = msg
 	else
 		parameters.message_id = resolveMessage(msg)

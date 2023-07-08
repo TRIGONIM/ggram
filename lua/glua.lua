@@ -20,15 +20,6 @@ do -- cookie (for polling offsets and session middleware)
 	cookie.Delete    = co.Delete
 end
 
-do -- is* functions
-	local gl = require("gmod.globals")
-
-	isnumber = gl.isnumber
-	isbool   = gl.isbool
-	istable  = gl.istable
-	isstring = gl.isstring
-end
-
 do -- table extension
 	local ta = require("gmod.table")
 
