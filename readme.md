@@ -43,8 +43,8 @@ Additional examples can be found in [/examples](/examples)
 Download this repository and go to the downloaded folder. You can take a look at the contents of the [Dockerfile](/Dockerfile). It does not contain ggram itself. It installs the dependencies to make it work.
 
 ```bash
-# create image
-docker build -t ggramenv:latest .
+# create image. You can choose any Dockerfile from this repo
+docker build -t ggramenv:latest -f Dockerfile_tarantool .
 
 # run example bot (echo.lua)
 # dont forget to change bot token in the file
@@ -72,13 +72,11 @@ Install ggram
 luarocks install ggram
 ```
 
-## 🚀 Creating and launching a bot:
+## 🚀 Creating and launching a bot
 
-The information for Garry's Mod users is stored separately: [click](/info/running_within_garrysmod.md)
-
-1. Create bot.lua file. You can choose any name for the file
-2. Paste the contents of [/examples/echo.lua](/examples/echo.lua) into the file
-3. Run file with `lua bot.lua`
+1. Create bot.lua file. You can choose any name for the file.
+2. Paste the contents of [/examples/echo.lua](/examples/echo.lua) into the file.
+3. Run file with `lua bot.lua`. _If you want to run a bot on a **Garry's Mod** server, then [read this](/info/running_within_garrysmod.md)_.
 4. Check out other examples in the [/examples](/examples) folder.
 
 **If any error was occur, check the [troubleshooting](/info/troubleshooting.md) guide**

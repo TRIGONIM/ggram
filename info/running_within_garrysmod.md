@@ -7,7 +7,7 @@
 ## ↪️ Порядок загрузки
 
 1. /addons/ggram-mod/lua/autorun/ggram-launcher.lua _(код ниже)_
-2. /addons/ggram-mod/lua/`ggram.lua` _(загрузится сама библиотека, поместится в глобальное пространство, чтобы не обязательно было всегда делать `local ggram = require("ggram")`)_
+2. /addons/ggram/lua/ggram.lua _(загрузится сама библиотека, поместится в глобальное пространство, чтобы не обязательно было всегда делать `local ggram = require("ggram")`)_
 3. /addons/ggram-mod/lua/`ggram/extensions/*.lua` _(сюда вы можете поместить любые штучки-дрючки, которые можете захотеть использовать в ботах, например глобальные chat_id, дополнительные методы, хелпер-функции)_
 4. /addons/ggram-mod/lua/`ggram/bots/*/_init.lua` _(папки с вашими ботами. \_init.lua файл в папке будет главным файлом ващего бота. Внутри него другие файлы можно подключить через `include("path")`)_
 
@@ -82,7 +82,7 @@ function require(path)
 	return gg_require_orig(path)
 end
 
-require("ggram")
+ggram = require("ggram")
 loadExtensions("ggram/extensions")
 loadBots("ggram/bots", 1)
 ```
