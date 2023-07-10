@@ -48,16 +48,27 @@ function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 
 	return request(self.token, method, parameters_, http_struct_overrides_, self.options.base_url)
 		:next(nil, function(err)
-			ctx.error = err
+			ctx.error = err -- array, look at rejections in ggram/request.lua
 			return self.handle_error(ctx)
 		end)
 end
 
--- override me. p.s. ctx is not the same as in middlewares. Look inside bot:call_method
-local log_error = require("ggram.helpers.log_error") -- #todo встроить сюда в код. Отдельный файл удалить
+-- override me. p.s. ctx is not the same as in middlewares. Look inside BOT_MT:call_method
 function BOT_MT:handle_error(ctx)
-	log_error(self.token, ctx.method, ctx.parameters, ctx.error)
-	error(ctx.error)
+	local print_table = PrintTable or require("gmod.globals").PrintTable
+	print(os.date("%Y-%m-%d %H:%M:%S") .. " [ggram] Error during request \\/")
+
+	local full_info = {
+		bot_name = self.username,
+		bot_id = self.id,
+		api_method = ctx.method,
+		request_params = ctx.parameters,
+		bot_options = ctx.options,
+		error = ctx.error,
+	}
+
+	print_table(full_info)
+	error(ctx.error) -- pass error to other :next(nil, cb) handlers
 end
 
 -- Ошибка в обработке команды/callback_query и тд.

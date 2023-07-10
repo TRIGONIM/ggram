@@ -26,7 +26,7 @@ function ggram.bot(token, options_)
 		},
 	}, require("ggram.bot"))
 
-	require("ggram.extensions.basic_handlers") -- #todo совместить с bot.lua ?
+	require("ggram.extensions.basic_handlers") -- inject additional bot: methods
 
 	return bot
 end
