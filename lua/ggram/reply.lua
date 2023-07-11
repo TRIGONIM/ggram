@@ -1,4 +1,4 @@
-local table_Copy = require("gmod.table").Copy
+local table_Copy = (table or require("gmod.table")).Copy
 
 local REPLY_MT = {} -- чтобы методы можно было вызывать через точку, а не двоеточие
 REPLY_MT.__index = function(self, sMethod)
