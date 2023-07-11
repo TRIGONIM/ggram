@@ -2,8 +2,6 @@
 
 # ggram – Lua Telegram Bot Framework
 
-> 🇬🇧 🇺🇸 NEED TRANSLATORS. Please, make pull requests if you wanna help. Temporarily I recommend [deepl](https://www.deepl.com/translator) or ChatGPT to translate [this page](https://raw.githubusercontent.com/TRIGONIM/ggram/main/readme.md)
-
 <p align="left">
 	<img src="https://img.shields.io/github/languages/code-size/TRIGONIM/ggram">
 	<img src="https://img.shields.io/github/license/TRIGONIM/ggram">
