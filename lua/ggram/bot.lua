@@ -1,3 +1,8 @@
+--- Объект бота, создается через ggram()
+---
+--- ⚠️ Все методы здесь определяются через bot:method, но для вызова нужно использовать bot.method
+-- @classmod Bot
+
 local BOT_MT = {}
 BOT_MT.__index = function(self, sMethod)
 	local fMethod = BOT_MT[sMethod]
@@ -15,6 +20,12 @@ local function wrapUpdate(upd) -- > ctx
 	return wrapped_m
 end
 
+--- Возвращает объект-конструктор запроса к Telegram API.
+--- Прикрепляется к каждому ctx объекту.
+-- @function reply
+-- @tparam int chat_id ID пользователя, чата, канала, для которого будет выполняться API запрос
+-- @treturn Reply Перейдите по ссылке, чтобы посмотреть примеры использования
+-- @usage bot.reply(123456).text("Hello")
 function BOT_MT:reply(chat_id)
 	if not chat_id then
 		local inf, path = debug.getinfo(2, "lS"), "unknown place"
@@ -32,50 +43,106 @@ function BOT_MT:reply(chat_id)
 	}, require("ggram.reply"))
 end
 
+--- Выполняет http запрос к Telegram API
+-- @function call_method
+-- @tparam string method название API метода. Например, sendMessage
+-- @tparam table parameters ключ-значение таблица с параметрами запроса. Например, {chat_id = 12345, text = "Hello"}
+-- @tparam[opt] table http_struct_overrides ggram использует функцию HTTP. Вы можете перезаписать любой параметр, который перечислен тут: https://wiki.facepunch.com/gmod/Structures/HTTPRequest
+-- @treturn Promise deferred object
+-- @usage bot.call_method("setWebhook", {url = "https://example.com"})
 local request = require("ggram.request").request
 function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 	try_ = try_ or 1
 
-	local ctx = {
+	--- Таблица, которая передается в bot.handle_error(err_ctx).
+	-- @table ErrCtx
+	-- @tfield func retry, при вызове которой запрос повторится с теми же параметрами (полезно при retry-after ошибках)
+	-- @tfield string method API метод, который бот пытался выполнить при запросе
+	-- @tfield table parameters таблица параметров
+	-- @tfield int try номер попытки выполнения запроса
+	-- @tfield table error ошибка в чистом виде, которая получена от Telegram после выполнения запроса
+	local err_ctx = {
 		retry = function()
 			return self.call_method(method, parameters_, http_struct_overrides_, try_ + 1)
 		end,
 		method = method,
 		parameters = parameters_,
-		options = options_,
 		try = try_,
 	}
 
 	return request(self.token, method, parameters_, http_struct_overrides_, self.options.base_url)
 		:next(nil, function(err)
-			ctx.error = err -- array, look at rejections in ggram/request.lua
-			return self.handle_error(ctx)
+			err_ctx.error = err -- array, look at rejections in ggram/request.lua
+			return self.handle_error(err_ctx)
 		end)
 end
 
--- override me. p.s. ctx is not the same as in middlewares. Look inside BOT_MT:call_method
-function BOT_MT:handle_error(ctx)
+--- Обработка ошибки запроса к Telegram API.
+--- Функция для оверрайда. Вызывается, когда Telegram вернул ошибку после запроса.
+--- По умолчанию принтит все данные об ошибке в консоль
+-- @function handle_error
+-- @tparam ErrCtx err_ctx параметр отличается от обычного ctx
+-- @usage
+-- local defer = require("deferred")
+-- function bot.handle_error(ctx)
+-- 	local err = ctx.error
+-- 	if err.extra and err.extra.http_error then
+-- 		return defer.sleep(5):next(ctx.retry)
+-- 	elseif err.error_code == 429 then
+-- 		return defer.sleep(err.parameters.retry_after):next(ctx.retry)
+-- 	end
+-- 	error(err)
+-- end
+function BOT_MT:handle_error(err_ctx)
 	local print_table = PrintTable or require("gmod.globals").PrintTable
 	print(os.date("%Y-%m-%d %H:%M:%S") .. " [ggram] Error during request \\/")
 
 	local full_info = {
 		bot_name = self.username,
 		bot_id = self.id,
-		api_method = ctx.method,
-		request_params = ctx.parameters,
-		bot_options = ctx.options,
-		error = ctx.error,
+		api_method = err_ctx.method,
+		request_params = err_ctx.parameters,
+		bot_options = err_ctx.options,
+		error = err_ctx.error,
 	}
 
 	print_table(full_info)
-	error(ctx.error) -- pass error to other :next(nil, cb) handlers
+	error(err_ctx.error) -- pass error to other :next(nil, cb) handlers
 end
 
--- Ошибка в обработке команды/callback_query и тд.
+--- Обработка Lua ошибок внутри хендлеров.
+--- Функция для оверрайда. Вызывается, когда pcall(handler) получил ошибку.
+--- Ошибка в обработке команды/callback_query и тд.
+-- @function handle_middleware_error
+-- @tparam any err Результат неудачного выполнения pcall на хендлере
+-- @usage
+-- -- Отправка данных об ошибке в Telegram через отдельный бот
+-- local report_bot = require("ggram")("1234:token")
+-- local BOT_MT = require("ggram.bot")
+-- function BOT_MT:handle_middleware_error(err)
+-- 	local errtrace = "@" .. self.username .. " error: " .. debug.traceback(err)
+-- 	report_bot.reply(123456).text(errtrace) -- chat_id
+-- 	print("[ggram] " .. errtrace)
+-- end
 function BOT_MT:handle_middleware_error(err)
 	print("[ggram] middleware error: " .. debug.traceback(err))
 end
 
+--- Добавляет в бот хендлер на указанных условиях.
+--- На основе этой функции созданы все хендлеры: bot.command, bot.callback, bot.update и т.д.
+-- @function on
+-- @tparam func fFilter сюда передается ctx. Если вернуть true, то выполнится handler(ctx)
+-- @tparam func handler выполнятся, если fFilter вернул true
+-- @tparam string uid уникальный идентификатор хендлера. Не должен повторяться для одного бота
+-- @treturn Bot self
+-- @usage
+-- -- Вот так реализован bot.command хендлер:
+-- local BOT_MT = require("ggram.bot")
+-- function BOT_MT:command(name, handler)
+-- 	return self.on(function(ctx)
+-- 		return ctx.command == name
+-- 	end, handler, "command_" .. name)
+-- end
 function BOT_MT:on(fFilter, handler, uid)
 	local priority = self.handler_index[uid]
 	priority = priority or (#self.handlers + 1)
@@ -85,10 +152,29 @@ function BOT_MT:on(fFilter, handler, uid)
 	return self
 end
 
+--- Выполняется, когда бот получает update.
+--- Можно вызывать самостоятельно, чтобы организовать вебхуки или свою реализацию поллинга.
+--- Внутри получает подходящие под update хендлеры и передает им update объект, обернутый в ctx.
+-- @function handle_update
+-- @tparam table UPD update объект от Telegram
 local extend_callback = require("ggram.middlewares.extend_callback")
 local extend_message  = require("ggram.middlewares.extend_message")
 local coroutinize     = require("ggram.helpers.coro").coroutinize
 function BOT_MT:handle_update(UPD)
+	--- context (ctx) обертка для update объектов. Передается во все .on хендлеры.
+	--- Упрощает доступ к полю message внутри update объекта. Вместо ctx.update.message.text можно ctx.text
+	--- @todo вынести в отдельный файл context.lua, как класс
+	-- @table ctx
+	-- @tfield table update Оригинальный update объект от Telegram
+	-- @tfield Bot bot быстрый доступ к боту по ctx.bot вместо self
+	-- @tfield Reply reply быстрый API запрос (ctx.reply.text("hello"))
+	-- @tfield[opt] string command Если это команда, то через ctx.command можно получить ее название. Для /TEST@botname .command будет == "test"
+	-- @tfield[opt] string username /TEST@botname > "botname"
+	-- @tfield[opt] func args /TEST@botname a b c > {"a", "b", "c"}
+	-- @tfield[opt] bool mine адресовалась ли команда именно этому боту. Если наш бот называется @ourbot, то для /cmd@otherbot .mine будет false. Если username не указывался, то mine будет всегда true
+	-- @tfield[opt] bool exclusive если команда указывалась с @botname, то .exclusive == .mine. Если без @botname, то .exclusive == true, если написано боту в ЛС
+	-- @tfield[opt] func json для callback_query кнопок это превратит json с .data в таблицу
+	-- @tfield[opt] func answer для callback_query это упрощение вызова API answerCallbackQuery. Подробнее лучше смотреть в extend_callback.lua
 	local ctx = wrapUpdate(UPD)
 	ctx.bot = self
 
@@ -103,26 +189,12 @@ function BOT_MT:handle_update(UPD)
 		end
 	end
 
-	ctx.chain = {} -- промежуточные результаты выполнений
-
 	coroutinize(function()
 		for _, handler in ipairs(suitable_handlers) do
 			local ok, res = pcall(handler, ctx)
 			if not ok then self.handle_middleware_error(res) end
-			table.insert(ctx.chain, res or "empty")
 			if res == false then break end -- остальные хендлеры не обрабатываем
 		end
-	end)
-end
-
-function BOT_MT:init()
-	return self.call_method("getMe", {}):next(function(res)
-		self.id         = res.id
-		self.username   = res.username
-		self.first_name = res.first_name
-		self.last_name  = res.last_name
-
-		return res
 	end)
 end
 

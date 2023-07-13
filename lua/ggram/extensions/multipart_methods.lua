@@ -1,6 +1,4 @@
---[[-------------------------------------------------------------------------
-	reply. methods
----------------------------------------------------------------------------]]
+-- reply.methods
 
 local json_encode = (util or require("gmod.util")).TableToJSON
 local Multipart = require("multipart")
@@ -8,6 +6,12 @@ local Multipart = require("multipart")
 local RESP = require("ggram.reply")
 
 local format_parameters = require("ggram.request").format_parameters
+-- Аналог sendGeneric, но для multipart
+-- @todo v3 удалить этот метод, интегрировать в sendGeneric
+-- @function sendMultipart
+-- @tparam string method Telegram API метод
+-- @tparam table form_data сгенерировано через multipart.lua
+-- @treturn Promise deferred object
 function RESP:sendMultipart(method, form_data)
 	self.parameters.chat_id = self.id
 

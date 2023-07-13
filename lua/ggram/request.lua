@@ -1,3 +1,4 @@
+-- export: {request(), format_parameters()}
 
 local deferred         = deferred or require("deferred")
 local HTTP             = HTTP or require("gmod.globals").HTTP -- https://github.com/TRIGONIM/lua-requests-async

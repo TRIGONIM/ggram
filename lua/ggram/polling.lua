@@ -1,3 +1,5 @@
+-- require("ggram.polling").start(bot)
+
 local cookie = cookie or require("gmod.cookie")
 
 local coro  = require("ggram.helpers.coro")

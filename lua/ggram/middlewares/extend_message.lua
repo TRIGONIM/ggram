@@ -1,4 +1,4 @@
---[[-------------------------------------------------------------------------
+--[[
 	Example for /cmd@name_bot a b c
 
 	ctx.args() > {a, b, c}
@@ -8,8 +8,8 @@
 	ctx.mine determines if this command exactly for this bot or either
 	ctx.exclusive 100% for me or another candidates are possible?
 
-	-- #todo rename to extend_command.lua. Move out ctx.reply = ctx.bot.reply(msg.chat.id)
----------------------------------------------------------------------------]]
+	@todo rename to extend_command.lua. Move out ctx.reply = ctx.bot.reply(msg.chat.id)
+]]
 
 local string_Split = string.Split or require("gmod.string").Split
 
