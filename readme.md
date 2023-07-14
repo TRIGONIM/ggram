@@ -32,7 +32,7 @@ Additional examples can be found in [/examples](/examples)
 - Does NOT require any third-party .dll or WEB scripts
 - Very minimalistic and easily expandable
 - If Telegram adds methods that are not already in the bot, they are very easy to add with a 3-line [module](/info/making_extensions.md)
-- [Possibility](/info/sending_multipart.md) sending animations, documents, images
+- [Possibility](/examples/send_multipart.lua) for sending animations, documents, images
 
 ## 🛠️ Installation
 

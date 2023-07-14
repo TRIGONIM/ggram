@@ -39,7 +39,8 @@ function BOT_MT:reply(chat_id)
 	return setmetatable({
 		bot = self,
 		id  = chat_id,
-		parameters = {}
+		parameters = {},
+		files = {}, -- for multipart content
 	}, require("ggram.reply"))
 end
 

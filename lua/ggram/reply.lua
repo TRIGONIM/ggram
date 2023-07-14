@@ -33,24 +33,76 @@ end
 -- 	return tonumber(chat) or chat.id
 -- end
 
-local function resolveFile(file)
-	local expr = (type(file) == "table" and file.id) or (type(file) == "string" and file)
-	return assert(expr, "Invalid file or file ID")
+-- local function resolveFile(file)
+-- 	local expr = (type(file) == "table" and file.id) or (type(file) == "string" and file)
+-- 	return assert(expr, "Invalid file or file ID")
+-- end
+
+-- helper for multipart functions
+local foobar = function(reply, file_key, file)
+	if type(file) == "table" then -- сокращение для reply.setFile
+		reply.setFile(file_key, file[1], file[2] or "any")
+		return nil
+	end
+	return file -- file_id || url || etc
 end
 
 --- Отправить запрос на Telegram API
 -- @string method API метод
 -- @tparam[opt] table additionalParameters набор параметров, которые не были указаны через reply.setParameter
+-- @see sendMultipart
 function REPLY_MT:sendGeneric(method, additionalParameters)
 	local parameters = table_Copy(self.parameters)
 	self.parameters = {}
 
 	parameters.chat_id = self.id
-	for k,v in pairs(additionalParameters or {}) do -- merge
+	for k, v in pairs(additionalParameters or {}) do -- merge
 		parameters[k] = v
 	end
 
 	return self.bot.call_method(method, parameters)
+end
+
+--- Отправить запрос, используя multipart/form-data
+--- Аналогично до sendGeneric, но умеет отправлять файлы
+-- @string method API метод
+-- @tparam[opt] table additionalParameters набор параметров, которые не были указаны через reply.setParameter
+-- @see sendGeneric, setFile, photo, mediaGroup
+function REPLY_MT:sendMultipart(method, additionalParameters)
+	local parameters = table_Copy(self.parameters)
+	self.parameters = {}
+
+	parameters.chat_id = self.id
+	for k, v in pairs(additionalParameters or {}) do -- merge
+		parameters[k] = v
+	end
+	parameters = require("ggram.request").format_parameters(parameters) -- media, reply_markup
+
+	local form_data = require("multipart")()
+
+	for k, v in pairs(parameters) do
+		-- {caption = "bla bla"}
+		form_data:set_simple(k, v)
+	end
+
+	for key, f in pairs(self.files) do
+		form_data:set_simple(key, f[1], f[2], f[3]) -- raw_content, file_name[opt], content_type[opt]
+	end
+
+	return self.bot.call_method(method, nil, {
+		body = form_data:tostring(),
+		type = "multipart/form-data;charset=utf-8;boundary=" .. Multipart.RANDOM_BOUNDARY
+	})
+end
+
+--- Отправить запрос.
+--- Если есть self.files, то использует sendMultipart, иначе через sendGeneric
+-- @string method API метод
+-- @tparam[opt] table additionalParameters набор параметров, которые не были указаны через reply.setParameter
+-- @see sendGeneric, sendMultipart
+function REPLY_MT:send(method, additionalParameters)
+	local send = next(self.files) and self.sendMultipart or self.sendGeneric
+	return send(method, additionalParameters)
 end
 
 -- *methods functions*
@@ -75,28 +127,70 @@ function REPLY_MT:html(text)
 end
 
 --- Отправка sendPhoto
-function REPLY_MT:photo(file, caption, captionMode)
-	return self.sendGeneric("sendPhoto", {photo = resolveFile(file), caption = caption, parse_mode = captionMode})
+-- @usage
+-- -- Отправка по ссылке
+-- ctx.reply.photo("https://file.def.pm/n9784Dep.jpg")
+-- -- Отправка multipart
+-- ctx.reply.setFile("photo", raw_content, "anyname").photo() -- raw_content = io.open("file.png", "r"):read("*all")
+-- -- Альтернативный вариант
+-- ctx.reply.photo({raw_data})
+function REPLY_MT:photo(file_url_or_id, caption, captionMode)
+	return self.send("sendPhoto", {photo = foobar(self, "photo", file_url_or_id), caption = caption, parse_mode = captionMode})
 end
 
 -- audio
--- document
+
+--- Отправка sendDocument
+-- @usage ctx.reply.document({raw_content, "file.zip"})
+function REPLY_MT:document(file_url_or_id, caption, captionMode)
+	return self.send("sendDocument", {document = foobar(self, "document", file_url_or_id), caption = caption, parse_mode = captionMode})
+end
+
 -- sticker
+
 --- Отправка sendVideo
-function REPLY_MT:video(file, caption, captionMode, duration, width, height, streaming)
-	return self.sendGeneric("sendVideo", {video = file, duration = duration, caption = caption, parse_mode = captionMode, width = width, height = height, supports_streaming = streaming})
+-- @see photo
+-- @usage
+-- -- https://github.com/TRIGONIM/lua-requests-async
+-- local http_fetch = require("http_async").get
+-- local bot = require("ggram")("token") -- your bot's token
+-- local reply = bot.reply(123456) -- your chat_id
+-- http_fetch("https://file.def.pm/file_50mb.mp4", function(video)
+-- 	http_fetch("https://file.def.pm/bfUL7owI.jpg", function(thumb)
+-- 		reply.setFile("thumbnail", thumb, "thumb.jpg").video({video, "file.mp4"}, "*bold* caption", "markdown", 29, 1920, 1080)
+-- 	end)
+-- end)
+
+function REPLY_MT:video(file_url_or_id, caption, captionMode, duration, width, height, streaming)
+	return self.send("sendVideo", {video = foobar(self, "video", file_url_or_id), duration = duration, caption = caption, parse_mode = captionMode, width = width, height = height, supports_streaming = streaming})
 end
 
 --- Отправка sendAnimation
-function REPLY_MT:animation(file, caption, captionMode)
-	return self.sendGeneric("sendAnimation", {animation = resolveFile(file), caption = caption, parse_mode = captionMode})
+-- @see photo
+function REPLY_MT:animation(file_url_or_id, caption, captionMode)
+	return self.send("sendAnimation", {animation = foobar(self, "animation", file_url_or_id), caption = caption, parse_mode = captionMode})
 end
+
 -- videoNote
 -- voice
 
 --- Отправка sendMediaGroup
-function REPLY_MT:mediaGroup(media)
-	return self.sendGeneric("sendMediaGroup", {media = media})
+--- Может отправлять как raw_data файлы, так и файлы по file_id и ссылке
+-- @usage
+-- local media = {
+-- 	{type = "photo", media = "https://file.def.pm/n9784Dep.jpg", caption = "cap"}, -- sending photo by url
+-- 	{type = "photo", media = {raw_data}}, -- sending raw_data photo
+-- }
+-- ctx.reply.mediaGroup(media)
+function REPLY_MT:mediaGroup(media_group) -- {{type = "photo", media = RAW_DATA, [caption]...}, ...}
+	for i, f in ipairs(media_group) do
+		if type(f.media) == "table" then -- is_multipart
+			local file_row = "unique" .. i
+			self.setFile(file_row, f.media[1], f.media[2] or "anydata?")
+			f.media = "attach://" .. file_row
+		end
+	end
+	return self.send("sendMediaGroup", {media = media_group})
 end
 
 --- Отправка sendLocation
@@ -174,6 +268,13 @@ function REPLY_MT:setParameter(key, value)
 	return self
 end
 
+--- Модификатор, добавляет файл для отправки через multipart/form-data
+-- @see photo, mediaGroup
+function REPLY_MT:setFile(name, raw_content, file_name, content_type)
+	self.files[name] = {raw_content, file_name, content_type}
+	return self
+end
+
 --- Модификатор, добавляет параметр reply_to_message_id
 -- @usage ctx.reply.reply(ctx).text("Reply to message")
 function REPLY_MT:reply(msg)
@@ -241,10 +342,16 @@ function REPLY_MT:disablePreview(bDisable)
 	return self
 end
 
+--- Модификатор, запрещает пересылать или сохранять контент на устройство
+-- @usage ctx.reply.protect().photo("https://file.def.pm/n9784Dep.jpg")
+function REPLY_MT:protect(bProtect)
+	self.parameters["protect_content"] = bProtect ~= false
+	return self
+end
+
 --- Модификатор, добавляет параметр disable_notification (отправка сообщений без звука)
 function REPLY_MT:silent(bMute)
 	self.parameters["disable_notification"] = bMute ~= false
-
 	return self
 end
 
