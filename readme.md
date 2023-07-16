@@ -81,4 +81,4 @@ luarocks install ggram
 
 ## 📚 Docs
 
-All the docs are collected here: [click](/info)
+All the docs are collected [here](https://trigonim.github.io/ggram/) and useful info [here](/info)
