@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><strong>inline_keyboard.lua</strong></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>inline_keyboard.lua</h2>
+<pre>
+<span class="comment">-- https://core.telegram.org/bots/2-0-intro#new-inline-keyboards
+</span>
+<span class="keyword">local</span> json_encode = (util <span class="keyword">or</span> <span class="global">require</span>(<span class="string">"gmod.util"</span>)).TableToJSON
+<span class="keyword">local</span> ggram = <span class="global">require</span>(<span class="string">"ggram"</span>)
+
+<span class="keyword">local</span> bot = <span class="function-name">ggram</span>(<span class="string">"123456789:QWERTYUIOPASDFGHJKLZXCVBNM"</span>)
+<span class="global">require</span>(<span class="string">"ggram.polling"</span>).<span class="function-name">start</span>(bot)
+
+bot.<span class="function-name">command</span>(<span class="string">"start"</span>, <span class="keyword">function</span>(ctx)
+	ctx.reply.<span class="function-name">inlineKeyboard</span>({
+		{
+			{text = <span class="string">"Line 1, row 1"</span>, callback_data = <span class="string">"any"</span>},
+			{text = <span class="string">"Line 1, row 2"</span>, url = <span class="string">"https://example.com"</span>}
+		},
+		{
+			{text = <span class="string">"Line 2, row 1"</span>, callback_data = <span class="string">"any2"</span>}
+		}
+	}).<span class="function-name">text</span>(<span class="string">"Hello world!"</span>)
+<span class="keyword">end</span>)
+
+
+bot.<span class="function-name">callback</span>(<span class="keyword">function</span>(ctx)
+	<span class="keyword">local</span> query = ctx.callback_query
+	<span class="keyword">if</span> query.data == <span class="string">"any"</span> <span class="keyword">then</span>
+		ctx.<span class="function-name">answer</span>({text = <span class="string">"It's inline answer"</span>})
+
+	<span class="keyword">else</span>
+		ctx.reply.<span class="function-name">text</span>(<span class="string">"You just pressed button in second row. ctx.update:"</span>):<span class="global">next</span>(<span class="keyword">function</span>()
+			<span class="keyword">return</span> ctx.reply.<span class="function-name">markdown</span>(<span class="string">"```\n"</span> .. <span class="function-name">json_encode</span>(ctx.update, <span class="keyword">true</span>) .. <span class="string">"\n```"</span>)
+		<span class="keyword">end</span>):<span class="global">next</span>(<span class="keyword">function</span>()
+			<span class="keyword">return</span> ctx.reply.<span class="function-name">text</span>(<span class="string">"Json payload above 👆"</span>)
+		<span class="keyword">end</span>):<span class="global">next</span>(<span class="keyword">function</span>()
+			<span class="keyword">return</span> ctx.reply.<span class="function-name">text</span>(<span class="string">"The third message"</span>)
+		<span class="keyword">end</span>)
+	<span class="keyword">end</span>
+<span class="keyword">end</span>, <span class="string">"callback_example"</span>)
+
+ggram.<span class="function-name">idle</span>()</pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

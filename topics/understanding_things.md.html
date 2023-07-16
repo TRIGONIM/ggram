@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#context__ctx_">context (ctx) </a></li>
+<li><a href="#middlewares">middlewares </a></li>
+<li><a href="#reply">reply </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><strong>understanding_things</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+
+
+<h1>Описание сущностей</h1>
+
+<blockquote>
+    <p>Блок для продвинутых пользователей для улучшенного понимания, как тут все устроено</p>
+</blockquote>
+
+
+<p><a name="context__ctx_"></a></p>
+<h2>context (ctx)</h2>
+<p><img align="left" width="450" src="https://img.qweqwe.ovh/1631826032690.jpg"></p>
+
+<p>Любое сообщение, которое получит ваш бот называется <a href="https://core.telegram.org/bots/api#update">update</a>. Оно оборачивается в обертку, называемой context (ctx). ctx это по сути и есть update объект с некоторыми дополнительными полями для упрощения взаимодействия с ботом (быстрые ответы и тд)</p>
+
+<p>context объект передается всем обработчикам первым аргументом, например в <code>bot.command()</code>, <code>bot.update()</code>, <code>bot.message()</code> и т.д.</p>
+
+<p>Несколько примеров использования ctx:</p>
+
+<ol>
+    <li><p><code>ctx.chat.id</code> - получение значения <code>update.message.chat.id</code></p></li>
+    <li><p>```lua</p>
+
+<pre>
+<span class="comment">-- /example foo bar baz
+</span>bot.<span class="function-name">command</span>(<span class="string">"example"</span>, <span class="keyword">function</span>(ctx)
+    <span class="keyword">local</span> args = ctx.<span class="function-name">args</span>()
+    ctx.reply.<span class="function-name">text</span>( <span class="global">table</span>.<span class="function-name">concat</span>(args, <span class="string">":"</span>) ) <span class="comment">-- foo:bar:baz
+</span><span class="keyword">end</span>)
+```
+</pre>
+
+<h1>handlers (Обработчики событий)</h1>
+<p><img align="left" width="450" src="https://img.qweqwe.ovh/1631829101051.jpg"></p></li>
+</ol>
+
+<p>По своей сути эти фильтры апдейтов. Когда вы пишете <code>bot.command(&quot;start&quot;, function(ctx) end)</code>, то добавляете фильтр к вашему боту, который выполнится только если в update найдена команда <em>/start</em>. <code>bot.update(callback, uid)</code> это тоже фильтр, но который выпоняется всегда.</p>
+
+<p>Доступные фильтры можно посмотреть в <a href="/lua/ggram/extensions/basic_handlers.lua">extensions/basic_handlers.lua</a>, а также написать свои (например, для перехвата гифок или упоминаний и тд)</p>
+
+<p><a name="middlewares"></a></p>
+<h2>middlewares</h2>
+<p><img align="left" width="450" src="https://img.qweqwe.ovh/1631829516145.jpg"></p>
+
+<p>Middlewares это когда обработчик событий не просто присылает вам в ответ "Привет", а еще может вмешаться в обработку апдейта, добавив новые данные в context, остановить обработку следующих обработчиков, банально залогировать запрос, ничего не меняя и тд. Все Middlewares это и есть <strong>те самые обработчики</strong> событий, просто иногда воспринимаются как модули.</p>
+
+<blockquote>
+    <p>Все middlewares выполняются в том порядке, в котором вы их добавили и могут влиять на выполнение последующих</p>
+</blockquote>
+
+<p>Пример:</p>
+
+
+<pre>
+    <span class="comment">-- Перехватывает все запросы к боту и добавляет к контексту ctx.key
+</span> bot.<span class="function-name">update</span>(<span class="keyword">function</span>(ctx) ctx.key = <span class="string">"value"</span> <span class="keyword">end</span>, <span class="string">"foo"</span>)
+
+    <span class="comment">-- Выполнится, если вы напишете боту /example
+</span> <span class="comment">-- И споскольку предыдущий middleware добавил поле key к ctx, то print(ctx.key) выведет "value"
+</span> <span class="comment">-- Обратите внимание на return false
+</span> bot.<span class="function-name">command</span>(<span class="string">"example"</span>, <span class="keyword">function</span>(ctx) <span class="global">print</span>(ctx.key) <span class="keyword">return</span> <span class="keyword">false</span> <span class="keyword">end</span>)
+
+    <span class="comment">-- Еще один обработчик событий, который не выполнится, если выполнится предыдущий, так как в нем мы сделали return false
+</span> bot.<span class="function-name">update</span>(<span class="keyword">function</span>(ctx) <span class="global">print</span>(<span class="string">"Вы видите этот текст только, если не написали /example"</span>) <span class="keyword">end</span>, <span class="string">"bar"</span>)
+</pre>
+
+
+<p>Middlewares позволяют управлять потоком запросов, модифицируя их на лету. К примеру, можно сделать middleware авторизации, rate-limit запросов, дополнительные методы для context и тд</p>
+
+
+<pre>
+<span class="comment">-- Это middleware
+</span><span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">attach_player</span>(ctx)
+    <span class="keyword">if</span> ctx.message <span class="keyword">and</span> ctx.message.from <span class="keyword">then</span>
+        ctx.steamid = sql.<span class="function-name">QueryValue</span>(<span class="string">"SELECT steamid FROM users WHERE telegram_id = "</span> .. ctx.message.from.id) <span class="comment">-- таблица выдумана
+</span>     ctx.player  = player.<span class="function-name">GetBySteamID</span>(ctx.steamid) <span class="comment">-- Если игрок не на сервере, то тут будет false
+</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- Это тоже middleware
+</span><span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">restrict_access_for_non_admins</span>(ctx)
+    <span class="keyword">if</span> <span class="keyword">not</span> (ctx.player <span class="keyword">and</span> ctx.player:<span class="function-name">IsSuperAdmin</span>()) <span class="keyword">then</span>
+        ctx.reply.<span class="function-name">text</span>(<span class="string">"Бот только для администраторов"</span>)
+        <span class="keyword">return</span> <span class="keyword">false</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- handlers
+</span>bot.<span class="function-name">update</span>(attach_player, <span class="string">"attach_player"</span>)
+bot.<span class="function-name">update</span>(restrict_access_for_non_admins, <span class="string">"check_access"</span>)
+
+bot.<span class="function-name">command</span>(<span class="string">"ban"</span>, <span class="keyword">function</span>(ctx)
+    ctx.reply.<span class="function-name">text</span>(<span class="string">"Вы админ, если смогли выполнить эту команду"</span>)
+<span class="keyword">end</span>)
+</pre>
+
+
+<p>Примеры некоторых подключаемых middlewares можно найти в папке <a href="/lua/ggram/middlewares">/middlewares</a>.</p>
+
+<p><a name="reply"></a></p>
+<h2>reply</h2>
+<p><img align="left" width="450" src="https://img.qweqwe.ovh/1631829390410.jpg"></p>
+
+<p>Этот объект упрощает <a href="https://core.telegram.org/bots/api#available-methods">отправку запросов</a> к серверам Telegram. Отправка текста, изображений, стикеров, <strong>удаление сообщений</strong> и тд происходит через reply.</p>
+
+<p>.reply присваивается большинству <a href="https://core.telegram.org/bots/api#update">updates</a> и получить к нему доступ можно через ctx.reply</p>
+
+<blockquote>
+    <p>Если нужно выполнить запрос, например отправить сообщение не из контекста, используйте <code>bot.reply(chat_id).text(&quot;Hello&quot;)</code></p>
+</blockquote>
+
+<p>Доступные методы можно увидеть в файле <a href="/lua/ggram/reply.lua">reply.lua</a>.</p>
+
+
+<hr/>
+<blockquote>
+    <p><em>Если остались вопросы, вы можете задать их в Telegram @amd</em>nick или создать Issue_</p>
+</blockquote>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

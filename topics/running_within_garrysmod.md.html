@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#______________________________________">↪️ Порядок загрузки </a></li>
+<li><a href="#__________________________________________">ℹ️ Описание структуры </a></li>
+<li><a href="#________________________________">🤖 Код загрузчика </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><strong>running_within_garrysmod</strong></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+
+<h1>Запуск на Garry's Mod сервере</h1>
+
+<blockquote>
+    <p>⚠️ В Garry's Mod немного другие принципы структуризации файлов, нежели в чистом Lua. В гмоде не принято сверху каждого файла делать какие-либо <code>require()</code>, но принято все помещать в глобальное пространство. Несмотря на то, что ggram делается с уклоном на традиционность Lua, ниже приводится пример, который делает ggram глобальным, а подгрузку ботов и расширений не опциональной, а автоматической, как принято в Garry's Mod.</p>
+</blockquote>
+
+<p>Снизу будет пример загрузчика, благодаря которому я запускал код всех ботов сразу.</p>
+
+<p><a name="______________________________________"></a></p>
+<h2>↪️ Порядок загрузки</h2>
+
+<ol>
+    <li>/addons/ggram-mod/lua/autorun/ggram-launcher.lua <em>(код ниже)</em></li>
+    <li>/addons/ggram/lua/ggram.lua _(загрузится сама библиотека, поместится в глобальное пространство, чтобы не обязательно было всегда делать <code>local ggram = require(&quot;ggram&quot;)</code>)_</li>
+    <li>/addons/ggram-mod/lua/<code>ggram/extensions/*.lua</code> <em>(сюда вы можете поместить любые штучки-дрючки, которые можете захотеть использовать в ботах, например глобальные chat</em>id, дополнительные методы, хелпер-функции)_</li>
+    <li>/addons/ggram-mod/lua/<code>ggram/bots/*/_init.lua</code> _(папки с вашими ботами. _init.lua файл в папке будет главным файлом ващего бота. Внутри него другие файлы можно подключить через <code>include(&quot;path&quot;)</code>)_</li>
+</ol>
+
+<p><a name="__________________________________________"></a></p>
+<h2>ℹ️ Описание структуры</h2>
+
+<p><img align="left" width="450" src="https://file.def.pm/iAllq439.jpg"></p>
+
+<h3>/extensions</h3>
+<p>Директория, хранящая в себе файлы, которые должны расширить самый базовый функционал всех ботов. Это могут быть модификаторы метатаблиц ботов, какие-то ENUM константы, функции-утилиты, например <code>escapeMarkdown(text)</code> и т.д. Эти файлы грузятся до загрузки самих ботов</p>
+
+<h3>/bots</h3>
+<p>Директория, в которой вы должны хранить код ботов. Для каждого отдельного бота нужно создать свою поддиректорию. В <code>/bots/{anyname}</code> обязательно должен быть файл _init.lua — этот файл будет загружен при include вашего бота. Вы можете создавать дополнительные файлы в <code>/bots/{botname}</code> и инклюдить их самостоятельно из-под _init.lua.</p>
+
+<hr/>
+
+
+<p><a name="________________________________"></a></p>
+<h2>🤖 Код загрузчика</h2>
+
+<p>Разместить по пути <code>addons/ggram-mod/lua/autorun/ggram-launcher.lua</code></p>
+
+
+<pre>
+<span class="comment">-- This file should be shared for loading prior to SERVER
+</span><span class="comment">-- If it is loaded too late, ggram-dependent scripts may throw errors
+</span><span class="keyword">if</span> CLIENT <span class="keyword">then</span> <span class="keyword">return</span> <span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">loadBots</span>(path, iDeep)
+    iDeep = iDeep <span class="keyword">or</span> <span class="number">0</span>
+
+    <span class="keyword">local</span> files,dirs = file.<span class="function-name">Find</span>(path .. <span class="string">"/*"</span>,<span class="string">"LUA"</span>)
+    <span class="keyword">for</span> _,f <span class="keyword">in</span> <span class="global">ipairs</span>(files) <span class="keyword">do</span>
+        <span class="keyword">if</span> f == <span class="string">"_init.lua"</span> <span class="keyword">then</span>
+            <span class="global">print</span>(<span class="string">"GG Loading Bot "</span> .. path)
+            <span class="function-name">include</span>(path .. <span class="string">"/"</span> .. f)
+            <span class="keyword">break</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">for</span> _,d <span class="keyword">in</span> <span class="global">ipairs</span>(iDeep &gt; <span class="number">0</span> <span class="keyword">and</span> dirs <span class="keyword">or</span> {}) <span class="keyword">do</span>
+        <span class="function-name">loadBots</span>(path .. <span class="string">"/"</span> .. d, iDeep - <span class="number">1</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">loadExtensions</span>(path)
+    <span class="keyword">local</span> files = file.<span class="function-name">Find</span>(path .. <span class="string">"/*"</span>,<span class="string">"LUA"</span>)
+    <span class="keyword">for</span> _,f <span class="keyword">in</span> <span class="global">ipairs</span>(files) <span class="keyword">do</span>
+        <span class="keyword">local</span> fpath = path .. <span class="string">"/"</span> .. f
+        <span class="global">print</span>(<span class="string">"GG Loading "</span> .. fpath)
+        <span class="function-name">include</span>(fpath)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> gmod_require_override <span class="keyword">do</span>
+    <span class="keyword">local</span> require_cache = {}
+    gmod_require_override = <span class="keyword">function</span>(path)
+        <span class="keyword">if</span> require_cache[path] ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+            <span class="keyword">return</span> require_cache[path]
+        <span class="keyword">end</span>
+
+        <span class="keyword">local</span> content = <span class="function-name">include</span>(path .. <span class="string">".lua"</span>)
+        require_cache[path] = content <span class="keyword">or</span> <span class="keyword">false</span>
+        <span class="keyword">return</span> content
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+gg_require_orig = gg_require_orig <span class="keyword">or</span> <span class="global">require</span>
+<span class="comment">-- Override to make "require("deferred")", "require("ggram.middlewares.name")", etc. work.
+</span><span class="keyword">function</span> <span class="global">require</span>(path)
+    path = path:<span class="function-name">gsub</span>(<span class="string">"%."</span>, <span class="string">"/"</span>)
+    <span class="keyword">if</span> file.<span class="function-name">Exists</span>(path .. <span class="string">".lua"</span>, <span class="string">"LUA"</span>) <span class="keyword">then</span>
+        <span class="keyword">return</span> <span class="function-name">gmod_require_override</span>(path)
+    <span class="keyword">end</span>
+    <span class="keyword">return</span> <span class="function-name">gg_require_orig</span>(path)
+<span class="keyword">end</span>
+
+ggram = <span class="global">require</span>(<span class="string">"ggram"</span>)
+<span class="function-name">loadExtensions</span>(<span class="string">"ggram/extensions"</span>)
+<span class="function-name">loadBots</span>(<span class="string">"ggram/bots"</span>, <span class="number">1</span>)
+</pre>
+
+
+<hr/>
+
+<blockquote>
+    <p><em>Если остались вопросы, вы можете задать их в Telegram @amd</em>nick или создать Issue_</p>
+</blockquote>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

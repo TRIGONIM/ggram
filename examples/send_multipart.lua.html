@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><strong>send_multipart.lua</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>send_multipart.lua</h2>
+<pre>
+<span class="comment">-- Run this file with lua multipart.lua
+</span>
+<span class="comment">--[[Для отправки файлов используется content-type <code>multipart/form-data</code>,
+	а сами данные передаются в особом формате в теле POST запроса.
+	В Lua и gLua нет встроенной поддержки отправки таких запросов,
+	поэтому используется сторонняя библиотека lua-multipart:
+	https://github.com/Kong/lua-multipart/tree/master ]]</span>
+
+<span class="comment">--[[Заметка для пользователей с Garry's Mod:
+	Гмод разрешает записывать в файловую систему (file.Write) файлы
+	только с расширениями .txt, .dat и еще некоторыми другими (https://wiki.facepunch.com/gmod/file.Write),
+	но при этом мы все равно можем скачать через http.Fetch условно .gif,
+	записать его как .txt, затем отправить этот .txt в телеграм как .gif и он успешно отобразится ]]</span>
+
+<span class="keyword">local</span> ggram = <span class="global">require</span>(<span class="string">"ggram"</span>)
+<span class="keyword">local</span> http_fetch = <span class="global">require</span>(<span class="string">"http_async"</span>).get <span class="comment">-- https://github.com/TRIGONIM/lua-requests-async
+</span>
+
+<span class="keyword">local</span> bot = <span class="function-name">ggram</span>(<span class="string">"123456789:QWERTYUIOPASDFGHJKLZXCVBNM"</span>) <span class="comment">-- replace with your token (t.me/BotFather)
+</span><span class="global">require</span>(<span class="string">"ggram.polling"</span>).<span class="function-name">start</span>(bot) <span class="comment">-- start getUpdates loop
+</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">request</span>()
+	<span class="keyword">return</span> bot.<span class="function-name">reply</span>(<span class="number">123456</span>) <span class="comment">-- paste here your chat_id. Find it in @jsonson_bot
+</span><span class="keyword">end</span>
+
+<span class="keyword">local</span> photo_url = <span class="string">"https://file.def.pm/n9784Dep.jpg"</span>
+
+<span class="comment">-- You can send photo without using multipart. Just by photo url
+</span><span class="function-name">request</span>().<span class="function-name">photo</span>(photo_url)
+<span class="function-name">request</span>().<span class="function-name">photo</span>(photo_url, <span class="string">"*caption*"</span>, <span class="string">"markdown"</span>) <span class="comment">-- caption and parse_mode optionally can be set
+</span><span class="function-name">request</span>().<span class="function-name">setParameter</span>(<span class="string">"caption"</span>, <span class="string">"caption"</span>).<span class="function-name">photo</span>(photo_url) <span class="comment">-- alternative method to set parameters
+</span>
+<span class="comment">-- Now you can see example, where we download the image and send it with multipart/form-data as file
+</span><span class="function-name">http_fetch</span>(photo_url, <span class="keyword">function</span>(raw_photo)
+	<span class="function-name">request</span>().<span class="function-name">photo</span>({raw_data})
+<span class="keyword">end</span>)
+
+<span class="comment">-- Next example shows how to send files within handlers
+</span>bot.<span class="function-name">command</span>(<span class="string">"document"</span>, <span class="keyword">function</span>(ctx)
+	<span class="function-name">http_fetch</span>(photo_url, <span class="keyword">function</span>(raw_photo)
+		ctx.reply.<span class="function-name">document</span>({raw_photo, <span class="string">"image.jpg"</span>})
+		ctx.reply.<span class="function-name">protect</span>().<span class="function-name">document</span>({raw_photo, <span class="string">"image.jpg"</span>}, <span class="string">"this is caption. Content is protected from saving and forwarding"</span>) <span class="comment">-- use modifiers
+</span>		ctx.reply.<span class="function-name">setParameter</span>(<span class="string">"protect_content"</span>, <span class="keyword">true</span>).<span class="function-name">document</span>({raw_photo, <span class="string">"name.jpg"</span>}, <span class="string">"the same variant as a bit above"</span>)
+	<span class="keyword">end</span>)
+<span class="keyword">end</span>)
+
+<span class="comment">-- Here we set optional additional file for request called "thumbnail"
+</span>bot.<span class="function-name">command</span>(<span class="string">"video_with_thumbnail"</span>, <span class="keyword">function</span>(ctx)
+	<span class="function-name">http_fetch</span>(<span class="string">"https://file.def.pm/file_50mb.mp4"</span>, <span class="keyword">function</span>(video_raw)
+		<span class="function-name">http_fetch</span>(<span class="string">"https://file.def.pm/bfUL7owI.jpg"</span>, <span class="keyword">function</span>(thumb_raw)
+			ctx.reply
+				.<span class="function-name">setFile</span>(<span class="string">"thumbnail"</span>, thumb_raw, <span class="string">"thumb.jpg"</span>)
+				.<span class="function-name">video</span>({video_raw, <span class="string">"file.mp4"</span>}, <span class="string">"*bold* caption"</span>, <span class="string">"markdown"</span>, <span class="number">29</span>, <span class="number">1920</span>, <span class="number">1080</span>)
+		<span class="keyword">end</span>)
+	<span class="keyword">end</span>)
+<span class="keyword">end</span>)
+
+<span class="comment">-- launch http requests, timers etc
+</span>ggram.<span class="function-name">idle</span>()</pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

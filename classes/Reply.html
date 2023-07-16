@@ -1,0 +1,1153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><strong>Reply</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Reply</code></h1>
+<p>Обертка для вызова API методов Telegram</p>
+<p>
+
+</p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">-- Использование из любого места в коде:
+bot.reply(123456).text(&quot;Hello&quot;) -- где bot это объект бота, а 123456 это chat_id
+-- Доступ внутри хендлеров происходит через context объект
+bot.command(&quot;test&quot;, function(ctx) ctx.reply.text(&quot;Hello&quot;) end) -- chat_id уже забинджен
+-- Еще несколько примеров:
+ctx.reply.text(&quot;*Жирный текст*&quot;, &quot;Markdown&quot;)
+ctx.reply.markdown(&quot;*Аналогичная запись*&quot;)
+ctx.reply.silent().text(&quot;Будет отправлено без звука&quot;)
+ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Аналогичный вариант без звука&quot;)
+</pre>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT.__index">REPLY_MT.__index (self, sMethod)</a></td>
+	<td class="summary">чтобы методы можно было вызывать через точку, а не двоеточие</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:sendGeneric">REPLY_MT:sendGeneric (method[, additionalParameters])</a></td>
+	<td class="summary">Отправить запрос на Telegram API</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:sendMultipart">REPLY_MT:sendMultipart (method[, additionalParameters])</a></td>
+	<td class="summary">Отправить запрос, используя multipart/form-data
+ Аналогично до sendGeneric, но умеет отправлять файлы</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:send">REPLY_MT:send (method[, additionalParameters])</a></td>
+	<td class="summary">Отправить запрос.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:text">REPLY_MT:text (text, mode)</a></td>
+	<td class="summary">Отправка sendMessage</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:markdown">REPLY_MT:markdown (text)</a></td>
+	<td class="summary">Alias для ctx.reply.text(text, "Markdown")</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:html">REPLY_MT:html (text)</a></td>
+	<td class="summary">Alias для ctx.reply.text(text, "HTML")</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:photo">REPLY_MT:photo (file_url_or_id, caption, captionMode)</a></td>
+	<td class="summary">Отправка sendPhoto</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:document">REPLY_MT:document (file_url_or_id, caption, captionMode)</a></td>
+	<td class="summary">Отправка sendDocument</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:video">REPLY_MT:video (file_url_or_id, caption, captionMode, duration, width, height, streaming)</a></td>
+	<td class="summary">Отправка sendVideo</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:animation">REPLY_MT:animation (file_url_or_id, caption, captionMode)</a></td>
+	<td class="summary">Отправка sendAnimation</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:mediaGroup">REPLY_MT:mediaGroup (media_group)</a></td>
+	<td class="summary">Отправка sendMediaGroup
+ Может отправлять как raw<em>data файлы, так и файлы по file</em>id и ссылке</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:location">REPLY_MT:location (latitude, longitude)</a></td>
+	<td class="summary">Отправка sendLocation</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:contact">REPLY_MT:contact (phone, firstname, lastname)</a></td>
+	<td class="summary">Отправка sendContact</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:dice">REPLY_MT:dice ()</a></td>
+	<td class="summary">Отправка sendDice</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:action">REPLY_MT:action (action)</a></td>
+	<td class="summary">Отправка sendChatAction</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:editText">REPLY_MT:editText (msg, text, parse_mode)</a></td>
+	<td class="summary">Отправка editMessageText</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:editMarkdown">REPLY_MT:editMarkdown (msg, text)</a></td>
+	<td class="summary">Alias для editText, force Markdown parse_mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:editHTML">REPLY_MT:editHTML (msg, text)</a></td>
+	<td class="summary">Alias для editText, force HTML parse_mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:editReplyMarkup">REPLY_MT:editReplyMarkup (msg)</a></td>
+	<td class="summary">Отправка editMessageReplyMarkup</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:deleteMessage">REPLY_MT:deleteMessage (msg)</a></td>
+	<td class="summary">Отправка deleteMessage</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:setParameter">REPLY_MT:setParameter (key, value)</a></td>
+	<td class="summary">Модификатор, устанавливает параметр запроса</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:setFile">REPLY_MT:setFile (name, raw_content, file_name, content_type)</a></td>
+	<td class="summary">Модификатор, добавляет файл для отправки через multipart/form-data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:reply">REPLY_MT:reply (msg)</a></td>
+	<td class="summary">Модификатор, добавляет параметр reply<em>to</em>message_id</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:selective">REPLY_MT:selective (bForce)</a></td>
+	<td class="summary">Модификатор, добавляет параметр selective</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:forceReply">REPLY_MT:forceReply (bForce)</a></td>
+	<td class="summary">Модификатор, добавляет параметр force_reply</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:keyboard">REPLY_MT:keyboard (tKeys, bResize, bOneTime)</a></td>
+	<td class="summary">Модификатор, добавляет параметр keyboard, resize<em>keyboard, one</em>time_keyboard</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:inlineKeyboard">REPLY_MT:inlineKeyboard (tKeys)</a></td>
+	<td class="summary">Модификатор, добавляет параметр inline_keyboard</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:disablePreview">REPLY_MT:disablePreview (bDisable)</a></td>
+	<td class="summary">Модификатор, добавляет параметр disable<em>web</em>page_preview (чтобы ссылки в сообщении не создавали превью)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:protect">REPLY_MT:protect (bProtect)</a></td>
+	<td class="summary">Модификатор, запрещает пересылать или сохранять контент на устройство</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#REPLY_MT:silent">REPLY_MT:silent (bMute)</a></td>
+	<td class="summary">Модификатор, добавляет параметр disable_notification (отправка сообщений без звука)</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    Methods
+    <dl class="function">
+    <dt>
+    <a name = "REPLY_MT.__index"></a>
+    <strong>REPLY_MT.__index (self, sMethod)</strong>
+    </dt>
+    <dd>
+    чтобы методы можно было вызывать через точку, а не двоеточие
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+
+
+
+        </li>
+        <li><span class="parameter">sMethod</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:sendGeneric"></a>
+    <strong>REPLY_MT:sendGeneric (method[, additionalParameters])</strong>
+    </dt>
+    <dd>
+    Отправить запрос на Telegram API
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">method</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         API метод
+        </li>
+        <li><span class="parameter">additionalParameters</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
+         набор параметров, которые не были указаны через reply.setParameter
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../classes/Reply.html#REPLY_MT:sendMultipart">sendMultipart</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:sendMultipart"></a>
+    <strong>REPLY_MT:sendMultipart (method[, additionalParameters])</strong>
+    </dt>
+    <dd>
+    Отправить запрос, используя multipart/form-data
+ Аналогично до sendGeneric, но умеет отправлять файлы
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">method</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         API метод
+        </li>
+        <li><span class="parameter">additionalParameters</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
+         набор параметров, которые не были указаны через reply.setParameter
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../classes/Reply.html#REPLY_MT:sendGeneric">sendGeneric</a></li>
+         <li><a href="../classes/Reply.html#REPLY_MT:setFile">setFile</a></li>
+         <li><a href="../classes/Reply.html#REPLY_MT:photo">photo</a></li>
+         <li><a href="../classes/Reply.html#REPLY_MT:mediaGroup">mediaGroup</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:send"></a>
+    <strong>REPLY_MT:send (method[, additionalParameters])</strong>
+    </dt>
+    <dd>
+    Отправить запрос.
+ Если есть self.files, то использует sendMultipart, иначе через sendGeneric
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">method</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         API метод
+        </li>
+        <li><span class="parameter">additionalParameters</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
+         набор параметров, которые не были указаны через reply.setParameter
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../classes/Reply.html#REPLY_MT:sendGeneric">sendGeneric</a></li>
+         <li><a href="../classes/Reply.html#REPLY_MT:sendMultipart">sendMultipart</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:text"></a>
+    <strong>REPLY_MT:text (text, mode)</strong>
+    </dt>
+    <dd>
+    Отправка sendMessage
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+
+
+
+        </li>
+        <li><span class="parameter">mode</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:markdown"></a>
+    <strong>REPLY_MT:markdown (text)</strong>
+    </dt>
+    <dd>
+    Alias для ctx.reply.text(text, "Markdown")
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:html"></a>
+    <strong>REPLY_MT:html (text)</strong>
+    </dt>
+    <dd>
+    Alias для ctx.reply.text(text, "HTML")
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:photo"></a>
+    <strong>REPLY_MT:photo (file_url_or_id, caption, captionMode)</strong>
+    </dt>
+    <dd>
+    Отправка sendPhoto
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">file_url_or_id</span>
+
+
+
+        </li>
+        <li><span class="parameter">caption</span>
+
+
+
+        </li>
+        <li><span class="parameter">captionMode</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Отправка по ссылке
+</span>ctx.reply.<span class="function-name">photo</span>(<span class="string">"https://file.def.pm/n9784Dep.jpg"</span>)
+<span class="comment">-- Отправка multipart
+</span>ctx.reply.<span class="function-name">setFile</span>(<span class="string">"photo"</span>, raw_content, <span class="string">"anyname"</span>).<span class="function-name">photo</span>() <span class="comment">-- raw_content = io.open("file.png", "r"):read("*all")
+</span><span class="comment">-- Альтернативный вариант
+</span>ctx.reply.<span class="function-name">photo</span>({raw_data})</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:document"></a>
+    <strong>REPLY_MT:document (file_url_or_id, caption, captionMode)</strong>
+    </dt>
+    <dd>
+    Отправка sendDocument
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">file_url_or_id</span>
+
+
+
+        </li>
+        <li><span class="parameter">caption</span>
+
+
+
+        </li>
+        <li><span class="parameter">captionMode</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">document</span>({raw_content, <span class="string">"file.zip"</span>})</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:video"></a>
+    <strong>REPLY_MT:video (file_url_or_id, caption, captionMode, duration, width, height, streaming)</strong>
+    </dt>
+    <dd>
+    Отправка sendVideo
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">file_url_or_id</span>
+
+
+
+        </li>
+        <li><span class="parameter">caption</span>
+
+
+
+        </li>
+        <li><span class="parameter">captionMode</span>
+
+
+
+        </li>
+        <li><span class="parameter">duration</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">streaming</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../classes/Reply.html#REPLY_MT:photo">photo</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- https://github.com/TRIGONIM/lua-requests-async
+</span><span class="keyword">local</span> http_fetch = <span class="global">require</span>(<span class="string">"http_async"</span>).get
+<span class="keyword">local</span> bot = <span class="global">require</span>(<span class="string">"ggram"</span>)(<span class="string">"token"</span>) <span class="comment">-- your bot's token
+</span><span class="keyword">local</span> reply = bot.<span class="function-name">reply</span>(<span class="number">123456</span>) <span class="comment">-- your chat_id
+</span><span class="function-name">http_fetch</span>(<span class="string">"https://file.def.pm/file_50mb.mp4"</span>, <span class="keyword">function</span>(video)
+	<span class="function-name">http_fetch</span>(<span class="string">"https://file.def.pm/bfUL7owI.jpg"</span>, <span class="keyword">function</span>(thumb)
+		reply.<span class="function-name">setFile</span>(<span class="string">"thumbnail"</span>, thumb, <span class="string">"thumb.jpg"</span>).<span class="function-name">video</span>({video, <span class="string">"file.mp4"</span>}, <span class="string">"*bold* caption"</span>, <span class="string">"markdown"</span>, <span class="number">29</span>, <span class="number">1920</span>, <span class="number">1080</span>)
+	<span class="keyword">end</span>)
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:animation"></a>
+    <strong>REPLY_MT:animation (file_url_or_id, caption, captionMode)</strong>
+    </dt>
+    <dd>
+    Отправка sendAnimation
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">file_url_or_id</span>
+
+
+
+        </li>
+        <li><span class="parameter">caption</span>
+
+
+
+        </li>
+        <li><span class="parameter">captionMode</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../classes/Reply.html#REPLY_MT:photo">photo</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:mediaGroup"></a>
+    <strong>REPLY_MT:mediaGroup (media_group)</strong>
+    </dt>
+    <dd>
+    Отправка sendMediaGroup
+ Может отправлять как raw<em>data файлы, так и файлы по file</em>id и ссылке
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">media_group</span>
+        {{type = "photo", media = RAW_DATA, [caption]...}, ...}
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> media = {
+	{<span class="global">type</span> = <span class="string">"photo"</span>, media = <span class="string">"https://file.def.pm/n9784Dep.jpg"</span>, caption = <span class="string">"cap"</span>}, <span class="comment">-- sending photo by url
+</span>	{<span class="global">type</span> = <span class="string">"photo"</span>, media = {raw_data}}, <span class="comment">-- sending raw_data photo
+</span>}
+ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:location"></a>
+    <strong>REPLY_MT:location (latitude, longitude)</strong>
+    </dt>
+    <dd>
+    Отправка sendLocation
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">latitude</span>
+
+
+
+        </li>
+        <li><span class="parameter">longitude</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:contact"></a>
+    <strong>REPLY_MT:contact (phone, firstname, lastname)</strong>
+    </dt>
+    <dd>
+    Отправка sendContact
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">phone</span>
+
+
+
+        </li>
+        <li><span class="parameter">firstname</span>
+
+
+
+        </li>
+        <li><span class="parameter">lastname</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:dice"></a>
+    <strong>REPLY_MT:dice ()</strong>
+    </dt>
+    <dd>
+    Отправка sendDice
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:action"></a>
+    <strong>REPLY_MT:action (action)</strong>
+    </dt>
+    <dd>
+    Отправка sendChatAction
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">action</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:editText"></a>
+    <strong>REPLY_MT:editText (msg, text, parse_mode)</strong>
+    </dt>
+    <dd>
+    Отправка editMessageText
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+
+
+
+        </li>
+        <li><span class="parameter">text</span>
+
+
+
+        </li>
+        <li><span class="parameter">parse_mode</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:editMarkdown"></a>
+    <strong>REPLY_MT:editMarkdown (msg, text)</strong>
+    </dt>
+    <dd>
+    Alias для editText, force Markdown parse_mode
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+
+
+
+        </li>
+        <li><span class="parameter">text</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:editHTML"></a>
+    <strong>REPLY_MT:editHTML (msg, text)</strong>
+    </dt>
+    <dd>
+    Alias для editText, force HTML parse_mode
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+
+
+
+        </li>
+        <li><span class="parameter">text</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:editReplyMarkup"></a>
+    <strong>REPLY_MT:editReplyMarkup (msg)</strong>
+    </dt>
+    <dd>
+    Отправка editMessageReplyMarkup
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:deleteMessage"></a>
+    <strong>REPLY_MT:deleteMessage (msg)</strong>
+    </dt>
+    <dd>
+    Отправка deleteMessage
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:setParameter"></a>
+    <strong>REPLY_MT:setParameter (key, value)</strong>
+    </dt>
+    <dd>
+    Модификатор, устанавливает параметр запроса
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+
+
+
+        </li>
+        <li><span class="parameter">value</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">setParameter</span>(<span class="string">"disable_notification"</span>, <span class="keyword">true</span>).<span class="function-name">text</span>(<span class="string">"Hello"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:setFile"></a>
+    <strong>REPLY_MT:setFile (name, raw_content, file_name, content_type)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет файл для отправки через multipart/form-data
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+
+
+
+        </li>
+        <li><span class="parameter">raw_content</span>
+
+
+
+        </li>
+        <li><span class="parameter">file_name</span>
+
+
+
+        </li>
+        <li><span class="parameter">content_type</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../classes/Reply.html#REPLY_MT:photo">photo</a></li>
+         <li><a href="../classes/Reply.html#REPLY_MT:mediaGroup">mediaGroup</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:reply"></a>
+    <strong>REPLY_MT:reply (msg)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет параметр reply<em>to</em>message_id
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">reply</span>(ctx).<span class="function-name">text</span>(<span class="string">"Reply to message"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:selective"></a>
+    <strong>REPLY_MT:selective (bForce)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет параметр selective
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bForce</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">keyboard</span>({{<span class="string">"button"</span>}}, <span class="keyword">true</span>).<span class="function-name">selective</span>().<span class="function-name">markdown</span>(<span class="string">"*Hello*"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:forceReply"></a>
+    <strong>REPLY_MT:forceReply (bForce)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет параметр force_reply
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bForce</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:keyboard"></a>
+    <strong>REPLY_MT:keyboard (tKeys, bResize, bOneTime)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет параметр keyboard, resize<em>keyboard, one</em>time_keyboard
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tKeys</span>
+
+
+
+        </li>
+        <li><span class="parameter">bResize</span>
+
+
+
+        </li>
+        <li><span class="parameter">bOneTime</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">keyboard</span>({{<span class="string">"button"</span>}}, <span class="keyword">true</span>).<span class="function-name">text</span>(<span class="string">"Hello"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:inlineKeyboard"></a>
+    <strong>REPLY_MT:inlineKeyboard (tKeys)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет параметр inline_keyboard
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tKeys</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">inlineKeyboard</span>({{ {text = <span class="string">"text"</span>, callback_data = <span class="string">"any"</span>} }}).<span class="function-name">text</span>(<span class="string">"kb"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:disablePreview"></a>
+    <strong>REPLY_MT:disablePreview (bDisable)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет параметр disable<em>web</em>page_preview (чтобы ссылки в сообщении не создавали превью)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bDisable</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">disablePreview</span>().<span class="function-name">markdown</span>(<span class="string">"https://youtube.com"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:protect"></a>
+    <strong>REPLY_MT:protect (bProtect)</strong>
+    </dt>
+    <dd>
+    Модификатор, запрещает пересылать или сохранять контент на устройство
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bProtect</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ctx.reply.<span class="function-name">protect</span>().<span class="function-name">photo</span>(<span class="string">"https://file.def.pm/n9784Dep.jpg"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "REPLY_MT:silent"></a>
+    <strong>REPLY_MT:silent (bMute)</strong>
+    </dt>
+    <dd>
+    Модификатор, добавляет параметр disable_notification (отправка сообщений без звука)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bMute</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

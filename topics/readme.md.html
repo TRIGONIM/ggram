@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#____Features">✨ Features </a></li>
+<li><a href="#________Installation">🛠️ Installation </a></li>
+<li><a href="#_____Creating_and_launching_a_bot">🚀 Creating and launching a bot </a></li>
+<li><a href="#_____Docs">📚 Docs </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="">
+  <li><strong>readme</strong></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <img align="left" width="80" src="https://i.imgur.com/AbYOj2T.png"></p>
+
+<h1>ggram – Lua Telegram Bot Framework</h1>
+
+
+<p align="left">
+<pre>
+&lt;img src=<span class="string">"https://img.shields.io/github/languages/code-size/TRIGONIM/ggram"</span>&gt;
+&lt;img src=<span class="string">"https://img.shields.io/github/license/TRIGONIM/ggram"</span>&gt;
+</pre>
+</p>
+
+
+<p>Create Telegram bots of any complexity in Lua</p>
+
+<p><img align="right" width="300" src="https://user-images.githubusercontent.com/9200174/135781831-dbb545a9-b3d9-4d0a-ba58-dd42935d35f0.png"></p>
+
+
+<pre>
+<span class="keyword">local</span> ggram = <span class="global">require</span>(<span class="string">"ggram"</span>)
+<span class="keyword">local</span> bot = <span class="function-name">ggram</span>(<span class="string">"token"</span>)
+
+<span class="global">require</span>(<span class="string">"ggram.polling"</span>).<span class="function-name">start</span>(bot) <span class="comment">-- enables getUpdates loop
+</span>
+bot.<span class="function-name">command</span>(<span class="string">"start"</span>, <span class="keyword">function</span>(ctx)
+    ctx.reply.<span class="function-name">text</span>(<span class="string">"Hello @"</span> .. ctx.from.username)
+<span class="keyword">end</span>)
+</pre>
+
+
+<p>Additional examples can be found in <a href="/examples">/examples</a></p>
+
+<hr/>
+
+<p><a name="____Features"></a></p>
+<h2>✨ Features</h2>
+
+<ul>
+    <li>Can work both on pure Lua, and <a href="/info/running_within_garrysmod.md">on the Garry's Mod server</a></li>
+    <li>Does NOT require any third-party .dll or WEB scripts</li>
+    <li>Very minimalistic and easily expandable</li>
+    <li>If Telegram adds methods that are not already in the bot, they are very easy to add with a 3-line <a href="/info/making_extensions.md">module</a></li>
+    <li><a href="/examples/send_multipart.lua">Possibility</a> for sending animations, documents, images</li>
+</ul>
+
+<p><a name="________Installation"></a></p>
+<h2>🛠️ Installation</h2>
+
+<h3>Docker</h3>
+
+<p>Download this repository and go to the downloaded folder. You can take a look at the contents of the <a href="/Dockerfile">Dockerfile</a>. It does not contain ggram itself. It installs the dependencies to make it work.</p>
+
+
+<pre>
+# create image. You can choose any Dockerfile from this repo
+docker build -t ggramenv:latest -f Dockerfile_tarantool .
+
+# run example <span class="function-name">bot</span> (echo.lua)
+# dont forget to change bot token <span class="keyword">in</span> the file
+docker run -it \
+    -<span class="function-name">e</span> <span class="string">"LUA_PATH=/app/lua/?.lua;/app/lua/?/init.lua;;"</span> \
+    -v $PWD:/app ggramenv \
+    lua app/examples/echo.lua
+
+# 🎉
+</pre>
+
+
+<h3>Linux / Mac</h3>
+
+<p>Install luarocks (package manager like apt but for lua)</p>
+
+
+<pre>
+sudo apt install luarocks # linux
+# <span class="keyword">or</span>
+brew install luarocks # mac
+</pre>
+
+
+<p>Install ggram</p>
+
+
+<pre>
+luarocks install ggram
+</pre>
+
+
+<p><a name="_____Creating_and_launching_a_bot"></a></p>
+<h2>🚀 Creating and launching a bot</h2>
+
+<ol>
+    <li>Create bot.lua file. You can choose any name for the file.</li>
+    <li>Paste the contents of <a href="/examples/echo.lua">/examples/echo.lua</a> into the file.</li>
+    <li>Run file with <code>lua bot.lua</code>. <em>If you want to run a bot on a <strong>Garry's Mod</strong> server, then <a href="/info/running_within_garrysmod.md">read this</a></em>.</li>
+    <li>Check out other examples in the <a href="/examples">/examples</a> folder.</li>
+</ol>
+
+<p><strong>If any error was occur, check the <a href="/info/troubleshooting.md">troubleshooting</a> guide</strong></p>
+
+<p><a name="_____Docs"></a></p>
+<h2>📚 Docs</h2>
+
+<p>All the docs are collected <a href="https://trigonim.github.io/ggram/">here</a> and useful info <a href="/info">here</a>
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

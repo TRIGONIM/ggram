@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Lua_versioning_problems">Lua versioning problems </a></li>
+<li><a href="#__luarocks_install_ggram">$ luarocks install ggram </a></li>
+<li><a href="#__luarocks_install_luasec">$ luarocks install luasec </a></li>
+<li><a href="#__luarocks_install_luasocket">$ luarocks install luasocket </a></li>
+<li><a href="#__lua_bot_lua">$ lua bot.lua </a></li>
+<li><a href="#_____If_you_still_have_problems">😢 If you still have problems </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><strong>troubleshooting</strong></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+
+<h1>👩‍🔧 Troubleshooting</h1>
+
+<p><a name="Lua_versioning_problems"></a></p>
+<h2>Lua versioning problems</h2>
+
+<p>If multiple versions of Lua are installed on the host, which is <strong>particularly relevant for Mac</strong>, there is a <strong>potential</strong> problem because luarocks is not using the same version of Lua as the system defaults to.</p>
+
+<p><strong>ggram tested with lua 5.3.6, lua 5.1 and luajit 2.0.5</strong></p>
+
+<p>Therefore, in cases of version problems, it is sufficient to execute all luarocks commands with the parameter <code>--lua-dir=$(brew --prefix)/opt/lua@5.3</code>, for example <code>luarocks --lua-dir=$(brew --prefix)/opt/lua@5.3 install ggram</code></p>
+
+<p>The example is for Mac. On Linux lua will be in a different folder or the installed version of luarocks may not support this parameter at all (Support is added in luarocks 3.0.1)</p>
+
+<p>On one linux host I have luarocks uses lua 5.1 and there was no need for this parameter.</p>
+
+
+<p><a name="__luarocks_install_ggram"></a></p>
+<h2>$ luarocks install ggram</h2>
+
+<blockquote>
+    <p>Error: Your user does not have write permissions in /usr/local/lib/luarocks/rocks
+    you may want to run as a privileged user or use your local tree with --local.</p>
+</blockquote>
+
+<p>Just add <code>--local</code> argument to the command:</p>
+
+<p><code>$ luarocks install --local ggram</code></p>
+
+<p><a name="__luarocks_install_luasec"></a></p>
+<h2>$ luarocks install luasec</h2>
+
+<blockquote>
+    <p>luarocks install luasec — No file openssl/ssl.h</p>
+</blockquote>
+
+<p>You need to install openssl</p>
+
+<ul>
+    <li>Ubuntu: <code>apt install libssl-dev</code>, then retry command</li>
+    <li>Mac: <code>brew install openssl</code>, then <code>luarocks install luasec OPENSSL_DIR=/opt/homebrew/opt/openssl@3</code></li>
+</ul>
+
+<p><a name="__luarocks_install_luasocket"></a></p>
+<h2>$ luarocks install luasocket</h2>
+
+<p>Ran into this on Ubuntu 20.04. I did not record the error itself</p>
+
+
+<pre>
+luarocks install luasocket
+mkdir lua-build &amp;&amp; cd lua-build
+curl -R -O http://www.lua.org/ftp/lua-<span class="number">5.3</span>.<span class="number">6.</span>tar.gz &amp;&amp; tar -zxf lua-<span class="number">5.3</span>.<span class="number">6.</span>tar.gz &amp;&amp; cd lua-<span class="number">5.3</span>.<span class="number">6</span>
+make linux test # You may need to sudo apt install make
+make install
+</pre>
+
+
+<p><a name="__lua_bot_lua"></a></p>
+<h2>$ lua bot.lua</h2>
+
+<blockquote>
+    <p>lua: bot.lua:5: module 'ggram' not found</p>
+</blockquote>
+
+<p>This can happen if <code>luarocks install</code> was run with the <code>--local</code> parameter. In this case, you may need to tell the lua script where to look for modules. To do this, you need to add at the top of the bot file:</p>
+
+
+<pre>
+<span class="comment">-- /home/ubuntu/.luarocks/share/lua/5.1
+</span><span class="comment">-- /\ you need to replace it with the path to the folder with the modules
+</span><span class="comment">-- You can find out by running luarocks show ggram
+</span><span class="global">package</span>.path = <span class="global">package</span>.path
+    .. <span class="string">";/home/ubuntu/.luarocks/share/lua/5.1/?.lua"</span>
+    .. <span class="string">";/home/ubuntu/.luarocks/share/lua/5.1/?/init.lua"</span>
+</pre>
+
+
+<p><a name="_____If_you_still_have_problems"></a></p>
+<h2>😢 If you still have problems</h2>
+
+<p>You can ask me in Telegram @amd_nick or <a href="https://github.com/TRIGONIM/ggram/issues/new">create an Issue</a>, in which you need to specify the system version, the version of <code>lua -v</code>, and step by step the actions you have taken to reproduce</p>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

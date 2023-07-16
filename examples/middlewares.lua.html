@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><strong>middlewares.lua</strong></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>middlewares.lua</h2>
+<pre>
+<span class="comment">-- for advanced users
+</span><span class="comment">-- understanding middlewares
+</span>
+<span class="keyword">local</span> ggram = <span class="global">require</span>(<span class="string">"ggram"</span>)
+
+<span class="keyword">local</span> bot = <span class="function-name">ggram</span>(<span class="string">"123456789:QWERTYUIOPASDFGHJKLZXCVBNM"</span>)
+
+<span class="global">require</span>(<span class="string">"ggram.polling"</span>).<span class="function-name">start</span>(bot)
+
+bot.<span class="function-name">update</span>(<span class="global">require</span>(<span class="string">"ggram.middlewares.session"</span>), <span class="string">"session_middleware"</span>) <span class="comment">-- extends ctx object with .sesion property
+</span>
+<span class="comment">-- Executes before any other handlers that are added after this one.
+</span><span class="comment">-- so even the /test command will be processed with a delay.
+</span>bot.<span class="function-name">update</span>(<span class="keyword">function</span>(ctx)
+	ctx.reply.<span class="function-name">markdown</span>(<span class="string">"Sleeping *4 seconds*"</span>)
+	ctx.reply.<span class="function-name">action</span>(<span class="string">"typing"</span>)
+
+	<span class="global">coroutine</span>.<span class="function-name">yield</span>(<span class="keyword">function</span>(cb) (timer <span class="keyword">or</span> <span class="global">require</span>(<span class="string">"gmod.timer"</span>)).<span class="function-name">Simple</span>(<span class="number">4</span>, cb) <span class="keyword">end</span>)
+<span class="keyword">end</span>, <span class="string">"sleep"</span>)
+
+<span class="comment">-- The command /test will be processed in 4 seconds (if it was entered).
+</span>bot.<span class="function-name">command</span>(<span class="string">"test"</span>, <span class="keyword">function</span>(ctx)
+	<span class="keyword">local</span> ses = ctx.session
+	ses.presses = (ses.presses <span class="keyword">or</span> <span class="number">0</span>) + <span class="number">1</span>
+
+	ctx.reply.<span class="function-name">text</span>(ctx.text .. <span class="string">" pressed "</span> .. ses.presses .. <span class="string">" times"</span>)
+<span class="keyword">end</span>)
+
+<span class="keyword">local</span> http_Fetch = <span class="global">require</span>(<span class="string">"http_async"</span>).get
+<span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">co_fetch</span>(url)
+	<span class="keyword">return</span> <span class="global">coroutine</span>.<span class="function-name">yield</span>(<span class="keyword">function</span>(cb)
+		<span class="function-name">http_Fetch</span>(url,
+			<span class="keyword">function</span>(body, ...) <span class="function-name">cb</span>(<span class="keyword">true</span>, body, ...) <span class="keyword">end</span>,
+			<span class="keyword">function</span>(err) <span class="function-name">cb</span>(<span class="keyword">false</span>, err) <span class="keyword">end</span>
+		)
+	<span class="keyword">end</span>)
+<span class="keyword">end</span>
+
+bot.<span class="function-name">command</span>(<span class="string">"delayed_handler"</span>, <span class="keyword">function</span>(ctx)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"fetching urls"</span>)
+	<span class="keyword">local</span> _, res1 = <span class="function-name">co_fetch</span>(<span class="string">"https://httpbin.org/delay/1"</span>)
+	<span class="keyword">local</span> _, res2 = <span class="function-name">co_fetch</span>(<span class="string">"https://httpbin.org/get"</span>)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"fetching completed"</span>)
+
+	ctx.session.http_results = {res1, res2}
+<span class="keyword">end</span>)
+
+<span class="comment">-- This handler will be executed simultaneously with the /test command.
+</span>bot.<span class="function-name">update</span>(<span class="keyword">function</span>(ctx)
+	ctx.reply.<span class="function-name">markdown</span>(<span class="string">"Stopped. The 'done' text will send only if /delayed_handler called"</span>)
+	<span class="keyword">return</span> ctx.session.http_results ~= <span class="keyword">nil</span>
+<span class="keyword">end</span>, <span class="string">"stop_middl"</span>)
+
+bot.<span class="function-name">update</span>(<span class="keyword">function</span>(ctx)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"Done. It's the last middleware. You see this because the /delayed_handler command was executed"</span>)
+	<span class="global">assert</span>(ctx.session.http_results ~= <span class="keyword">nil</span>)
+<span class="keyword">end</span>, <span class="string">"done"</span>)
+
+ggram.<span class="function-name">idle</span>()</pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

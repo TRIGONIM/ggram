@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><strong>co_reply.lua</strong></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>co_reply.lua</h2>
+<pre>
+<span class="comment">-- for advanced users
+</span><span class="comment">-- Sequential execution of ctx.reply methods without using deferred.lua.
+</span><span class="comment">-- look at bot.command("test_async")
+</span>
+<span class="keyword">local</span> json_encode = (util <span class="keyword">or</span> <span class="global">require</span>(<span class="string">"gmod.util"</span>)).TableToJSON
+
+<span class="keyword">local</span> ggram = <span class="global">require</span>(<span class="string">"ggram"</span>)
+
+<span class="keyword">local</span> bot = <span class="function-name">ggram</span>(<span class="string">"123456789:QWERTYUIOPASDFGHJKLZXCVBNM"</span>)
+
+<span class="global">require</span>(<span class="string">"ggram.polling"</span>).<span class="function-name">start</span>(bot)
+
+bot.<span class="function-name">update</span>(<span class="global">require</span>(<span class="string">"ggram.middlewares.co_reply"</span>), <span class="string">"co_reply_middleware"</span>)
+
+<span class="comment">-- The requests will be executed "simultaneously".
+</span><span class="comment">-- The messages may arrive in an interleaved manner: 3, 1, 2, 5, 4.
+</span>bot.<span class="function-name">command</span>(<span class="string">"test_async"</span>, <span class="keyword">function</span>(ctx)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"1"</span>)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"2"</span>)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"3"</span>)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"4"</span>)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"5"</span>)
+<span class="keyword">end</span>)
+
+<span class="comment">-- Using deferred.lua, Telegram will send the messages sequentially: 1, 2, 3, 4, 5.
+</span>bot.<span class="function-name">command</span>(<span class="string">"test_deferred"</span>, <span class="keyword">function</span>(ctx)
+	ctx.reply.<span class="function-name">text</span>(<span class="string">"1"</span>):<span class="global">next</span>(<span class="keyword">function</span>()
+		<span class="keyword">return</span> ctx.reply.<span class="function-name">text</span>(<span class="string">"2"</span>)
+	<span class="keyword">end</span>):<span class="global">next</span>(<span class="keyword">function</span>()
+		<span class="keyword">return</span> ctx.reply.<span class="function-name">text</span>(<span class="string">"3"</span>)
+	<span class="keyword">end</span>):<span class="global">next</span>(<span class="keyword">function</span>()
+		<span class="keyword">return</span> ctx.reply.<span class="function-name">text</span>(<span class="string">"4"</span>)
+	<span class="keyword">end</span>):<span class="global">next</span>(<span class="keyword">function</span>()
+		<span class="keyword">return</span> ctx.reply.<span class="function-name">text</span>(<span class="string">"5"</span>)
+	<span class="keyword">end</span>)
+<span class="keyword">end</span>)
+
+<span class="comment">-- The requests will be executed sequentially.
+</span><span class="comment">-- Each ctx.reply.co.text() returns 2 values: bool ok, table msg || string err.
+</span>bot.<span class="function-name">command</span>(<span class="string">"test_co"</span>, <span class="keyword">function</span>(ctx)
+	ctx.reply.co.<span class="function-name">text</span>(<span class="string">"1"</span>)
+	ctx.reply.co.<span class="function-name">text</span>(<span class="string">"2"</span>)
+	ctx.reply.co.<span class="function-name">text</span>(<span class="string">"3"</span>)
+	ctx.reply.co.<span class="function-name">text</span>(<span class="string">"4"</span>)
+	<span class="keyword">local</span> ok, msg = ctx.reply.co.<span class="function-name">text</span>(<span class="string">"5"</span>)
+	<span class="keyword">if</span> ok <span class="keyword">then</span>
+		ctx.reply.co.<span class="function-name">text</span>( <span class="function-name">json_encode</span>(msg) )
+	<span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+<span class="comment">-- It is also possible to create own functions
+</span><span class="comment">-- that are executed sequentially within handlers,
+</span><span class="comment">-- while being inherently asynchronous:
+</span>
+<span class="comment">--[[
+-- Suspends the execution of a coroutine (handler) for a specific period of time.
+local function co_sleep(seconds)
+	local timer = timer or require("gmod.timer")
+	coroutine.yield(function(cb) timer.Simple(seconds, cb) end)
+end
+
+-- Executes HTTP requests sequentially and returns the values.
+local http_Fetch = require("http_async").get
+local function co_fetch(url, headers)
+	return coroutine.yield(function(cb)
+		http_Fetch(url, function(body, ...)
+			cb(true, body, ...)
+		end, function(err)
+			cb(false, err)
+		end, headers)
+	end)
+end
+]]</span>
+
+ggram.<span class="function-name">idle</span>()</pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
