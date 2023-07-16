@@ -15,8 +15,6 @@ jobs:
         uses: lunarmodules/ldoc@v1.5.0
         # with:
         #     args: ./lua --dir docs .
-        with:
-          path: docs/
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
