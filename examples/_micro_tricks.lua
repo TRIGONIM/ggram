@@ -1,3 +1,5 @@
+-- useful tricks to run bots more easily
+
 local ggram = require("ggram")
 
 GLOBAL_BOT = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM")

@@ -1,3 +1,5 @@
+-- https://core.telegram.org/bots/2-0-intro#new-inline-keyboards
+
 local json_encode = (util or require("gmod.util")).TableToJSON
 local ggram = require("ggram")
 
