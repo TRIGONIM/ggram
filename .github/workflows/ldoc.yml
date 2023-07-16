@@ -1,0 +1,22 @@
+# source: https://github.com/GrayWolf64/logging-log4g/blob/351953e9466728da3833e5cc6c298d10a263d21a/.github/workflows/ldoc.yml
+name: Build Documentation Using LDoc
+
+on:
+  push:
+
+jobs:
+  build_docs:
+    name: Build docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Generate docs with LDoc
+        uses: lunarmodules/ldoc@v1.5.0
+        with:
+            args: ./lua -a --dir docs --project ggram --format markdown
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
