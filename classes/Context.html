@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ggram documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ggram</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><strong>Context</strong></li>
+  <li><a href="../classes/Reply.html">Reply</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/deferred.html">deferred</a></li>
+  <li><a href="../modules/ggram.html">ggram</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/readme.md.html">readme</a></li>
+  <li><a href="../topics/development_tips.md.html">development_tips</a></li>
+  <li><a href="../topics/making_extensions.md.html">making_extensions</a></li>
+  <li><a href="../topics/running_within_garrysmod.md.html">running_within_garrysmod</a></li>
+  <li><a href="../topics/troubleshooting.md.html">troubleshooting</a></li>
+  <li><a href="../topics/understanding_things.md.html">understanding_things</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/_micro_tricks.lua.html">_micro_tricks.lua</a></li>
+  <li><a href="../examples/co_reply.lua.html">co_reply.lua</a></li>
+  <li><a href="../examples/echo.lua.html">echo.lua</a></li>
+  <li><a href="../examples/inline_keyboard.lua.html">inline_keyboard.lua</a></li>
+  <li><a href="../examples/middlewares.lua.html">middlewares.lua</a></li>
+  <li><a href="../examples/send_multipart.lua.html">send_multipart.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Context</code></h1>
+<p>Упрощает вызов API методов и доступ к полю message внутри update объекта.</p>
+<p> Вместо <code>ctx.update.message.text</code> можно <code>ctx.text</code>.
+ Передается во все хендлеры.</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CTX:new">CTX:new (bot, UPD)</a></td>
+	<td class="summary">Принимает update от Telegram и оборачивает его в ctx</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#.ctx">.ctx</a></td>
+	<td class="summary">Сам ctx объект.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    Methods
+    <dl class="function">
+    <dt>
+    <a name = "CTX:new"></a>
+    <strong>CTX:new (bot, UPD)</strong>
+    </dt>
+    <dd>
+    Принимает update от Telegram и оборачивает его в ctx
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bot</span>
+
+
+
+        </li>
+        <li><span class="parameter">UPD</span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/Context.html#.ctx">.ctx</a></span>
+        Context object
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = ".ctx"></a>
+    <strong>.ctx</strong>
+    </dt>
+    <dd>
+    Сам ctx объект.
+ Это то, что мы видим в хендлерах, когда пишем <code>bot.command(&quot;cmd&quot;, function(ctx) end)</code> -- вот тут ctx
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">update</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
+         Оригинальный update объект от Telegram
+        </li>
+        <li><span class="parameter">bot</span>
+            <span class="types"><a class="type" href="../classes/Bot.html#">Bot</a></span>
+         быстрый доступ к боту по ctx.bot вместо self
+        </li>
+        <li><span class="parameter">reply</span>
+            <span class="types"><a class="type" href="../classes/Reply.html#">Reply</a></span>
+         🔥 быстрый API запрос (<code>ctx.reply.text(&quot;hello&quot;)</code>). Alias for ctx.bot.reply(ctx.chat.id)
+        </li>
+        <li><span class="parameter">command</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         Если это команда, то через ctx.command можно получить ее название. Для /TEST@botname .command будет == "test"
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">username</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
+         <code>/TEST@botname</code> > <code>&quot;botname&quot;</code>
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">args</span>
+            <span class="types"><span class="type">func</span></span>
+         <code>/TEST@botname a b c</code> > <code>{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}</code>
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">mine</span>
+            <span class="types"><span class="type">bool</span></span>
+         адресовалась ли команда именно этому боту. Если наш бот называется @ourbot, то для /cmd@otherbot .mine будет false. Если username не указывался, то mine будет всегда true
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">exclusive</span>
+            <span class="types"><span class="type">bool</span></span>
+         если команда указывалась с @botname, то .exclusive == .mine. Если без @botname, то .exclusive == true, если написано боту в ЛС
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">json</span>
+            <span class="types"><span class="type">func</span></span>
+         для <code>callback_query</code> кнопок это превратит json с .data в таблицу
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">answer</span>
+            <span class="types"><span class="type">func</span></span>
+         для <code>callback_query</code> это упрощение вызова API answerCallbackQuery. Подробнее лучше смотреть в <code>ggram/context.lua</code>
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2023-07-17 02:47:10 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

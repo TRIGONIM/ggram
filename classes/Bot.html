@@ -35,12 +35,14 @@
 <ul>
 <li><a href="#Tables">Tables</a></li>
 <li><a href="#Methods">Methods</a></li>
+<li><a href="#Basic_Handlers">Basic Handlers </a></li>
 </ul>
 
 
 <h2>Classes</h2>
 <ul class="nowrap">
   <li><strong>Bot</strong></li>
+  <li><a href="../classes/Context.html">Context</a></li>
   <li><a href="../classes/Reply.html">Reply</a></li>
 </ul>
 <h2>Modules</h2>
@@ -79,12 +81,8 @@
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#bot.ErrCtx">bot.ErrCtx</a></td>
-	<td class="summary">Таблица, которая передается в bot.handle<em>error(err</em>ctx).</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#bot.ctx">bot.ctx</a></td>
-	<td class="summary">context (ctx) обертка для update объектов.</td>
+	<td class="name" nowrap><a href="#.ErrCtx">.ErrCtx</a></td>
+	<td class="summary">Таблица, которая передается в <code>bot.handle_error(err_ctx)</code>.</td>
 	</tr>
 </table>
 <h2><a href="#Methods">Methods</a></h2>
@@ -106,13 +104,16 @@
 	<td class="summary">Обработка Lua ошибок внутри хендлеров.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#bot:on">bot:on (fFilter, handler, uid)</a></td>
-	<td class="summary">Добавляет в бот хендлер на указанных условиях.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#bot:handle_update">bot:handle_update (UPD)</a></td>
 	<td class="summary">Выполняется, когда бот получает update.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bot:on">bot:on (fFilter, handler, uid)</a></td>
+	<td class="summary">Добавляет в бот хендлер на указанных условиях.</td>
+	</tr>
+</table>
+<h2><a href="#Basic_Handlers">Basic Handlers </a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#bot:update">bot:update (handler, uid)</a></td>
 	<td class="summary">Перехватывает все апдейты.</td>
@@ -143,11 +144,11 @@
 
     <dl class="function">
     <dt>
-    <a name = "bot.ErrCtx"></a>
-    <strong>bot.ErrCtx</strong>
+    <a name = ".ErrCtx"></a>
+    <strong>.ErrCtx</strong>
     </dt>
     <dd>
-    Таблица, которая передается в bot.handle<em>error(err</em>ctx).
+    Таблица, которая передается в <code>bot.handle_error(err_ctx)</code>.
 
 
     <h3>Fields:</h3>
@@ -171,71 +172,6 @@
         <li><span class="parameter">error</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
          ошибка в чистом виде, которая получена от Telegram после выполнения запроса
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "bot.ctx"></a>
-    <strong>bot.ctx</strong>
-    </dt>
-    <dd>
-    context (ctx) обертка для update объектов.  Передается во все .on хендлеры.
- Упрощает доступ к полю message внутри update объекта. Вместо ctx.update.message.text можно ctx.text
-
-
-    <h3>Fields:</h3>
-    <ul>
-        <li><span class="parameter">update</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
-         Оригинальный update объект от Telegram
-        </li>
-        <li><span class="parameter">bot</span>
-            <span class="types"><a class="type" href="../classes/Bot.html#">Bot</a></span>
-         быстрый доступ к боту по ctx.bot вместо self
-        </li>
-        <li><span class="parameter">reply</span>
-            <span class="types"><a class="type" href="../classes/Reply.html#">Reply</a></span>
-         быстрый API запрос (ctx.reply.text("hello"))
-        </li>
-        <li><span class="parameter">command</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-         Если это команда, то через ctx.command можно получить ее название. Для /TEST@botname .command будет == "test"
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">username</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.4">string</a></span>
-         /TEST@botname > "botname"
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">args</span>
-            <span class="types"><span class="type">func</span></span>
-         /TEST@botname a b c > {"a", "b", "c"}
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">mine</span>
-            <span class="types"><span class="type">bool</span></span>
-         адресовалась ли команда именно этому боту. Если наш бот называется @ourbot, то для /cmd@otherbot .mine будет false. Если username не указывался, то mine будет всегда true
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">exclusive</span>
-            <span class="types"><span class="type">bool</span></span>
-         если команда указывалась с @botname, то .exclusive == .mine. Если без @botname, то .exclusive == true, если написано боту в ЛС
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">json</span>
-            <span class="types"><span class="type">func</span></span>
-         для callback_query кнопок это превратит json с .data в таблицу
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">answer</span>
-            <span class="types"><span class="type">func</span></span>
-         для callback<em>query это упрощение вызова API answerCallbackQuery. Подробнее лучше смотреть в extend</em>callback.lua
-         (<em>optional</em>)
         </li>
     </ul>
 
@@ -333,7 +269,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">err_ctx</span>
-            <span class="types"><a class="type" href="../classes/Bot.html#bot.ErrCtx">ErrCtx</a></span>
+            <span class="types"><a class="type" href="../classes/Bot.html#.ErrCtx">.ErrCtx</a></span>
          параметр отличается от обычного ctx
         </li>
     </ul>
@@ -391,6 +327,29 @@
 
 </dd>
     <dt>
+    <a name = "bot:handle_update"></a>
+    <strong>bot:handle_update (UPD)</strong>
+    </dt>
+    <dd>
+    Выполняется, когда бот получает update.
+ Можно вызывать самостоятельно, чтобы организовать вебхуки или свою реализацию поллинга.
+ Внутри получает подходящие под update хендлеры и передает им update объект, обернутый в <a href="../classes/Context.html#">Context</a> (ctx).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">UPD</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
+         update объект от Telegram
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "bot:on"></a>
     <strong>bot:on (fFilter, handler, uid)</strong>
     </dt>
@@ -403,7 +362,7 @@
     <ul>
         <li><span class="parameter">fFilter</span>
             <span class="types"><span class="type">func</span></span>
-         сюда передается ctx. Если вернуть true, то выполнится handler(ctx)
+         сюда передается <a href="../classes/Context.html#">Context</a> (ctx). Если вернуть true, то выполнится handler(ctx)
         </li>
         <li><span class="parameter">handler</span>
             <span class="types"><span class="type">func</span></span>
@@ -436,29 +395,13 @@
     </ul>
 
 </dd>
-    <dt>
-    <a name = "bot:handle_update"></a>
-    <strong>bot:handle_update (UPD)</strong>
-    </dt>
-    <dd>
-    Выполняется, когда бот получает update.
- Можно вызывать самостоятельно, чтобы организовать вебхуки или свою реализацию поллинга.
- Внутри получает подходящие под update хендлеры и передает им update объект, обернутый в ctx.
+</dl>
+    <h2 class="section-header has-description"><a name="Basic_Handlers"></a>Basic Handlers </h2>
 
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">UPD</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.4/manual.html#6.6">table</a></span>
-         update объект от Telegram
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
+          <div class="section-description">
+           Основные хендлеры, созданы через <a href="../classes/Bot.html#bot:on">bot:on</a>
+          </div>
+    <dl class="function">
     <dt>
     <a name = "bot:update"></a>
     <strong>bot:update (handler, uid)</strong>
@@ -487,6 +430,10 @@
     </ol>
 
 
+    <h3>See also:</h3>
+    <ul>
+         <a href="../classes/Bot.html#bot:on">bot:on</a>
+    </ul>
 
 
 </dd>
@@ -640,7 +587,7 @@ bot.<span class="function-name">callback</span>(<span class="keyword">function</
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
-<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+<i style="float:right;">Last updated 2023-07-17 02:47:10 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

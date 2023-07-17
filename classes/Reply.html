@@ -34,12 +34,16 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Main_Methods">Main Methods </a></li>
+<li><a href="#_____________________________">Функции методов </a></li>
+<li><a href="#________________________">Модификаторы </a></li>
 </ul>
 
 
 <h2>Classes</h2>
 <ul class="nowrap">
   <li><a href="../classes/Bot.html">Bot</a></li>
+  <li><a href="../classes/Context.html">Context</a></li>
   <li><strong>Reply</strong></li>
 </ul>
 <h2>Modules</h2>
@@ -71,23 +75,25 @@
 <div id="content">
 
 <h1>Class <code>Reply</code></h1>
+<p>
 <p>Обертка для вызова API методов Telegram</p>
+
+<pre>
+<span class="comment">-- Использование из любого места в коде:
+</span>bot.<span class="function-name">reply</span>(<span class="number">123456</span>).<span class="function-name">text</span>(<span class="string">"Hello"</span>) <span class="comment">-- где bot это объект бота, а 123456 это chat_id
+</span><span class="comment">-- Доступ внутри хендлеров происходит через context объект
+</span>bot.<span class="function-name">command</span>(<span class="string">"test"</span>, <span class="keyword">function</span>(ctx) ctx.reply.<span class="function-name">text</span>(<span class="string">"Hello"</span>) <span class="keyword">end</span>) <span class="comment">-- chat_id уже забинджен
+</span><span class="comment">-- Еще несколько примеров:
+</span>ctx.reply.<span class="function-name">text</span>(<span class="string">"*Жирный текст*"</span>, <span class="string">"Markdown"</span>)
+ctx.reply.<span class="function-name">markdown</span>(<span class="string">"*Аналогичная запись*"</span>)
+ctx.reply.<span class="function-name">silent</span>().<span class="function-name">text</span>(<span class="string">"Будет отправлено без звука"</span>)
+ctx.reply.<span class="function-name">setParameter</span>(<span class="string">"disable_notification"</span>, <span class="keyword">true</span>).<span class="function-name">text</span>(<span class="string">"Аналогичный вариант без звука"</span>)
+</pre>
+
+</p>
 <p>
 
 </p>
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">-- Использование из любого места в коде:
-bot.reply(123456).text(&quot;Hello&quot;) -- где bot это объект бота, а 123456 это chat_id
--- Доступ внутри хендлеров происходит через context объект
-bot.command(&quot;test&quot;, function(ctx) ctx.reply.text(&quot;Hello&quot;) end) -- chat_id уже забинджен
--- Еще несколько примеров:
-ctx.reply.text(&quot;*Жирный текст*&quot;, &quot;Markdown&quot;)
-ctx.reply.markdown(&quot;*Аналогичная запись*&quot;)
-ctx.reply.silent().text(&quot;Будет отправлено без звука&quot;)
-ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Аналогичный вариант без звука&quot;)
-</pre>
-    </ul>
 
 
 <h2><a href="#Functions">Functions</a></h2>
@@ -96,6 +102,9 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 	<td class="name" nowrap><a href="#REPLY_MT.__index">REPLY_MT.__index (self, sMethod)</a></td>
 	<td class="summary">чтобы методы можно было вызывать через точку, а не двоеточие</td>
 	</tr>
+</table>
+<h2><a href="#Main_Methods">Main Methods </a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:sendGeneric">REPLY_MT:sendGeneric (method[, additionalParameters])</a></td>
 	<td class="summary">Отправить запрос на Telegram API</td>
@@ -109,6 +118,9 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 	<td class="name" nowrap><a href="#REPLY_MT:send">REPLY_MT:send (method[, additionalParameters])</a></td>
 	<td class="summary">Отправить запрос.</td>
 	</tr>
+</table>
+<h2><a href="#_____________________________">Функции методов </a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:text">REPLY_MT:text (text, mode)</a></td>
 	<td class="summary">Отправка sendMessage</td>
@@ -140,7 +152,7 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:mediaGroup">REPLY_MT:mediaGroup (media_group)</a></td>
 	<td class="summary">Отправка sendMediaGroup
- Может отправлять как raw<em>data файлы, так и файлы по file</em>id и ссылке</td>
+ Может отправлять как raw_data файлы, так и файлы по file_id и ссылке</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:location">REPLY_MT:location (latitude, longitude)</a></td>
@@ -178,6 +190,9 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 	<td class="name" nowrap><a href="#REPLY_MT:deleteMessage">REPLY_MT:deleteMessage (msg)</a></td>
 	<td class="summary">Отправка deleteMessage</td>
 	</tr>
+</table>
+<h2><a href="#________________________">Модификаторы </a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:setParameter">REPLY_MT:setParameter (key, value)</a></td>
 	<td class="summary">Модификатор, устанавливает параметр запроса</td>
@@ -188,7 +203,7 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:reply">REPLY_MT:reply (msg)</a></td>
-	<td class="summary">Модификатор, добавляет параметр reply<em>to</em>message_id</td>
+	<td class="summary">Модификатор, добавляет параметр <code>reply_to_message_id</code></td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:selective">REPLY_MT:selective (bForce)</a></td>
@@ -196,19 +211,19 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:forceReply">REPLY_MT:forceReply (bForce)</a></td>
-	<td class="summary">Модификатор, добавляет параметр force_reply</td>
+	<td class="summary">Модификатор, добавляет параметр <code>force_reply</code></td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:keyboard">REPLY_MT:keyboard (tKeys, bResize, bOneTime)</a></td>
-	<td class="summary">Модификатор, добавляет параметр keyboard, resize<em>keyboard, one</em>time_keyboard</td>
+	<td class="summary">Модификатор, добавляет параметр keyboard, <code>resize_keyboard</code>, <code>one_time_keyboard</code></td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:inlineKeyboard">REPLY_MT:inlineKeyboard (tKeys)</a></td>
-	<td class="summary">Модификатор, добавляет параметр inline_keyboard</td>
+	<td class="summary">Модификатор, добавляет параметр <code>inline_keyboard</code></td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:disablePreview">REPLY_MT:disablePreview (bDisable)</a></td>
-	<td class="summary">Модификатор, добавляет параметр disable<em>web</em>page_preview (чтобы ссылки в сообщении не создавали превью)</td>
+	<td class="summary">Модификатор, добавляет параметр <code>disable_web_page_preview</code> (чтобы ссылки в сообщении не создавали превью)</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:protect">REPLY_MT:protect (bProtect)</a></td>
@@ -216,7 +231,7 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#REPLY_MT:silent">REPLY_MT:silent (bMute)</a></td>
-	<td class="summary">Модификатор, добавляет параметр disable_notification (отправка сообщений без звука)</td>
+	<td class="summary">Модификатор, добавляет параметр <code>disable_notification</code> (отправка сообщений без звука)</td>
 	</tr>
 </table>
 
@@ -254,6 +269,13 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 
 
 </dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Main_Methods"></a>Main Methods </h2>
+
+          <div class="section-description">
+           Отправка запросов из reply объекта на сервера телеграм
+          </div>
+    <dl class="function">
     <dt>
     <a name = "REPLY_MT:sendGeneric"></a>
     <strong>REPLY_MT:sendGeneric (method[, additionalParameters])</strong>
@@ -350,6 +372,13 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
 
 
 </dd>
+</dl>
+    <h2 class="section-header has-description"><a name="_____________________________"></a>Функции методов </h2>
+
+          <div class="section-description">
+           Выполнение этих функций отправляет запрос к Telegram API
+          </div>
+    <dl class="function">
     <dt>
     <a name = "REPLY_MT:text"></a>
     <strong>REPLY_MT:text (text, mode)</strong>
@@ -608,7 +637,7 @@ ctx.reply.setParameter(&quot;disable_notification&quot;, true).text(&quot;Ана
     </dt>
     <dd>
     Отправка sendMediaGroup
- Может отправлять как raw<em>data файлы, так и файлы по file</em>id и ссылке
+ Может отправлять как raw_data файлы, так и файлы по file_id и ссылке
 
 
     <h3>Parameters:</h3>
@@ -856,6 +885,14 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
 
 
 </dd>
+</dl>
+    <h2 class="section-header has-description"><a name="________________________"></a>Модификаторы </h2>
+
+          <div class="section-description">
+           Эти функции добавляют определенные параметры к запросу,
+ но не выполняют запрос сами по себе
+          </div>
+    <dl class="function">
     <dt>
     <a name = "REPLY_MT:setParameter"></a>
     <strong>REPLY_MT:setParameter (key, value)</strong>
@@ -934,7 +971,7 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
     <strong>REPLY_MT:reply (msg)</strong>
     </dt>
     <dd>
-    Модификатор, добавляет параметр reply<em>to</em>message_id
+    Модификатор, добавляет параметр <code>reply_to_message_id</code>
 
 
     <h3>Parameters:</h3>
@@ -986,7 +1023,7 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
     <strong>REPLY_MT:forceReply (bForce)</strong>
     </dt>
     <dd>
-    Модификатор, добавляет параметр force_reply
+    Модификатор, добавляет параметр <code>force_reply</code>
 
 
     <h3>Parameters:</h3>
@@ -1008,7 +1045,7 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
     <strong>REPLY_MT:keyboard (tKeys, bResize, bOneTime)</strong>
     </dt>
     <dd>
-    Модификатор, добавляет параметр keyboard, resize<em>keyboard, one</em>time_keyboard
+    Модификатор, добавляет параметр keyboard, <code>resize_keyboard</code>, <code>one_time_keyboard</code>
 
 
     <h3>Parameters:</h3>
@@ -1044,7 +1081,7 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
     <strong>REPLY_MT:inlineKeyboard (tKeys)</strong>
     </dt>
     <dd>
-    Модификатор, добавляет параметр inline_keyboard
+    Модификатор, добавляет параметр <code>inline_keyboard</code>
 
 
     <h3>Parameters:</h3>
@@ -1070,7 +1107,7 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
     <strong>REPLY_MT:disablePreview (bDisable)</strong>
     </dt>
     <dd>
-    Модификатор, добавляет параметр disable<em>web</em>page_preview (чтобы ссылки в сообщении не создавали превью)
+    Модификатор, добавляет параметр <code>disable_web_page_preview</code> (чтобы ссылки в сообщении не создавали превью)
 
 
     <h3>Parameters:</h3>
@@ -1122,7 +1159,7 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
     <strong>REPLY_MT:silent (bMute)</strong>
     </dt>
     <dd>
-    Модификатор, добавляет параметр disable_notification (отправка сообщений без звука)
+    Модификатор, добавляет параметр <code>disable_notification</code> (отправка сообщений без звука)
 
 
     <h3>Parameters:</h3>
@@ -1146,7 +1183,7 @@ ctx.reply.<span class="function-name">mediaGroup</span>(media)</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
-<i style="float:right;">Last updated 2023-07-16 23:52:04 </i>
+<i style="float:right;">Last updated 2023-07-17 02:47:10 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
