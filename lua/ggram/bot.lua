@@ -9,17 +9,6 @@ BOT_MT.__index = function(self, sMethod)
 	return fMethod and function(...) return fMethod(self, ...) end or nil
 end
 
-local function wrapUpdate(upd) -- > ctx
-	local wrapped_t = {update = upd}
-	local wrapped_m = setmetatable(wrapped_t, {
-		__index = function(self, k)
-			return upd[k] or (upd.message and upd.message[k]) -- callback_query и другие упрощать через .use (#todo)
-		end
-	})
-
-	return wrapped_m
-end
-
 --- Возвращает объект-конструктор запроса к Telegram API.
 --- Прикрепляется к каждому ctx объекту.
 -- @function reply
@@ -55,8 +44,8 @@ local request = require("ggram.request").request
 function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 	try_ = try_ or 1
 
-	--- Таблица, которая передается в bot.handle_error(err_ctx).
-	-- @table ErrCtx
+	--- Таблица, которая передается в `bot.handle_error(err_ctx)`.
+	-- @table .ErrCtx
 	-- @tfield func retry, при вызове которой запрос повторится с теми же параметрами (полезно при retry-after ошибках)
 	-- @tfield string method API метод, который бот пытался выполнить при запросе
 	-- @tfield table parameters таблица параметров
@@ -82,7 +71,7 @@ end
 --- Функция для оверрайда. Вызывается, когда Telegram вернул ошибку после запроса.
 --- По умолчанию принтит все данные об ошибке в консоль
 -- @function handle_error
--- @tparam ErrCtx err_ctx параметр отличается от обычного ctx
+-- @tparam .ErrCtx err_ctx параметр отличается от обычного ctx
 -- @usage
 -- local defer = require("deferred")
 -- function bot.handle_error(ctx)
@@ -129,10 +118,35 @@ function BOT_MT:handle_middleware_error(err)
 	print("[ggram] middleware error: " .. debug.traceback(err))
 end
 
+--- Выполняется, когда бот получает update.
+--- Можно вызывать самостоятельно, чтобы организовать вебхуки или свою реализацию поллинга.
+--- Внутри получает подходящие под update хендлеры и передает им update объект, обернутый в @{Context} (ctx).
+-- @function handle_update
+-- @tparam table UPD update объект от Telegram
+local coroutinize = require("ggram.helpers.coro").coroutinize
+function BOT_MT:handle_update(UPD)
+	local ctx = require("ggram.context"):new(self, UPD)
+
+	local suitable_handlers = {}
+	for _,filter_handler in pairs(self.handlers) do
+		if filter_handler[1](ctx) then -- подходит под контекст
+			suitable_handlers[#suitable_handlers + 1] = filter_handler[2]
+		end
+	end
+
+	coroutinize(function()
+		for _, handler in ipairs(suitable_handlers) do
+			local ok, res = pcall(handler, ctx)
+			if not ok then self.handle_middleware_error(res) end
+			if res == false then break end -- остальные хендлеры не обрабатываем
+		end
+	end)
+end
+
 --- Добавляет в бот хендлер на указанных условиях.
 --- На основе этой функции созданы все хендлеры: bot.command, bot.callback, bot.update и т.д.
 -- @function on
--- @tparam func fFilter сюда передается ctx. Если вернуть true, то выполнится handler(ctx)
+-- @tparam func fFilter сюда передается @{Context} (ctx). Если вернуть true, то выполнится handler(ctx)
 -- @tparam func handler выполнятся, если fFilter вернул true
 -- @tparam string uid уникальный идентификатор хендлера. Не должен повторяться для одного бота
 -- @treturn Bot self
@@ -153,50 +167,84 @@ function BOT_MT:on(fFilter, handler, uid)
 	return self
 end
 
---- Выполняется, когда бот получает update.
---- Можно вызывать самостоятельно, чтобы организовать вебхуки или свою реализацию поллинга.
---- Внутри получает подходящие под update хендлеры и передает им update объект, обернутый в ctx.
--- @function handle_update
--- @tparam table UPD update объект от Telegram
-local extend_callback = require("ggram.middlewares.extend_callback")
-local extend_message  = require("ggram.middlewares.extend_message")
-local coroutinize     = require("ggram.helpers.coro").coroutinize
-function BOT_MT:handle_update(UPD)
-	--- context (ctx) обертка для update объектов. Передается во все .on хендлеры.
-	--- Упрощает доступ к полю message внутри update объекта. Вместо ctx.update.message.text можно ctx.text
-	--- @todo вынести в отдельный файл context.lua, как класс
-	-- @table ctx
-	-- @tfield table update Оригинальный update объект от Telegram
-	-- @tfield Bot bot быстрый доступ к боту по ctx.bot вместо self
-	-- @tfield Reply reply быстрый API запрос (ctx.reply.text("hello"))
-	-- @tfield[opt] string command Если это команда, то через ctx.command можно получить ее название. Для /TEST@botname .command будет == "test"
-	-- @tfield[opt] string username /TEST@botname > "botname"
-	-- @tfield[opt] func args /TEST@botname a b c > {"a", "b", "c"}
-	-- @tfield[opt] bool mine адресовалась ли команда именно этому боту. Если наш бот называется @ourbot, то для /cmd@otherbot .mine будет false. Если username не указывался, то mine будет всегда true
-	-- @tfield[opt] bool exclusive если команда указывалась с @botname, то .exclusive == .mine. Если без @botname, то .exclusive == true, если написано боту в ЛС
-	-- @tfield[opt] func json для callback_query кнопок это превратит json с .data в таблицу
-	-- @tfield[opt] func answer для callback_query это упрощение вызова API answerCallbackQuery. Подробнее лучше смотреть в extend_callback.lua
-	local ctx = wrapUpdate(UPD)
-	ctx.bot = self
 
-	-- Своеобразные встроенные мидлверы
-	extend_message(ctx)
-	extend_callback(ctx)
+---------------------------------------------------------
+-- Basic Handlers
+--
+-- Основные хендлеры, созданы через @{bot:on}
+--
+-- @section BasicHandlers
+---------------------------------------------------------
 
-	local suitable_handlers = {}
-	for _,filter_handler in pairs(self.handlers) do
-		if filter_handler[1](ctx) then -- подходит под контекст
-			suitable_handlers[#suitable_handlers + 1] = filter_handler[2]
-		end
-	end
-
-	coroutinize(function()
-		for _, handler in ipairs(suitable_handlers) do
-			local ok, res = pcall(handler, ctx)
-			if not ok then self.handle_middleware_error(res) end
-			if res == false then break end -- остальные хендлеры не обрабатываем
-		end
-	end)
+--- Перехватывает все апдейты. Хорошее место, чтобы добавлять общие middlewares
+-- @function update
+-- @tparam func handler колбек функция, которая выполнится при получении нового update от telegram
+-- @tparam string uid уникальный идентификатор хендлера
+-- @treturn Bot self
+-- @see bot:on
+function BOT_MT:update(handler, uid)
+	return self.on(function()
+		return true
+	end, handler, "update_" .. uid)
 end
+
+--- Перехватывает команды бота
+-- @function command
+-- @tparam string name команда, при получении которой выполнять handler
+-- @tparam func handler колбек функция, которая выполнится при получении указанной команды
+-- @treturn Bot self
+-- @usage bot.command("test", function(ctx) ctx.reply.text("Hello") end)
+function BOT_MT:command(name, handler)
+	return self.on(function(ctx)
+		return ctx.command == name
+	end, handler, "command_" .. name)
+end
+
+--- Нажата inline кнопка
+-- @function callback
+-- @tparam func handler функция, которая выполнится при нажатии inline кнопок
+-- @tparam string uid уникальный идентификатор хендлера
+-- @treturn Bot self
+-- @usage
+-- bot.command("test", function(ctx)
+-- 	ctx.reply.inlineKeyboard({ {
+-- 		{text = "Line 1, row 1", callback_data = "any"},
+-- 	} }).text("Hello world!")
+-- end)
+-- bot.callback(function(ctx)
+-- 	local query = ctx.callback_query
+-- 	if query.data == "any" then
+-- 		ctx.answer({text = "It's inline answer"})
+-- 	end
+-- end, "callback_example")
+function BOT_MT:callback(handler, uid)
+	return self.on(function(ctx)
+		return ctx.callback_query ~= nil
+	end, handler, "callback_" .. uid)
+end
+
+--- Пришло текстовое сообщение. Может также содержать команду.
+--- Не gif, не callback_query и т.д.
+-- @function text
+-- @tparam func handler функция, которая выполнится при получении текстового сообщения
+-- @tparam string uid уникальный идентификатор хендлера
+-- @treturn Bot self
+function BOT_MT:text(handler, uid)
+	return self.on(function(ctx)
+		return ctx.text ~= nil
+	end, handler, "text_" .. uid)
+end
+
+--- Команды, гифки... Все, что имеет поле .message
+-- @function message
+-- @tparam func handler функция, которая выполнится при получении update с полем .message
+-- @tparam string uid уникальный идентификатор хендлера
+-- @treturn Bot self
+function BOT_MT:message(handler, uid)
+	return self.on(function(ctx)
+		return ctx.message ~= nil
+	end, handler, "message_" .. uid)
+end
+
 
 return BOT_MT

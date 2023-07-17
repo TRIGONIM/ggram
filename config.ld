@@ -2,8 +2,6 @@
 title = "ggram documentation"
 description = "ggram – Telegram Bot Framework written on Lua"
 project = "ggram"
--- one = true
--- no_summary = true
 examples = {'examples', exclude = {}}
 
 readme = {
@@ -15,4 +13,5 @@ readme = {
     'info/understanding_things.md'
 }
 
+-- style="!new"
 format = 'markdown'

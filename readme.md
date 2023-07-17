@@ -73,11 +73,11 @@ luarocks install ggram
 ## 🚀 Creating and launching a bot
 
 1. Create bot.lua file. You can choose any name for the file.
-2. Paste the contents of [/examples/echo.lua](/examples/echo.lua) into the file.
+2. Paste the contents of [/examples/echo.lua](./examples/echo.lua) into the file.
 3. Run file with `lua bot.lua`. _If you want to run a bot on a **Garry's Mod** server, then [read this](/info/running_within_garrysmod.md)_.
-4. Check out other examples in the [/examples](/examples) folder.
+4. Check out other examples in the [/examples](./examples) folder.
 
-**If any error was occur, check the [troubleshooting](/info/troubleshooting.md) guide**
+**If any error was occur, check the [troubleshooting](./info/troubleshooting.md) guide**
 
 ## 📚 Docs
 

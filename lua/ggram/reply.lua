@@ -1,15 +1,14 @@
 --- Обертка для вызова API методов Telegram
+--    -- Использование из любого места в коде:
+--    bot.reply(123456).text("Hello") -- где bot это объект бота, а 123456 это chat_id
+--    -- Доступ внутри хендлеров происходит через context объект
+--    bot.command("test", function(ctx) ctx.reply.text("Hello") end) -- chat_id уже забинджен
+--    -- Еще несколько примеров:
+--    ctx.reply.text("*Жирный текст*", "Markdown")
+--    ctx.reply.markdown("*Аналогичная запись*")
+--    ctx.reply.silent().text("Будет отправлено без звука")
+--    ctx.reply.setParameter("disable_notification", true).text("Аналогичный вариант без звука")
 -- @classmod Reply
--- @usage
--- -- Использование из любого места в коде:
--- bot.reply(123456).text("Hello") -- где bot это объект бота, а 123456 это chat_id
--- -- Доступ внутри хендлеров происходит через context объект
--- bot.command("test", function(ctx) ctx.reply.text("Hello") end) -- chat_id уже забинджен
--- -- Еще несколько примеров:
--- ctx.reply.text("*Жирный текст*", "Markdown")
--- ctx.reply.markdown("*Аналогичная запись*")
--- ctx.reply.silent().text("Будет отправлено без звука")
--- ctx.reply.setParameter("disable_notification", true).text("Аналогичный вариант без звука")
 
 local table_Copy = table.Copy or require("gmod.table").Copy
 
@@ -46,6 +45,14 @@ local foobar = function(reply, file_key, file)
 	end
 	return file -- file_id || url || etc
 end
+
+---------------------------------------------------------
+-- Main Methods
+--
+-- Отправка запросов из reply объекта на сервера телеграм
+--
+-- @section Main
+---------------------------------------------------------
 
 --- Отправить запрос на Telegram API
 -- @string method API метод
@@ -105,7 +112,14 @@ function REPLY_MT:send(method, additionalParameters)
 	return send(method, additionalParameters)
 end
 
--- *methods functions*
+---------------------------------------------------------
+-- Функции методов
+--
+-- Выполнение этих функций отправляет запрос к Telegram API
+--
+-- @section Methods
+---------------------------------------------------------
+
 -- Не доделана https://github.com/botgram/botgram/blob/master/lib/reply.js#L128-L135
 -- function REPLY_MT:forward(msg_id, chat_id)
 -- 	return self.sendGeneric("forwardMessage", {message_id = resolveMessage(msg_id), from_chat_id = resolveChat(chat_id)})
@@ -175,7 +189,7 @@ end
 -- voice
 
 --- Отправка sendMediaGroup
---- Может отправлять как raw_data файлы, так и файлы по file_id и ссылке
+--- Может отправлять как raw\_data файлы, так и файлы по file\_id и ссылке
 -- @usage
 -- local media = {
 -- 	{type = "photo", media = "https://file.def.pm/n9784Dep.jpg", caption = "cap"}, -- sending photo by url
@@ -235,7 +249,7 @@ function REPLY_MT:editMarkdown(msg, text)
 	return self.editText(msg, text, "Markdown")
 end
 
---- Alias для editText, force HTML parse_mode
+--- Alias для editText, force HTML parse\_mode
 function REPLY_MT:editHTML(msg, text)
 	return self.editText(msg, text, "HTML")
 end
@@ -259,7 +273,14 @@ function REPLY_MT:deleteMessage(msg)
 	return self.sendGeneric("deleteMessage", parameters)
 end
 
--- modifiers --
+---------------------------------------------------------
+-- Модификаторы
+--
+-- Эти функции добавляют определенные параметры к запросу,
+-- но не выполняют запрос сами по себе
+--
+-- @section Modifiers
+---------------------------------------------------------
 
 --- Модификатор, устанавливает параметр запроса
 -- @usage ctx.reply.setParameter("disable_notification", true).text("Hello")
@@ -275,7 +296,7 @@ function REPLY_MT:setFile(name, raw_content, file_name, content_type)
 	return self
 end
 
---- Модификатор, добавляет параметр reply_to_message_id
+--- Модификатор, добавляет параметр `reply_to_message_id`
 -- @usage ctx.reply.reply(ctx).text("Reply to message")
 function REPLY_MT:reply(msg)
 	local msg_id = msg -- id
@@ -292,7 +313,7 @@ function REPLY_MT:selective(bForce)
 	return self
 end
 
---- Модификатор, добавляет параметр force_reply
+--- Модификатор, добавляет параметр `force_reply`
 function REPLY_MT:forceReply(bForce)
 	if not self.parameters["reply_markup"] then self.parameters["reply_markup"] = {} end
 	local markup = self.parameters["reply_markup"]
@@ -301,7 +322,7 @@ function REPLY_MT:forceReply(bForce)
 	return self
 end
 
---- Модификатор, добавляет параметр keyboard, resize_keyboard, one_time_keyboard
+--- Модификатор, добавляет параметр keyboard, `resize_keyboard`, `one_time_keyboard`
 -- @usage ctx.reply.keyboard({{"button"}}, true).text("Hello")
 function REPLY_MT:keyboard(tKeys, bResize, bOneTime)
 	if not self.parameters["reply_markup"] then self.parameters["reply_markup"] = {} end
@@ -325,7 +346,7 @@ function REPLY_MT:keyboard(tKeys, bResize, bOneTime)
 	return self
 end
 
---- Модификатор, добавляет параметр inline_keyboard
+--- Модификатор, добавляет параметр `inline_keyboard`
 -- @usage ctx.reply.inlineKeyboard({{ {text = "text", callback_data = "any"} }}).text("kb")
 function REPLY_MT:inlineKeyboard(tKeys)
 	if not self.parameters["reply_markup"] then self.parameters["reply_markup"] = {} end
@@ -335,7 +356,7 @@ function REPLY_MT:inlineKeyboard(tKeys)
 	return self
 end
 
---- Модификатор, добавляет параметр disable_web_page_preview (чтобы ссылки в сообщении не создавали превью)
+--- Модификатор, добавляет параметр `disable_web_page_preview` (чтобы ссылки в сообщении не создавали превью)
 -- @usage ctx.reply.disablePreview().markdown("https://youtube.com")
 function REPLY_MT:disablePreview(bDisable)
 	self.parameters["disable_web_page_preview"] = bDisable ~= false
@@ -349,7 +370,7 @@ function REPLY_MT:protect(bProtect)
 	return self
 end
 
---- Модификатор, добавляет параметр disable_notification (отправка сообщений без звука)
+--- Модификатор, добавляет параметр `disable_notification` (отправка сообщений без звука)
 function REPLY_MT:silent(bMute)
 	self.parameters["disable_notification"] = bMute ~= false
 	return self

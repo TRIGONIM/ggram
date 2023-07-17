@@ -7,7 +7,7 @@ local bot = ggram("123456789:QWERTYUIOPASDFGHJKLZXCVBNM") -- replace with your t
 require("ggram.polling").start(bot) -- start getUpdates loop
 
 
--- all handlers (like .text) described in basic_handlers.lua
+-- all handlers (like .text) described in ggram/bot.lua
 -- more info about ctx: /info/
 bot.text(function(ctx)
 	ctx.reply.text(ctx.message.text)
