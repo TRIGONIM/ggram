@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 -- export: {request(), format_parameters()}
 
 local deferred         = deferred or require("deferred")

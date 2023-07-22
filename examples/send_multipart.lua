@@ -33,7 +33,7 @@ request().setParameter("caption", "caption").photo(photo_url) -- alternative met
 
 -- Now you can see example, where we download the image and send it with multipart/form-data as file
 http_fetch(photo_url, function(raw_photo)
-	request().photo({raw_data})
+	request().photo({raw_photo})
 end)
 
 -- Next example shows how to send files within handlers

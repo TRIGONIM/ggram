@@ -1,0 +1,7 @@
+{
+	"workspace": {
+		"ignoreDir": [
+			"deferred.lua"
+		]
+	}
+}

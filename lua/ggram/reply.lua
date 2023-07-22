@@ -10,6 +10,7 @@
 --    ctx.reply.setParameter("disable_notification", true).text("Аналогичный вариант без звука")
 -- @classmod Reply
 
+---@diagnostic disable-next-line: undefined-field
 local table_Copy = table.Copy or require("gmod.table").Copy
 
 local REPLY_MT = {} --- чтобы методы можно было вызывать через точку, а не двоеточие
@@ -85,7 +86,8 @@ function REPLY_MT:sendMultipart(method, additionalParameters)
 	end
 	parameters = require("ggram.request").format_parameters(parameters) -- media, reply_markup
 
-	local form_data = require("multipart")()
+	local Multipart = require("multipart")
+	local form_data = Multipart()
 
 	for k, v in pairs(parameters) do
 		-- {caption = "bla bla"}
@@ -127,7 +129,7 @@ end
 
 --- Отправка sendMessage
 function REPLY_MT:text(text, mode)
-	return self.sendGeneric("sendMessage", {text = text, parse_mode = mode})
+	return self:sendGeneric("sendMessage", {text = text, parse_mode = mode})
 end
 
 --- Alias для ctx.reply.text(text, "Markdown")
@@ -149,7 +151,7 @@ end
 -- -- Альтернативный вариант
 -- ctx.reply.photo({raw_data})
 function REPLY_MT:photo(file_url_or_id, caption, captionMode)
-	return self.send("sendPhoto", {photo = foobar(self, "photo", file_url_or_id), caption = caption, parse_mode = captionMode})
+	return self:send("sendPhoto", {photo = foobar(self, "photo", file_url_or_id), caption = caption, parse_mode = captionMode})
 end
 
 -- audio
@@ -157,7 +159,7 @@ end
 --- Отправка sendDocument
 -- @usage ctx.reply.document({raw_content, "file.zip"})
 function REPLY_MT:document(file_url_or_id, caption, captionMode)
-	return self.send("sendDocument", {document = foobar(self, "document", file_url_or_id), caption = caption, parse_mode = captionMode})
+	return self:send("sendDocument", {document = foobar(self, "document", file_url_or_id), caption = caption, parse_mode = captionMode})
 end
 
 -- sticker
@@ -176,13 +178,13 @@ end
 -- end)
 
 function REPLY_MT:video(file_url_or_id, caption, captionMode, duration, width, height, streaming)
-	return self.send("sendVideo", {video = foobar(self, "video", file_url_or_id), duration = duration, caption = caption, parse_mode = captionMode, width = width, height = height, supports_streaming = streaming})
+	return self:send("sendVideo", {video = foobar(self, "video", file_url_or_id), duration = duration, caption = caption, parse_mode = captionMode, width = width, height = height, supports_streaming = streaming})
 end
 
 --- Отправка sendAnimation
 -- @see photo
 function REPLY_MT:animation(file_url_or_id, caption, captionMode)
-	return self.send("sendAnimation", {animation = foobar(self, "animation", file_url_or_id), caption = caption, parse_mode = captionMode})
+	return self:send("sendAnimation", {animation = foobar(self, "animation", file_url_or_id), caption = caption, parse_mode = captionMode})
 end
 
 -- videoNote
@@ -200,37 +202,37 @@ function REPLY_MT:mediaGroup(media_group) -- {{type = "photo", media = RAW_DATA,
 	for i, f in ipairs(media_group) do
 		if type(f.media) == "table" then -- is_multipart
 			local file_row = "unique" .. i
-			self.setFile(file_row, f.media[1], f.media[2] or "anydata?")
+			self:setFile(file_row, f.media[1], f.media[2] or "anydata?")
 			f.media = "attach://" .. file_row
 		end
 	end
-	return self.send("sendMediaGroup", {media = media_group})
+	return self:send("sendMediaGroup", {media = media_group})
 end
 
 --- Отправка sendLocation
 function REPLY_MT:location(latitude, longitude)
-	return self.sendGeneric("sendLocation", {latitude = latitude, longitude = longitude})
+	return self:sendGeneric("sendLocation", {latitude = latitude, longitude = longitude})
 end
 
 -- venue
 
 --- Отправка sendContact
 function REPLY_MT:contact(phone, firstname, lastname)
-	return self.sendGeneric("sendContact", {phone_number = phone, first_name = firstname, last_name = lastname})
+	return self:sendGeneric("sendContact", {phone_number = phone, first_name = firstname, last_name = lastname})
 end
 
 -- game
 
 --- Отправка sendDice
 function REPLY_MT:dice()
-	return self.sendGeneric("sendDice")
+	return self:sendGeneric("sendDice")
 end
 
 -- other actions --
 
 --- Отправка sendChatAction
 function REPLY_MT:action(action)
-	return self.sendGeneric("sendChatAction", {action = action})
+	return self:sendGeneric("sendChatAction", {action = action})
 end
 
 --- Отправка editMessageText
@@ -241,7 +243,7 @@ function REPLY_MT:editText(msg, text, parse_mode)
 	else
 		parameters["message_id"] = resolveMessage(msg)
 	end
-	return self.sendGeneric("editMessageText", parameters)
+	return self:sendGeneric("editMessageText", parameters)
 end
 
 --- Alias для editText, force Markdown parse_mode
@@ -264,13 +266,13 @@ function REPLY_MT:editReplyMarkup(msg)
 	else
 		parameters.message_id = resolveMessage(msg)
 	end
-	return self.sendGeneric("editMessageReplyMarkup", parameters)
+	return self:sendGeneric("editMessageReplyMarkup", parameters)
 end
 
 --- Отправка deleteMessage
 function REPLY_MT:deleteMessage(msg)
 	local parameters = { message_id = resolveMessage(msg) }
-	return self.sendGeneric("deleteMessage", parameters)
+	return self:sendGeneric("deleteMessage", parameters)
 end
 
 ---------------------------------------------------------
@@ -309,7 +311,7 @@ end
 --- Модификатор, добавляет параметр selective
 -- @usage ctx.reply.keyboard({{"button"}}, true).selective().markdown("*Hello*")
 function REPLY_MT:selective(bForce)
-	self.parameters.selective = fSelective ~= false
+	self.parameters.selective = bForce ~= false
 	return self
 end
 
