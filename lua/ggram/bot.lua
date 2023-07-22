@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 --- Объект бота, создается через ggram()
 ---
 --- ⚠️ Все методы здесь определяются через bot:method, но для вызова нужно использовать bot.method
@@ -183,7 +184,7 @@ end
 -- @treturn Bot self
 -- @see bot:on
 function BOT_MT:update(handler, uid)
-	return self:on(function()
+	return self.on(function()
 		return true
 	end, handler, "update_" .. uid)
 end
@@ -195,7 +196,7 @@ end
 -- @treturn Bot self
 -- @usage bot.command("test", function(ctx) ctx.reply.text("Hello") end)
 function BOT_MT:command(name, handler)
-	return self:on(function(ctx)
+	return self.on(function(ctx)
 		return ctx.command == name
 	end, handler, "command_" .. name)
 end
@@ -218,7 +219,7 @@ end
 -- 	end
 -- end, "callback_example")
 function BOT_MT:callback(handler, uid)
-	return self:on(function(ctx)
+	return self.on(function(ctx)
 		return ctx.callback_query ~= nil
 	end, handler, "callback_" .. uid)
 end
@@ -230,7 +231,7 @@ end
 -- @tparam string uid уникальный идентификатор хендлера
 -- @treturn Bot self
 function BOT_MT:text(handler, uid)
-	return self:on(function(ctx)
+	return self.on(function(ctx)
 		return ctx.text ~= nil
 	end, handler, "text_" .. uid)
 end
@@ -241,7 +242,7 @@ end
 -- @tparam string uid уникальный идентификатор хендлера
 -- @treturn Bot self
 function BOT_MT:message(handler, uid)
-	return self:on(function(ctx)
+	return self.on(function(ctx)
 		return ctx.message ~= nil
 	end, handler, "message_" .. uid)
 end
