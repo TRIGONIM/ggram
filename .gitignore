@@ -1,7 +1,6 @@
 .DS_Store
 *.code-workspace
 *.rock
-.vscode/sftp.json
 bots
 doc
 .vscode
