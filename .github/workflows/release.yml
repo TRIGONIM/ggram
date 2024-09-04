@@ -1,28 +1,78 @@
-name: Release
 
-on: push
+name: Create and publish release
+
+on:
+  push:
+    tags: ["v*"]
+    branches: [main]
 
 jobs:
-  superfile:
-    runs-on: ubuntu-20.04
-    if: "startsWith(github.event.head_commit.message, 'RELEASE')"
+  lint_files:
+    runs-on: ubuntu-24.04
     steps:
-    - id: changelog
-      uses: zhaojh329/auto-changelog@master
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - id: checkout
-      uses: actions/checkout@v2
-    - id: parse_version
-      run: |
-        VERSION="${{ github.event.head_commit.message }}"
-        echo ::set-output name=parsed_version::${VERSION:8}
-    - id: release
-      uses: softprops/action-gh-release@v1
-      with:
-        body: ${{steps.changelog.outputs.changelog}}
-        tag_name: ${{ steps.parse_version.outputs.parsed_version }}
-        #draft: true
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+      - run: curl -o glualint.zip -L https://github.com/FPtje/GLuaFixer/releases/download/1.29.0/glualint-1.29.0-x86_64-linux.zip
+      - run: unzip glualint.zip
+      - run: ./glualint --output-format github lint .
+
+  update_docs:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: lint_files
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lunarmodules/ldoc@v1.5.0
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./doc
+
+  luarocks_upload:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: lint_files
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nvim-neorocks/luarocks-tag-release@v7
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+        with:
+          license: "MIT"
+          summary: "ggram – Standalone Telegram Bot Framework"
+          detailed_description: |
+            Create Telegram bots of any complexity in pure Lua
+            No openresty or other heavy web servers needed
+            No binaries (except luasocket), no heavy requests libs
+            More info: https://github.com/TRIGONIM/ggram/
+          dependencies: |
+            copas >= 4.3.0
+            luasec
+            lua-cjson
+            lua-requests-async
+            lua-gmod-lib
+          labels: |
+            telegram
+            bot
+            api
+            copas
+
+  make_github_release:
+    runs-on: ubuntu-24.04
+    needs: lint_files
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v4
+      - id: changelog
+        uses: ardalanamini/auto-changelog@v4
+        with:
+          mention-authors: false
+          commit-types: | # https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
+            feat: 😎 New Features
+            fix: 🐛 Bug Fixes
+            perf: 🚀 Performance Improvements
+            refactor: 🫨 Refactors
+            chore: 🥁 Chores
+      - uses: softprops/action-gh-release@v2
+        with:
+          body: ${{steps.changelog.outputs.changelog}}
+          tag_name: ${{ github.ref_name }}
