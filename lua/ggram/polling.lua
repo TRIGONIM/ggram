@@ -76,10 +76,10 @@ local polling = {}
 polling.start = function(bot)
 	log("call start(bot)")
 	bot.polling = true
-	bot:identify()
 
 	coroutinize(function()
 		co_sleep(0) -- for garry's mod (http not working at the first tick)
+		def_to_yield( bot.identify )() -- bot:identify()
 		polling_loop(bot)
 	end)
 end
