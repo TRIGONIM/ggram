@@ -68,6 +68,20 @@ function BOT_MT:call_method(method, parameters_, http_struct_overrides_, try_)
 		end)
 end
 
+--- Шорткат для быстрого самозаполнения информации о боте.
+--- Используется в поллинге и желательно интгрировать в вебхук-обертках
+--- @function identify
+function BOT_MT:identify()
+	return self.call_method("getMe", {}):next(function(res)
+		self.id         = res.id
+		self.username   = res.username
+		self.first_name = res.first_name
+		self.last_name  = res.last_name
+
+		return res
+	end)
+end
+
 --- Обработка ошибки запроса к Telegram API.
 --- Функция для оверрайда. Вызывается, когда Telegram вернул ошибку после запроса.
 --- По умолчанию принтит все данные об ошибке в консоль
