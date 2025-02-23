@@ -6,38 +6,62 @@
 # docker build -t ggramdevenv -f Dockerfile_tarantool .
 
 # misc.memprof.start() doesn't work on the Alpine
-FROM buildpack-deps:bullseye
+# https://github.com/tarantool/tarantool/issues/7899
+FROM debian:bullseye-slim
 
-RUN set -eux ; apt-get update && apt-get install -y \
-	cmake
+RUN apt-get update && apt-get install -y \
+    git \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    libc6-dev \
+    curl \
+    tar \
+    unzip \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# luajit
+# Сборка LuaJIT
 RUN set -eux \
-	&& LVP=/usr ; cd /tmp \
-	&& git clone https://github.com/tarantool/luajit.git \
-	&& mkdir luajit-build && cd luajit-build \
-	&& cmake ../luajit -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$LVP \
-	&& cmake --build . --parallel \
-	&& make install \
-	&& cd /tmp && rm -rf luajit luajit-build
+    && LVP=/usr \
+    && cd /tmp \
+    && git clone https://github.com/tarantool/luajit.git \
+    && mkdir luajit-build && cd luajit-build \
+    && cmake ../luajit -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$LVP \
+    && cmake --build . --parallel \
+    && make install \
+    && cd /tmp && rm -rf luajit luajit-build
 
-# luarocks
+# Сборка LuaRocks
 RUN set -eux \
-	&& LVP=/usr ; cd /tmp \
-	&& wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz \
-	&& tar zxpf luarocks-3.9.2.tar.gz && rm luarocks-3.9.2.tar.gz \
-	&& cd luarocks-3.9.2 \
-	&& ln -s /usr/bin/luajit /usr/bin/lua \
-	&& ./configure --with-lua=$LVP --with-lua-include=$LVP/include/luajit-2.1 --with-lua-interpreter=luajit \
-	&& make && make install \
-	&& cd /tmp && rm -rf luarocks-3.9.2
+    && LVP=/usr \
+    && cd /tmp \
+    && curl -L https://luarocks.org/releases/luarocks-3.11.1.tar.gz -o luarocks-3.11.1.tar.gz \
+    && tar zxpf luarocks-3.11.1.tar.gz && rm luarocks-3.11.1.tar.gz \
+    && cd luarocks-3.11.1 \
+    && ln -s /usr/bin/luajit /usr/bin/lua \
+    && ./configure --with-lua=$LVP --with-lua-include=$LVP/include/luajit-2.1 --with-lua-interpreter=luajit \
+    && make && make install \
+    && cd /tmp && rm -rf luarocks-3.11.1
 
-# ggramenv
-RUN set -eux && \
-	luarocks install copas && \
-	luarocks install luasec && \
-	luarocks install lua-cjson && \
-	luarocks install lua-requests-async && \
-	luarocks install lua-gmod-lib
+# Установка пакетов через LuaRocks
+RUN set -eux \
+    && luarocks install copas \
+    && luarocks install luasec \
+    && luarocks install lua-cjson \
+    && luarocks install lua-requests-async \
+    && luarocks install lua-gmod-lib
 
-RUN rm -rf /var/lib/apt/lists/*
+# Удаляем ненужные пакеты для минимизации образа
+RUN apt-get purge -y \
+    git \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    curl \
+    unzip \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
