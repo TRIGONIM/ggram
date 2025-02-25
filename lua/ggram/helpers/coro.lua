@@ -1,6 +1,10 @@
+-- coroutinize - делает, чтобы внутри работал корутина-стайл
+-- deferred_to_yield - превращает deferred функцию в корутина-стайл
+
 -- import example:
 -- local coro = require("ggram.helpers.coro").coroutinize
 
+-- Делает обертку, чтобы внутри работал корутина-стайл. См deferred_to_yield
 -- Yield с функцией "продолжить" внутри f:
 -- coroutine.yield(function(cont) some_async(function(res) cont(res) end) end)
 local coroutinize = function(f, ...)
@@ -17,6 +21,7 @@ local coroutinize = function(f, ...)
 	exec(...)
 end
 
+-- Превращает deferred функцию в корутина-стайл
 local deferred_to_yield = function(deferred_func)
 	-- оверрайдим функцию метода, вызывая оригинальный, но превращая в корутину
 	return function(...)
