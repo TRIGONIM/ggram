@@ -139,8 +139,9 @@ end
 -- @function handle_update
 -- @tparam table UPD update объект от Telegram
 local coroutinize = require("ggram.helpers.coro").coroutinize
+local context = require("ggram.context")
 function BOT_MT:handle_update(UPD)
-	local ctx = require("ggram.context"):new(self, UPD)
+	local ctx = context:new(self, UPD)
 
 	local suitable_handlers = {}
 	for _,filter_handler in pairs(self.handlers) do
