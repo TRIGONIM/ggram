@@ -12,7 +12,7 @@ local function co_call_method(bot, method, parameters)
 	return def_to_yield( bot.call_method )(method, parameters)
 end
 
-GG_POLL_LOG = GG_POLL_LOG or false
+local GG_POLL_LOG = false
 local function log(msg, ...)
 	if not GG_POLL_LOG then return end
 	print(msg:format(...))
@@ -72,6 +72,10 @@ local polling_loop = function(bot)
 end
 
 local polling = {}
+
+polling.verbose = function(enabled)
+	GG_POLL_LOG = enabled
+end
 
 polling.start = function(bot)
 	log("call start(bot)")
